@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies
+package com.alican.multimodulemovies.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeScreenViewModel @Inject constructor(
     private val interactor: MoviesInteractor
-) : ViewModel(){
+) :ViewModel(){
 
     private val _movies = MutableStateFlow<List<MovieUIModel>>(emptyList())
     val movies = _movies.asStateFlow()

@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.ui.theme
+package com.alican.multimodulemovies.theme
 
 import androidx.compose.ui.graphics.Color
 

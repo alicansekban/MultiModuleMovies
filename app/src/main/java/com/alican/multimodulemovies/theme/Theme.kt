@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.ui.theme
+package com.alican.multimodulemovies.theme
 
 import android.app.Activity
 import android.os.Build
