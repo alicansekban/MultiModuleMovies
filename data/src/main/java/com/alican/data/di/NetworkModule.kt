@@ -47,10 +47,10 @@ object AppModule {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    Log.d( "","message : $message")
+                    Log.d("HTTP", message) // Mesajı doğrudan loglayın
                 }
             }
-            level = LogLevel.BODY
+            level = LogLevel.BODY // Tüm HTTP isteği ve yanıt gövdesi loglanır
         }
 
         engine {
