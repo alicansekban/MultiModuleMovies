@@ -1,141 +1,142 @@
-package com.alican.data.data.local.response
+package com.alican.data.data.response
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+
 
 data class MovieDetailResponse(
 
-	@Json(name="original_language")
+    @SerialName("original_language")
 	val original_language: String? = null,
 
-	@Json(name="imdb_id")
+    @SerialName("imdb_id")
 	val imdb_id: String? = null,
 
-	@Json(name="video")
+    @SerialName("video")
 	val video: Boolean? = null,
 
-	@Json(name="title")
+    @SerialName("title")
 	val title: String? = null,
 
-	@Json(name="backdrop_path")
+    @SerialName("backdrop_path")
 	val backdrop_path: String? = null,
 
-	@Json(name="revenue")
+    @SerialName("revenue")
 	val revenue: Int? = null,
 
-	@Json(name="genres")
+    @SerialName("genres")
 	val genres: List<GenresItem?>? = null,
 
-	@Json(name="popularity")
+    @SerialName("popularity")
 	val popularity: Double? = null,
 
-	@Json(name="production_countries")
+    @SerialName("production_countries")
 	val productionCountries: List<ProductionCountriesItem?>? = null,
 
-	@Json(name="id")
+    @SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="vote_count")
+    @SerialName("vote_count")
 	val voteCount: Int? = null,
 
-	@Json(name="budget")
+    @SerialName("budget")
 	val budget: Int? = null,
 
-	@Json(name="overview")
+    @SerialName("overview")
 	val overview: String? = null,
 
-	@Json(name="original_title")
+    @SerialName("original_title")
 	val originalTitle: String? = null,
 
-	@Json(name="runtime")
+    @SerialName("runtime")
 	val runtime: Int? = null,
 
-	@Json(name="poster_path")
+    @SerialName("poster_path")
 	val poster_path: String? = null,
 
-	@Json(name="spoken_languages")
+    @SerialName("spoken_languages")
 	val spoken_languages: List<SpokenLanguagesItem?>? = null,
 
-	@Json(name="production_companies")
+    @SerialName("production_companies")
 	val production_companies: List<ProductionCompaniesItem?>? = null,
 
-	@Json(name="release_date")
+    @SerialName("release_date")
 	val release_date: String? = null,
 
-	@Json(name="vote_average")
+    @SerialName("vote_average")
 	val vote_average: Double? = null,
 
-	@Json(name="belongs_to_collection")
+    @SerialName("belongs_to_collection")
 	val belongs_to_collection: BelongsToCollection? = null,
 
-	@Json(name="tagline")
+    @SerialName("tagline")
 	val tagline: String? = null,
 
-	@Json(name="adult")
+    @SerialName("adult")
 	val adult: Boolean? = null,
 
-	@Json(name="homepage")
+    @SerialName("homepage")
 	val homepage: String? = null,
 
-	@Json(name="status")
+    @SerialName("status")
 	val status: String? = null
 )
 
 data class SpokenLanguagesItem(
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="iso_639_1")
+	@SerialName("iso_639_1")
 	val iso_639_1: String? = null,
 
-	@Json(name="english_name")
+	@SerialName("english_name")
 	val englishName: String? = null
 )
 
 data class BelongsToCollection(
 
-	@Json(name="backdrop_path")
+	@SerialName("backdrop_path")
 	val backdrop_path: String? = null,
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="id")
+	@SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="poster_path")
+	@SerialName("poster_path")
 	val poster_path: String? = null
 )
 
 data class GenresItem(
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="id")
+	@SerialName("id")
 	val id: Int? = null
 )
 
 data class ProductionCountriesItem(
 
-	@Json(name="iso_3166_1")
+	@SerialName("iso_3166_1")
 	val iso_3166_1: String? = null,
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null
 )
 
 data class ProductionCompaniesItem(
 
-	@Json(name="logo_path")
+	@SerialName("logo_path")
 	val logo_path: String? = null,
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="id")
+	@SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="origin_country")
+	@SerialName("origin_country")
 	val origin_country: String? = null
 )

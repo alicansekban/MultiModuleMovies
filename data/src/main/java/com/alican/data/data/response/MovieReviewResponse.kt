@@ -1,41 +1,42 @@
-package com.alican.data.data.local.response
+package com.alican.data.data.response
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+
 
 data class MovieReviewResponse(
-    @Json(name = "author_details")
+    @SerialName("author_details")
     val author_details: AuthorDetails? = null,
 
-    @Json(name = "updated_at")
+    @SerialName("updated_at")
     val updated_at: String? = null,
 
-    @Json(name = "author")
+    @SerialName("author")
     val author: String? = null,
 
-    @Json(name = "created_at")
+    @SerialName("created_at")
     val created_at: String? = null,
 
-    @Json(name = "id")
+    @SerialName("id")
     val id: String? = null,
 
-    @Json(name = "content")
+    @SerialName("content")
     val content: String? = null,
 
-    @Json(name = "url")
+    @SerialName("url")
     val url: String? = null
 )
 
 data class AuthorDetails(
 
-    @Json(name = "avatar_path")
+    @SerialName("avatar_path")
     val avatar_path: String? = null,
 
-    @Json(name = "name")
+    @SerialName("name")
     val name: String? = null,
 
-    @Json(name = "rating")
+    @SerialName("rating")
     val rating: Double? = null,
 
-    @Json(name = "username")
+    @SerialName("username")
     val username: String? = null
 )

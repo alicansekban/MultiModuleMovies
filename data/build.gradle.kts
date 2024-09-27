@@ -73,10 +73,11 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // networking
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
+    implementation(libs.ktor.client.core)
+    implementation (libs.ktor.client.android)
+    implementation (libs.ktor.client.logging)
+    implementation (libs.ktor.client.content.negotiation)
+    implementation (libs.ktor.serialization.kotlinx.json)
 
 
     // Room
@@ -84,8 +85,4 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    // Moshi
-    implementation(libs.moshi)
-    ksp(libs.moshi.kotlin.codegen)
-    implementation(libs.moshi.kotlin)
 }

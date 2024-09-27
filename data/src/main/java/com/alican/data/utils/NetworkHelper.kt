@@ -2,7 +2,6 @@ package com.alican.data.utils
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import java.io.IOException
 
 suspend fun <T> safeApiCall(
@@ -16,12 +15,6 @@ suspend fun <T> safeApiCall(
             when (throwable) {
                 is IOException -> {
                     ResultWrapper.NetworkError
-                }
-
-                is HttpException -> {
-                    val code = throwable.code()
-                    val errorMessage = throwable.message()
-                    ResultWrapper.GenericError(code, errorMessage)
                 }
 
                 else -> {

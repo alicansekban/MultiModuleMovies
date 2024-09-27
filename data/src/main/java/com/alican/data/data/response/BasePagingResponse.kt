@@ -1,4 +1,4 @@
-package com.alican.data.data.local.response
+package com.alican.data.data.response
 data class BasePagingResponse<T>(
     val page: Int,
     val results: List<T>,

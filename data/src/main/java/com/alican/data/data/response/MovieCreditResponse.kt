@@ -1,90 +1,91 @@
-package com.alican.data.data.local.response
+package com.alican.data.data.response
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+
 
 data class MovieCreditResponse(
 
-	@Json(name="cast")
+    @SerialName("cast")
 	val cast: List<CastItem?>? = null,
 
-	@Json(name="id")
+    @SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="crew")
+    @SerialName("crew")
 	val crew: List<CrewItem?>? = null
 )
 
 data class CastItem(
 
-	@Json(name="cast_id")
+	@SerialName("cast_id")
 	val cast_id: Int? = null,
 
-	@Json(name="character")
+	@SerialName("character")
 	val character: String? = null,
 
-	@Json(name="gender")
+	@SerialName("gender")
 	val gender: Int? = null,
 
-	@Json(name="credit_id")
+	@SerialName("credit_id")
 	val credit_id: String? = null,
 
-	@Json(name="known_for_department")
+	@SerialName("known_for_department")
 	val known_for_department: String? = null,
 
-	@Json(name="original_name")
+	@SerialName("original_name")
 	val original_name: String? = null,
 
-	@Json(name="popularity")
+	@SerialName("popularity")
 	val popularity: Double? = null,
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="profile_path")
+	@SerialName("profile_path")
 	val profile_path: String? = null,
 
-	@Json(name="id")
+	@SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="adult")
+	@SerialName("adult")
 	val adult: Boolean? = null,
 
-	@Json(name="order")
+	@SerialName("order")
 	val order: Int? = null
 )
 
 data class CrewItem(
 
-	@Json(name="gender")
+	@SerialName("gender")
 	val gender: Int? = null,
 
-	@Json(name="credit_id")
+	@SerialName("credit_id")
 	val credit_id: String? = null,
 
-	@Json(name="known_for_department")
+	@SerialName("known_for_department")
 	val known_for_department: String? = null,
 
-	@Json(name="original_name")
+	@SerialName("original_name")
 	val original_name: String? = null,
 
-	@Json(name="popularity")
+	@SerialName("popularity")
 	val popularity: Any? = null,
 
-	@Json(name="name")
+	@SerialName("name")
 	val name: String? = null,
 
-	@Json(name="profile_path")
+	@SerialName("profile_path")
 	val profile_path: String? = null,
 
-	@Json(name="id")
+	@SerialName("id")
 	val id: Int? = null,
 
-	@Json(name="adult")
+	@SerialName("adult")
 	val adult: Boolean? = null,
 
-	@Json(name="department")
+	@SerialName("department")
 	val department: String? = null,
 
-	@Json(name="job")
+	@SerialName("job")
 	val job: String? = null
 )
