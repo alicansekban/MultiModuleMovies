@@ -9,4 +9,15 @@ object HomeScreenRoute
 object SearchScreenRoute
 
 @Serializable
-object SavedScreenRoute
+object FavoritesScreenRoute
+
+
+@Serializable
+object HomeHost
+
+@Serializable
+object SearchHost
+
+@Serializable
+object FavoritesHost
+

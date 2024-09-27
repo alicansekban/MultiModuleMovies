@@ -5,15 +5,10 @@ import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Bookmark
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -22,21 +17,17 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.alican.multimodulemovies.utils.HomeScreenRoute
-import com.alican.multimodulemovies.utils.SavedScreenRoute
-import com.alican.multimodulemovies.utils.SearchScreenRoute
+import com.alican.multimodulemovies.utils.HomeHost
+import com.alican.multimodulemovies.utils.FavoritesHost
+import com.alican.multimodulemovies.utils.SearchHost
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -51,17 +42,17 @@ fun BottomBar(
     val items = listOf(
         BottomBarRoute(
             name = "Home",
-            route = HomeScreenRoute,
+            route = HomeHost,
             icon = Icons.Filled.Home
         ),
         BottomBarRoute(
             name = "Search",
-            route = SearchScreenRoute,
+            route = SearchHost,
             icon = Icons.Filled.Search
         ),
         BottomBarRoute(
             name = "Saved",
-            route = SavedScreenRoute,
+            route = FavoritesHost,
             icon = Icons.Filled.Bookmark
         )
     )
