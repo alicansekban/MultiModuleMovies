@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "MultiModuleMovies"
 include(":app")
 include(":data")
+include(":domain")
