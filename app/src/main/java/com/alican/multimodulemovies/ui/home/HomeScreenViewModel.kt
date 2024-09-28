@@ -35,6 +35,26 @@ class HomeScreenViewModel @Inject constructor(
         BaseUIModel.Empty
     )
 
+    private val _topRatedMovies =
+        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
+    val topRatedMovies = _topRatedMovies.onStart {
+        getTopRatedMovies()
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10000L),
+        BaseUIModel.Empty
+    )
+
+    private val _getPopularMovies =
+        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
+    val popularMovies = _getPopularMovies.onStart {
+        getPopularMovies()
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(10000L),
+        BaseUIModel.Empty
+    )
+
     private fun getUpComingMovies() {
         viewModelScope.launch {
             interactor.getUpComingMovies(1).collect { state ->
@@ -47,6 +67,22 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             interactor.getNowPlayingMovies(1).collect { state ->
                 _nowPlayingMovies.emit(state)
+            }
+        }
+    }
+
+    private fun getPopularMovies() {
+        viewModelScope.launch {
+            interactor.getPopularMovies(1).collect { state ->
+                _getPopularMovies.emit(state)
+            }
+        }
+    }
+
+    private fun getTopRatedMovies() {
+        viewModelScope.launch {
+            interactor.getTopRatedMovies(1).collect { state ->
+                _topRatedMovies.emit(state)
             }
         }
     }

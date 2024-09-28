@@ -2,6 +2,8 @@ package com.alican.multimodulemovies.ui.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,13 +20,18 @@ import kotlinx.collections.immutable.adapters.ImmutableListAdapter
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel(),
-    openListScreen: (type : MovieType) -> Unit
+    openListScreen: (type: MovieType) -> Unit
 ) {
 
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
     val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
+    val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
+    val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())) {
 
         when (upComingMovies) {
             BaseUIModel.Empty -> {}
@@ -54,11 +61,44 @@ fun HomeScreen(
                     title = "Now Playing",
                     items = ImmutableListAdapter(movies)
                 )
-                CustomWidget(model = widgetModel,openListScreen = {
+                CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.NOW_PLAYING)
                 })
             }
+        }
 
+        when (topRatedMovies) {
+            BaseUIModel.Empty -> {}
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {}
+            is BaseUIModel.Success -> {
+                val movies =
+                    (topRatedMovies as BaseUIModel.Success).data.map { it.toWidgetModel() }
+                val widgetModel = MovieWidgetComponentModel(
+                    title = "Top Rated",
+                    items = ImmutableListAdapter(movies)
+                )
+                CustomWidget(model = widgetModel, openListScreen = {
+                    openListScreen.invoke(MovieType.TOP_RATED)
+                })
+            }
+        }
+
+        when (popularMovies) {
+            BaseUIModel.Empty -> {}
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {}
+            is BaseUIModel.Success -> {
+                val movies =
+                    (popularMovies as BaseUIModel.Success).data.map { it.toWidgetModel() }
+                val widgetModel = MovieWidgetComponentModel(
+                    title = "Popular",
+                    items = ImmutableListAdapter(movies)
+                )
+                CustomWidget(model = widgetModel, openListScreen = {
+                    openListScreen.invoke(MovieType.POPULAR)
+                })
+            }
         }
     }
 }

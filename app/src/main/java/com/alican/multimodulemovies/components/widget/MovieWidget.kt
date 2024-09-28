@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.alican.multimodulemovies.utils.heightPercent
 import com.alican.multimodulemovies.utils.widthPercent
-import com.alican.multimodulemovies.components.imageView.CustomImageView
 import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
 
 @Composable

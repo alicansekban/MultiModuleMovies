@@ -17,10 +17,10 @@ data class MovieUIModel(
     val overview: String ?= null,
 )
 
-
-
 enum class MovieType{
     UPCOMING,
-    NOW_PLAYING
+    NOW_PLAYING,
+    TOP_RATED,
+    POPULAR
 }
 

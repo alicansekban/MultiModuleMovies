@@ -58,4 +58,50 @@ class HomeInteractor @Inject constructor(
             })
         }
     }
+
+    suspend fun getPopularMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            emit(when (val response = moviesRepository.getPopularMovies(page)) {
+                is ResultWrapper.GenericError -> {
+                    BaseUIModel.Error(response.error ?: "Error")
+                }
+                ResultWrapper.Loading -> {
+                    BaseUIModel.Loading
+                }
+                ResultWrapper.NetworkError -> {
+                    BaseUIModel.Error("Network Error")
+                }
+                is ResultWrapper.Success -> {
+                    val uiModel = response.value.results?.map {
+                        it.toUIModel()
+                    } ?: emptyList()
+                    BaseUIModel.Success(uiModel)
+                }
+            })
+        }
+    }
+
+    suspend fun getTopRatedMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            emit(when (val response = moviesRepository.getTopRatedMovies(page)) {
+                is ResultWrapper.GenericError -> {
+                    BaseUIModel.Error(response.error ?: "Error")
+                }
+                ResultWrapper.Loading -> {
+                    BaseUIModel.Loading
+                }
+                ResultWrapper.NetworkError -> {
+                    BaseUIModel.Error("Network Error")
+                }
+                is ResultWrapper.Success -> {
+                    val uiModel = response.value.results?.map {
+                        it.toUIModel()
+                    } ?: emptyList()
+                    BaseUIModel.Success(uiModel)
+                }
+            })
+        }
+    }
 }
