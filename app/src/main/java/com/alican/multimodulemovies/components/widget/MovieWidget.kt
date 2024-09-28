@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.alican.multimodulemovies.utils.heightPercent
 import com.alican.multimodulemovies.utils.widthPercent
 import com.alican.multimodulemovies.components.imageView.CustomImageView
+import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
 
 @Composable
 fun CustomWidget(
@@ -77,7 +78,7 @@ fun WidgetItem(item: WidgetMovieModel) {
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
 
-        CustomImageView(
+        CustomImageViewWithLoading(
             imageUrl = item.imageUrl ?: "",
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(10.dp))

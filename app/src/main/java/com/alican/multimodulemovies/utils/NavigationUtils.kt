@@ -1,5 +1,6 @@
 package com.alican.multimodulemovies.utils
 
+import com.alican.domain.models.MovieType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,4 +21,9 @@ object SearchHost
 
 @Serializable
 object FavoritesHost
+
+@Serializable
+data class MoviesListRoute(
+    val movieType: MovieType = MovieType.UPCOMING
+)
 

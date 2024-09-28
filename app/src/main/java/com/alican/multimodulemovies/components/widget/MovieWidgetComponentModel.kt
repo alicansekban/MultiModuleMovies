@@ -1,5 +1,6 @@
 package com.alican.multimodulemovies.components.widget
 
+import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -22,9 +23,4 @@ fun MovieUIModel.toWidgetModel() : WidgetMovieModel{
         imageUrl = imageUrl,
         title = title,
     )
-}
-
-enum class MovieType{
-    UPCOMING,
-    NOW_PLAYING
 }

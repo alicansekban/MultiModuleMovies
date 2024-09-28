@@ -8,6 +8,7 @@ import com.alican.domain.models.MovieUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,20 +21,19 @@ class HomeScreenViewModel @Inject constructor(
     private val _upComingMovies =
         MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
     val upComingMovies =
-        _upComingMovies.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), BaseUIModel.Empty)
+        _upComingMovies.onStart {
+            getUpComingMovies()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
 
     private val _nowPlayingMovies =
         MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
-    val nowPlayingMovies = _nowPlayingMovies.stateIn(
+    val nowPlayingMovies = _nowPlayingMovies.onStart {
+        getNowPlayingMovies()
+    }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(),
+        SharingStarted.WhileSubscribed(10000L),
         BaseUIModel.Empty
     )
-
-    init {
-        getUpComingMovies()
-        getNowPlayingMovies()
-    }
 
     private fun getUpComingMovies() {
         viewModelScope.launch {

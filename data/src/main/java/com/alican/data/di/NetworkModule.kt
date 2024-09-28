@@ -47,7 +47,7 @@ object AppModule {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    Log.d("HTTP", message) // Mesajı doğrudan loglayın
+                    Log.d("HTTP RESPONSE", message) // Mesajı doğrudan loglayın
                 }
             }
             level = LogLevel.BODY // Tüm HTTP isteği ve yanıt gövdesi loglanır

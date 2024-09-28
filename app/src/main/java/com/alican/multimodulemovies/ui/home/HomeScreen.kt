@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.models.BaseUIModel
+import com.alican.domain.models.MovieType
 import com.alican.multimodulemovies.components.widget.CustomWidget
 import com.alican.multimodulemovies.components.widget.MovieWidgetComponentModel
 import com.alican.multimodulemovies.components.widget.toWidgetModel
@@ -16,7 +17,8 @@ import kotlinx.collections.immutable.adapters.ImmutableListAdapter
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    openListScreen: (type : MovieType) -> Unit
 ) {
 
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
@@ -34,8 +36,11 @@ fun HomeScreen(
                     title = "Upcoming",
                     items = ImmutableListAdapter(movies)
                 )
-                CustomWidget(model = widgetModel)
+                CustomWidget(model = widgetModel, openListScreen = {
+                    openListScreen.invoke(MovieType.UPCOMING)
+                })
             }
+
         }
 
         when (nowPlayingMovies) {
@@ -49,8 +54,11 @@ fun HomeScreen(
                     title = "Now Playing",
                     items = ImmutableListAdapter(movies)
                 )
-                CustomWidget(model = widgetModel)
+                CustomWidget(model = widgetModel,openListScreen = {
+                    openListScreen.invoke(MovieType.NOW_PLAYING)
+                })
             }
+
         }
     }
 }
