@@ -50,7 +50,7 @@ class ApiService @Inject constructor(
 //                url {
 //                    appendPathSegments("id", id.toString())
 //
-//                    // Query param -> ..?type=rerecreational
+//                    // Query param -> ..?type=recreational
 //                    parameters.append("page", page.toString())
 //                }
 //            }.body()
