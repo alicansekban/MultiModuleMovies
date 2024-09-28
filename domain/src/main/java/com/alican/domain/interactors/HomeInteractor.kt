@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class MoviesInteractor @Inject constructor(
+class HomeInteractor @Inject constructor(
     private val moviesRepository: MoviesRepository
 ) {
 
@@ -34,6 +34,28 @@ class MoviesInteractor @Inject constructor(
                 }
             })
         }
+    }
 
+    suspend fun getNowPlayingMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+        return flow {
+            emit(BaseUIModel.Loading)
+            emit(when (val response = moviesRepository.getNowPlayingMovies(page)) {
+                is ResultWrapper.GenericError -> {
+                    BaseUIModel.Error(response.error ?: "Error")
+                }
+                ResultWrapper.Loading -> {
+                    BaseUIModel.Loading
+                }
+                ResultWrapper.NetworkError -> {
+                    BaseUIModel.Error("Network Error")
+                }
+                is ResultWrapper.Success -> {
+                    val uiModel = response.value.results?.map {
+                        it.toUIModel()
+                    } ?: emptyList()
+                    BaseUIModel.Success(uiModel)
+                }
+            })
+        }
     }
 }

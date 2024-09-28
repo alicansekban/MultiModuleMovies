@@ -20,6 +20,7 @@ fun HomeScreen(
 ) {
 
     val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
+    val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
 
     Column(Modifier.fillMaxSize()) {
 
@@ -32,15 +33,33 @@ fun HomeScreen(
                 LazyRow(
                     Modifier.fillMaxWidth()
                 ) {
-                    items(movies) {movie ->
-                        movie.title?.let {title ->
-                            Text(text =title)
+                    items(movies) { movie ->
+                        movie.title?.let { title ->
+                            Text(text = title)
                         }
                     }
+                }
+            }
+        }
+
+        when (nowPlayingMovies) {
+            BaseUIModel.Empty -> {}
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {}
+            is BaseUIModel.Success -> {
+                val movies = (nowPlayingMovies as BaseUIModel.Success).data
+                LazyRow(
+                    Modifier.fillMaxWidth()
+                ) {
+                    items(movies) { movie ->
+                        movie.title?.let { title ->
+                            Text(text = title)
+                        }
+                    }
+
                 }
 
             }
         }
     }
-
 }
