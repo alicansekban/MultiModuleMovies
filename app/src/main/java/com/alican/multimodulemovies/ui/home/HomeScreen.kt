@@ -60,7 +60,7 @@ fun HomeScreen(
                     CustomPager(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightPercent(0.6f, configuration),
+                            .heightPercent(0.7f, configuration),
                         images = movies.map { it.imageUrl ?: "" },
                         onClick = {
                             openListScreen.invoke(MovieType.UPCOMING)

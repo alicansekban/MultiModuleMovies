@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.models.BaseUIModel
+import com.alican.multimodulemovies.ui.detail.components.MovieDetailInformation
 
 @Composable
 fun MovieDetailScreen(viewmodel: MovieDetailViewModel = hiltViewModel()) {
@@ -21,16 +22,13 @@ fun MovieDetailScreen(viewmodel: MovieDetailViewModel = hiltViewModel()) {
         .fillMaxSize()
         .verticalScroll(rememberScrollState())
     ) {
-
-        Text(text = "Movie Detail Screen")
-
         when (movieDetail) {
             BaseUIModel.Empty -> {}
             is BaseUIModel.Error -> {}
             BaseUIModel.Loading -> {}
             is BaseUIModel.Success -> {
                 val movie = (movieDetail as BaseUIModel.Success).data
-                movie.title?.let { Text(text = it) }
+                MovieDetailInformation(movie = movie)
             }
         }
     }
