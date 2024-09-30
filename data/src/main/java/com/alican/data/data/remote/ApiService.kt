@@ -4,6 +4,8 @@ import com.alican.data.BuildConfig
 import com.alican.data.data.response.BaseMoviesResponse
 import com.alican.data.data.response.MovieCreditResponse
 import com.alican.data.data.response.MovieDetailResponse
+import com.alican.data.data.response.MovieImagesResponse
+import com.alican.data.data.response.MovieReviewResponse
 import com.alican.data.utils.Constants
 import com.alican.data.utils.ResultWrapper
 import com.alican.data.utils.safeApiCall
@@ -44,23 +46,33 @@ class ApiService @Inject constructor(
             client.get("movie/$id").body()
         }
 
-//    suspend fun getMovieReviews(id: Int, page: Int) : ResultWrapper<BasePagingResponse<MovieReviewResponse>> =
-//        safeApiCall(Dispatchers.IO) {
-//            client.get(urlString = BuildConfig.BASE_URL) {
-//                url {
-//                    appendPathSegments("id", id.toString())
-//
-//                    // Query param -> ..?type=recreational
-//                    parameters.append("page", page.toString())
-//                }
-//            }.body()
-//        }
+    suspend fun getMovieReviews(id: Int, page: Int) : ResultWrapper<MovieReviewResponse> =
+        safeApiCall(Dispatchers.IO) {
+            client.get(urlString = BuildConfig.BASE_URL) {
+                url {
+                    // Path param -> ..
+                    appendPathSegments("id", id.toString())
+
+                    // Query param -> ..?page=page
+                    parameters.append("page", page.toString())
+                }
+            }.body()
+        }
 
     suspend fun getMovieCredits(id: Int) : ResultWrapper<MovieCreditResponse> =
         safeApiCall(Dispatchers.IO) {
             client.get(urlString = BuildConfig.BASE_URL) {
                 url {
                     appendPathSegments("id", id.toString())
+                }
+            }.body()
+        }
+
+    suspend fun getMovieImages(id: Int) : ResultWrapper<MovieImagesResponse> =
+        safeApiCall(Dispatchers.IO) {
+            client.get(urlString = BuildConfig.BASE_URL) {
+                url {
+                    appendPathSegments("movie", id.toString(), "images")
                 }
             }.body()
         }

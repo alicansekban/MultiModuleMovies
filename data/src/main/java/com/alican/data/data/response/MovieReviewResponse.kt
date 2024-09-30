@@ -1,9 +1,22 @@
 package com.alican.data.data.response
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MovieReviewResponse(
+    @SerialName("page")
+    val page: Int? = null,
+    @SerialName("results")
+    val results: List<MovieReviewResponseItem>? = emptyList(),
+    @SerialName("total_pages")
+    val total_pages: Int? = null,
+    @SerialName("total_results")
+    val total_results: Int? = null
+)
+
+@Serializable
+data class MovieReviewResponseItem(
     @SerialName("author_details")
     val author_details: AuthorDetails? = null,
 
@@ -26,6 +39,7 @@ data class MovieReviewResponse(
     val url: String? = null
 )
 
+@Serializable
 data class AuthorDetails(
 
     @SerialName("avatar_path")

@@ -30,10 +30,24 @@ class MovieDetailViewModel @Inject constructor(
         getMovieDetail(id)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
 
+    private val _movieImages =
+        MutableStateFlow<BaseUIModel<List<String>>>(BaseUIModel.Empty)
+    val movieImages = _movieImages.onStart {
+        getMovieImages(id)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
+
     private fun getMovieDetail(id: Int) {
         viewModelScope.launch {
             interactor.getMovieDetails(id).collect {
                 _movieDetail.emit(it)
+            }
+        }
+    }
+
+    private fun getMovieImages(id: Int) {
+        viewModelScope.launch {
+            interactor.getMovieImages(id).collect {
+                _movieImages.emit(it)
             }
         }
     }
