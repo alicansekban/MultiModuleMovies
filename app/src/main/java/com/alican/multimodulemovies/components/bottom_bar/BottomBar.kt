@@ -25,6 +25,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alican.multimodulemovies.theme.Orange
 import com.alican.multimodulemovies.utils.HomeHost
 import com.alican.multimodulemovies.utils.FavoritesHost
 import com.alican.multimodulemovies.utils.SearchHost
@@ -83,12 +84,11 @@ fun BottomBar(
                         },
                         icon = {
                             Icon(item.icon, contentDescription = item.name)
-
                         },
                         interactionSource = NoRippleInteractionSource,
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.Red,
-                            selectedTextColor = Color.Red,
+                            selectedIconColor = Orange,
+                            selectedTextColor = Orange,
                             unselectedIconColor = MaterialTheme.colorScheme.onBackground,
                             unselectedTextColor = MaterialTheme.colorScheme.onBackground,
                             indicatorColor = MaterialTheme.colorScheme.background
