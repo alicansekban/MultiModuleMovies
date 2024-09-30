@@ -5,7 +5,6 @@ import com.alican.data.data.response.BaseMoviesResponse
 import com.alican.data.data.response.MovieResponse
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieUIModel
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.adapters.ImmutableListAdapter
 
 fun MovieResponse.toUIModel() : MovieUIModel {

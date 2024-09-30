@@ -8,7 +8,6 @@ import com.alican.domain.interactors.MovieListInteractor
 import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieType
-import com.alican.domain.models.MovieUIModel
 import com.alican.multimodulemovies.utils.MoviesListRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

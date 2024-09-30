@@ -1,8 +1,9 @@
 package com.alican.data.data.response
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MovieDetailResponse(
 
     @SerialName("original_language")
@@ -80,7 +81,7 @@ data class MovieDetailResponse(
     @SerialName("status")
 	val status: String? = null
 )
-
+@Serializable
 data class SpokenLanguagesItem(
 
 	@SerialName("name")
@@ -92,7 +93,7 @@ data class SpokenLanguagesItem(
 	@SerialName("english_name")
 	val englishName: String? = null
 )
-
+@Serializable
 data class BelongsToCollection(
 
 	@SerialName("backdrop_path")
@@ -107,7 +108,7 @@ data class BelongsToCollection(
 	@SerialName("poster_path")
 	val poster_path: String? = null
 )
-
+@Serializable
 data class GenresItem(
 
 	@SerialName("name")
@@ -116,7 +117,7 @@ data class GenresItem(
 	@SerialName("id")
 	val id: Int? = null
 )
-
+@Serializable
 data class ProductionCountriesItem(
 
 	@SerialName("iso_3166_1")
@@ -125,7 +126,7 @@ data class ProductionCountriesItem(
 	@SerialName("name")
 	val name: String? = null
 )
-
+@Serializable
 data class ProductionCompaniesItem(
 
 	@SerialName("logo_path")

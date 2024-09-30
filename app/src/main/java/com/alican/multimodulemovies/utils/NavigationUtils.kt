@@ -27,3 +27,7 @@ data class MoviesListRoute(
     val movieType: MovieType = MovieType.UPCOMING
 )
 
+@Serializable
+data class MovieDetailRoute(
+    val movieId: Int
+)

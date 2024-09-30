@@ -22,14 +22,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
 import com.alican.multimodulemovies.utils.heightPercent
 import com.alican.multimodulemovies.utils.widthPercent
-import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
 
 @Composable
 fun CustomWidget(
     model: MovieWidgetComponentModel,
     openListScreen: () -> Unit = {},
+    openMovieDetailScreen: (id: Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -57,20 +58,24 @@ fun CustomWidget(
         }
         LazyRow(Modifier.fillMaxWidth(), contentPadding = PaddingValues(start = 16.dp)) {
             items(model.items) {
-                WidgetItem(item = it)
+                WidgetItem(item = it, openMovieDetailScreen = openMovieDetailScreen)
             }
         }
     }
 }
 
 @Composable
-fun WidgetItem(item: WidgetMovieModel) {
+fun WidgetItem(
+    item: WidgetMovieModel,
+    openMovieDetailScreen: (id: Int) -> Unit
+) {
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
     Column(
         modifier = Modifier
             .wrapContentSize()
             .clickable {
+                item.id?.let { openMovieDetailScreen(it) }
             }
             .padding(8.dp)
             .widthPercent(0.35f, configuration),

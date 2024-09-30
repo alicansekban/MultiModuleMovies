@@ -8,6 +8,7 @@ import com.alican.multimodulemovies.ui.home.HomeScreen
 import com.alican.multimodulemovies.ui.list.MoviesListScreen
 import com.alican.multimodulemovies.utils.HomeHost
 import com.alican.multimodulemovies.utils.HomeScreenRoute
+import com.alican.multimodulemovies.utils.MovieDetailRoute
 import com.alican.multimodulemovies.utils.MoviesListRoute
 
 fun NavGraphBuilder.homeGraph(navController: NavController) {
@@ -24,6 +25,14 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
                     navController.navigate(
                         route = route
                     )
+                },
+                openMovieDetailScreen = {
+                    val route = MovieDetailRoute(
+                        movieId = it
+                    )
+                    navController.navigate(
+                        route = route
+                    )
                 }
             )
         }
@@ -31,6 +40,5 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
         composable<MoviesListRoute> {
             MoviesListScreen()
         }
-
     }
 }

@@ -26,7 +26,8 @@ import kotlinx.collections.immutable.adapters.ImmutableListAdapter
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel(),
-    openListScreen: (type: MovieType) -> Unit
+    openListScreen: (type: MovieType) -> Unit,
+    openMovieDetailScreen: (id: Int) -> Unit
 ) {
     val configuration = LocalConfiguration.current
 
@@ -68,7 +69,7 @@ fun HomeScreen(
                 }
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.UPCOMING)
-                })
+                },openMovieDetailScreen = openMovieDetailScreen)
             }
         }
 
@@ -85,7 +86,7 @@ fun HomeScreen(
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.NOW_PLAYING)
-                })
+                },openMovieDetailScreen = openMovieDetailScreen)
             }
         }
 
@@ -102,7 +103,7 @@ fun HomeScreen(
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.TOP_RATED)
-                })
+                }, openMovieDetailScreen = openMovieDetailScreen)
             }
         }
 
@@ -119,7 +120,7 @@ fun HomeScreen(
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.POPULAR)
-                })
+                },openMovieDetailScreen = openMovieDetailScreen)
             }
         }
     }
