@@ -8,7 +8,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel()
-
 ) {
 
 }

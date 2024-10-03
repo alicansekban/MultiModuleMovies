@@ -18,6 +18,8 @@ fun MovieDetailScreen(viewmodel: MovieDetailViewModel = hiltViewModel()) {
 
     val movieDetail by viewmodel.movieDetail.collectAsStateWithLifecycle()
     val movieImages by viewmodel.movieImages.collectAsStateWithLifecycle()
+    val movieCredits by viewmodel.movieCredits.collectAsStateWithLifecycle()
+    val movieReviews by viewmodel.movieReviews.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -40,6 +42,22 @@ fun MovieDetailScreen(viewmodel: MovieDetailViewModel = hiltViewModel()) {
             is BaseUIModel.Success -> {
                 val movie = (movieDetail as BaseUIModel.Success).data
                 MovieDetailInformation(movie = movie)
+            }
+        }
+        when (movieCredits) {
+            BaseUIModel.Empty -> {}
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {}
+            is BaseUIModel.Success -> {
+                val credits = (movieCredits as BaseUIModel.Success).data
+            }
+        }
+        when (movieReviews) {
+            BaseUIModel.Empty -> {}
+            is BaseUIModel.Error -> {}
+            BaseUIModel.Loading -> {}
+            is BaseUIModel.Success -> {
+                val reviews = (movieReviews as BaseUIModel.Success).data
             }
         }
     }

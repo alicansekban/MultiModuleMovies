@@ -1,12 +1,13 @@
 package com.alican.data.data.response
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MovieCreditResponse(
 
     @SerialName("cast")
-	val cast: List<CastItem?>? = null,
+	val cast: List<CastItem>? = null,
 
     @SerialName("id")
 	val id: Int? = null,
@@ -15,6 +16,7 @@ data class MovieCreditResponse(
 	val crew: List<CrewItem?>? = null
 )
 
+@Serializable
 data class CastItem(
 
 	@SerialName("cast_id")
@@ -54,6 +56,7 @@ data class CastItem(
 	val order: Int? = null
 )
 
+@Serializable
 data class CrewItem(
 
 	@SerialName("gender")
@@ -69,7 +72,7 @@ data class CrewItem(
 	val original_name: String? = null,
 
 	@SerialName("popularity")
-	val popularity: Any? = null,
+	val popularity: Double? = null,
 
 	@SerialName("name")
 	val name: String? = null,

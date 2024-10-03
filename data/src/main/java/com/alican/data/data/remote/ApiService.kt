@@ -38,6 +38,15 @@ class ApiService @Inject constructor(
         }
     suspend fun searchMovie(page: Int, query: String) : ResultWrapper<BaseMoviesResponse> =
         safeApiCall(Dispatchers.IO) {
+            client.get(urlString = BuildConfig.BASE_URL) {
+                url {
+                    // Path param -> ..
+                    appendPathSegments("search", "movie")
+                    // Query param -> ..?page=page
+                    parameters.append("page", page.toString())
+                    parameters.append("query", query)
+                }
+            }
             client.get("${Constants.SEARCH_MOVIE_ENDPOINT}?page=$page&query=$query}").body()
         }
 
@@ -51,7 +60,7 @@ class ApiService @Inject constructor(
             client.get(urlString = BuildConfig.BASE_URL) {
                 url {
                     // Path param -> ..
-                    appendPathSegments("id", id.toString())
+                    appendPathSegments("movie", id.toString(), "reviews")
 
                     // Query param -> ..?page=page
                     parameters.append("page", page.toString())
@@ -63,7 +72,7 @@ class ApiService @Inject constructor(
         safeApiCall(Dispatchers.IO) {
             client.get(urlString = BuildConfig.BASE_URL) {
                 url {
-                    appendPathSegments("id", id.toString())
+                    appendPathSegments("movie", id.toString(), "credits")
                 }
             }.body()
         }
