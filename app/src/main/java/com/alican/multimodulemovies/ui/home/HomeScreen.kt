@@ -63,7 +63,8 @@ fun HomeScreen(
                             .heightPercent(0.7f, configuration),
                         images = movies.map { it.imageUrl ?: "" },
                         onClick = {
-                            openListScreen.invoke(MovieType.UPCOMING)
+                          val movie = movies[it]
+                            movie.id?.let { it1 -> openMovieDetailScreen.invoke(it1) }
                         }
                     )
                 }
