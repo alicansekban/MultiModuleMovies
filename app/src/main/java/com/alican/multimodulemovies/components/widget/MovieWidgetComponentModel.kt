@@ -2,13 +2,11 @@ package com.alican.multimodulemovies.components.widget
 
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 data class MovieWidgetComponentModel(
     val title: String? = null,
     val type: MovieType? = null,
-    val items: ImmutableList<WidgetMovieModel> = persistentListOf(),
+    val items: List<WidgetMovieModel> = emptyList(),
 )
 
 data class WidgetMovieModel(

@@ -15,7 +15,7 @@ class MovieListInteractor @Inject constructor(
     private val repository: MoviesRepository
 ) {
 
-    suspend fun getMoviesByType(
+    fun getMoviesByType(
         movieType: MovieType,
         page: Int,
         currentModel: MovieListUIModel
@@ -40,7 +40,7 @@ class MovieListInteractor @Inject constructor(
         }
     }
 
-    private suspend fun getUpComingMovies(
+    private fun getUpComingMovies(
         page: Int,
         currentModel: MovieListUIModel
     ): Flow<BaseUIModel<MovieListUIModel>> {
@@ -69,7 +69,7 @@ class MovieListInteractor @Inject constructor(
         }
     }
 
-    private suspend fun getNowPlayingMovies(
+    private fun getNowPlayingMovies(
         page: Int,
         currentModel: MovieListUIModel
     ): Flow<BaseUIModel<MovieListUIModel>> {
@@ -99,7 +99,7 @@ class MovieListInteractor @Inject constructor(
         }
     }
 
-    private suspend fun getTopRatedMovies(
+    private fun getTopRatedMovies(
         page: Int,
         currentModel: MovieListUIModel
     ): Flow<BaseUIModel<MovieListUIModel>> {
@@ -129,7 +129,7 @@ class MovieListInteractor @Inject constructor(
         }
     }
 
-    private suspend fun getPopularMovies(
+    private fun getPopularMovies(
         page: Int,
         currentModel: MovieListUIModel
     ): Flow<BaseUIModel<MovieListUIModel>> {

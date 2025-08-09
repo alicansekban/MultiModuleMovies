@@ -1,10 +1,8 @@
 package com.alican.domain.models
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 data class MovieListUIModel(
-    val movies: ImmutableList<MovieUIModel> = persistentListOf(),
+    val movies: List<MovieUIModel> = emptyList(),
     val page: Int = 1,
     val totalPages: Int = 1,
     val totalResults: Int = 0,

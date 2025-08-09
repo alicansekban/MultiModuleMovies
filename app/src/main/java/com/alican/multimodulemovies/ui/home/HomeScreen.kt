@@ -20,11 +20,9 @@ import com.alican.multimodulemovies.components.widget.CustomWidget
 import com.alican.multimodulemovies.components.widget.MovieWidgetComponentModel
 import com.alican.multimodulemovies.components.widget.toWidgetModel
 import com.alican.multimodulemovies.utils.heightPercent
-import kotlinx.collections.immutable.adapters.ImmutableListAdapter
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel(),
     openListScreen: (type: MovieType) -> Unit,
     openMovieDetailScreen: (id: Int) -> Unit
@@ -52,25 +50,27 @@ fun HomeScreen(
                 val widgetMovies = movies.map { it.toWidgetModel() }
                 val widgetModel = MovieWidgetComponentModel(
                     title = "Upcoming",
-                    items = ImmutableListAdapter(widgetMovies)
+                    items = widgetMovies
                 )
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
                     CustomPager(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightPercent(0.7f, configuration),
                         images = movies.map { it.imageUrl ?: "" },
                         onClick = {
-                          val movie = movies[it]
+                            val movie = movies[it]
                             movie.id?.let { it1 -> openMovieDetailScreen.invoke(it1) }
                         }
                     )
                 }
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.UPCOMING)
-                },openMovieDetailScreen = openMovieDetailScreen)
+                }, openMovieDetailScreen = openMovieDetailScreen)
             }
         }
 
@@ -83,11 +83,11 @@ fun HomeScreen(
                     (nowPlayingMovies as BaseUIModel.Success).data.map { it.toWidgetModel() }
                 val widgetModel = MovieWidgetComponentModel(
                     title = "Now Playing",
-                    items = ImmutableListAdapter(movies)
+                    items = movies
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.NOW_PLAYING)
-                },openMovieDetailScreen = openMovieDetailScreen)
+                }, openMovieDetailScreen = openMovieDetailScreen)
             }
         }
 
@@ -100,7 +100,7 @@ fun HomeScreen(
                     (topRatedMovies as BaseUIModel.Success).data.map { it.toWidgetModel() }
                 val widgetModel = MovieWidgetComponentModel(
                     title = "Top Rated",
-                    items = ImmutableListAdapter(movies)
+                    items = movies
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.TOP_RATED)
@@ -117,11 +117,11 @@ fun HomeScreen(
                     (popularMovies as BaseUIModel.Success).data.map { it.toWidgetModel() }
                 val widgetModel = MovieWidgetComponentModel(
                     title = "Popular",
-                    items = ImmutableListAdapter(movies)
+                    items = movies
                 )
                 CustomWidget(model = widgetModel, openListScreen = {
                     openListScreen.invoke(MovieType.POPULAR)
-                },openMovieDetailScreen = openMovieDetailScreen)
+                }, openMovieDetailScreen = openMovieDetailScreen)
             }
         }
     }

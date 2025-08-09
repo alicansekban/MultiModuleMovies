@@ -13,7 +13,7 @@ class HomeInteractor @Inject constructor(
     private val moviesRepository: MoviesRepository
 ) {
 
-    suspend fun getUpComingMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+    fun getUpComingMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getUpComingMovies(page)) {
@@ -36,7 +36,7 @@ class HomeInteractor @Inject constructor(
         }
     }
 
-    suspend fun getNowPlayingMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+    fun getNowPlayingMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getNowPlayingMovies(page)) {
@@ -82,7 +82,7 @@ class HomeInteractor @Inject constructor(
         }
     }
 
-    suspend fun getTopRatedMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+    fun getTopRatedMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getTopRatedMovies(page)) {
