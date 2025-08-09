@@ -36,6 +36,11 @@ android {
             name = "ROOM_DB_NAME",
             value = "\"movies_db\""
         )
+        buildConfigField(
+            type = "String",
+            name = "CERTIFICATE_PIN",
+            value = "\"sha256/7fbf0d5407ac62d759f4e1926caed5b46424488572921dc39ddbae2c824732ee\""
+        )
     }
 
     buildTypes {
@@ -75,6 +80,7 @@ dependencies {
     // networking
     implementation(libs.ktor.client.core)
     implementation (libs.ktor.client.android)
+    implementation(libs.ktor.client.okhttp)
     implementation (libs.ktor.client.logging)
     implementation (libs.ktor.client.content.negotiation)
     implementation (libs.ktor.serialization.kotlinx.json)

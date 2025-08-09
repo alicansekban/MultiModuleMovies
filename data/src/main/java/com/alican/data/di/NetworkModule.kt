@@ -1,8 +1,8 @@
 package com.alican.data.di
 
-
 import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.room.Room
 import com.alican.data.BuildConfig
 import com.alican.data.data.local.AppDatabase
@@ -14,7 +14,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -23,16 +24,17 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import okhttp3.CertificatePinner
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-
     @Provides
     @Singleton
-    fun provideHttpClient(): HttpClient = HttpClient(Android) {
+    fun provideHttpClient(): HttpClient = HttpClient(OkHttp) {
+        // Ktor plugin'leriniz aynı kalabilir
         defaultRequest {
             url(BuildConfig.BASE_URL)
             header("Authorization", "Bearer ${BuildConfig.API_TOKEN}")
@@ -49,17 +51,26 @@ object AppModule {
         install(Logging) {
             logger = object : Logger {
                 override fun log(message: String) {
-                    Log.d("HTTP RESPONSE", message) // Mesajı doğrudan loglayın
+                    Log.d("HTTP RESPONSE", message)
                 }
             }
-            level = LogLevel.BODY // Tüm HTTP isteği ve yanıt gövdesi loglanır
+            level = LogLevel.BODY
         }
 
         engine {
-            connectTimeout = 30_000
-            socketTimeout = 30_000
+            config {
+                if (!BuildConfig.DEBUG) {
+                    getCertificatePinner()
+                }
+            }
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30_000
+            connectTimeoutMillis = 30_000
+            socketTimeoutMillis = 30_000
         }
     }
+
 
     @Provides
     @Singleton
@@ -72,4 +83,11 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApiService(client: HttpClient): ApiService = ApiServiceImpl(client)
+}
+
+private fun getCertificatePinner(): CertificatePinner {
+    val host = BuildConfig.BASE_URL.toUri().host ?: BuildConfig.BASE_URL.replace("https://", "")
+    return CertificatePinner.Builder()
+        .add(host, BuildConfig.CERTIFICATE_PIN)
+        .build()
 }
