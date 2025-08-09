@@ -1,89 +1,97 @@
 package com.alican.data.data.remote
 
-import com.alican.data.BuildConfig
 import com.alican.data.data.response.BaseMoviesResponse
 import com.alican.data.data.response.MovieCreditResponse
 import com.alican.data.data.response.MovieDetailResponse
 import com.alican.data.data.response.MovieImagesResponse
 import com.alican.data.data.response.MovieReviewResponse
-import com.alican.data.utils.Constants
 import com.alican.data.utils.ResultWrapper
-import com.alican.data.utils.safeApiCall
+import com.alican.data.utils.safeCall
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.http.appendPathSegments
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class ApiService @Inject constructor(
     private val client: HttpClient
 ) {
 
-    suspend fun getUpComingMovies(page: Int) : ResultWrapper<BaseMoviesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get("${Constants.UP_COMING_ENDPOINT}$page").body()
-        }
-    suspend fun getPopularMovies(page: Int) : ResultWrapper<BaseMoviesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get("${Constants.POPULAR_ENDPOINT}$page").body()
-        }
-    suspend fun getTopRatedMovies(page: Int) : ResultWrapper<BaseMoviesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get("${Constants.TOP_RATED_ENDPOINT}$page").body()
-        }
-    suspend fun getNowPlayingMovies(page: Int) : ResultWrapper<BaseMoviesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get("${Constants.NOW_PLAYING_ENDPOINT}$page").body()
-        }
-    suspend fun searchMovie(page: Int, query: String) : ResultWrapper<BaseMoviesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get(urlString = BuildConfig.BASE_URL) {
-                url {
-                    // Path param -> ..
-                    appendPathSegments("search", "movie")
-                    // Query param -> ..?page=page
-                    parameters.append("page", page.toString())
-                    parameters.append("query", query)
-                }
+    // Already migrated example (shown for consistency)
+    suspend fun getUpComingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", "upcoming")
+                parameters.append("page", page.toString())
             }
-            client.get("${Constants.SEARCH_MOVIE_ENDPOINT}?page=$page&query=$query}").body()
         }
 
-    suspend fun getMovieDetail(id: Int) : ResultWrapper<MovieDetailResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get("movie/$id").body()
+    suspend fun getPopularMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", "popular")
+                parameters.append("page", page.toString())
+            }
         }
 
-    suspend fun getMovieReviews(id: Int, page: Int) : ResultWrapper<MovieReviewResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get(urlString = BuildConfig.BASE_URL) {
-                url {
-                    // Path param -> ..
-                    appendPathSegments("movie", id.toString(), "reviews")
-
-                    // Query param -> ..?page=page
-                    parameters.append("page", page.toString())
-                }
-            }.body()
+    suspend fun getTopRatedMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", "top_rated")
+                parameters.append("page", page.toString())
+            }
         }
 
-    suspend fun getMovieCredits(id: Int) : ResultWrapper<MovieCreditResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get(urlString = BuildConfig.BASE_URL) {
-                url {
-                    appendPathSegments("movie", id.toString(), "credits")
-                }
-            }.body()
+    suspend fun getNowPlayingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", "now_playing")
+                parameters.append("page", page.toString())
+            }
         }
 
-    suspend fun getMovieImages(id: Int) : ResultWrapper<MovieImagesResponse> =
-        safeApiCall(Dispatchers.IO) {
-            client.get(urlString = BuildConfig.BASE_URL) {
-                url {
-                    appendPathSegments("movie", id.toString(), "images")
-                }
-            }.body()
+    suspend fun getMovieDetail(movieId: Int): ResultWrapper<MovieDetailResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", movieId.toString())
+            }
         }
 
+    suspend fun getMovieCredits(movieId: Int): ResultWrapper<MovieCreditResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", movieId.toString(), "credits")
+            }
+        }
+
+    suspend fun getMovieReviews(
+        movieId: Int,
+        page: Int
+    ): ResultWrapper<MovieReviewResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("movie", movieId.toString(), "reviews")
+                parameters.append("page", page.toString())
+            }
+        }
+
+    suspend fun searchMovies(
+        query: String,
+        page: Int
+    ): ResultWrapper<BaseMoviesResponse> =
+        safeCall(client) {
+            url {
+                appendPathSegments("search", "movie")
+                parameters.append("query", query)
+                parameters.append("page", page.toString())
+                // parameters.append("include_adult", "false") // uncomment if needed
+            }
+        }
+
+    suspend fun getMovieImages(id: Int): ResultWrapper<MovieImagesResponse> =
+        safeCall<MovieImagesResponse>(client) {
+            url {
+                appendPathSegments("movie", id.toString(), "images")
+            }
+        }
+
+    // Add more endpoints following the same pattern as needed.
 }
