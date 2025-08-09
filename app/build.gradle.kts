@@ -79,7 +79,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
 
-    implementation(libs.kotlinx.collections.immutable)
 
     // Coil ImageLoader
     implementation(libs.coil.compose)
