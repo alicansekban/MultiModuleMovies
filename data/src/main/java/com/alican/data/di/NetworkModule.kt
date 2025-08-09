@@ -34,7 +34,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideHttpClient(): HttpClient = HttpClient(OkHttp) {
-        // Ktor plugin'leriniz aynı kalabilir
         defaultRequest {
             url(BuildConfig.BASE_URL)
             header("Authorization", "Bearer ${BuildConfig.API_TOKEN}")
