@@ -11,12 +11,24 @@ import io.ktor.client.HttpClient
 import io.ktor.http.appendPathSegments
 import javax.inject.Inject
 
-class ApiService @Inject constructor(
+interface ApiService {
+    suspend fun getUpComingMovies(page: Int): ResultWrapper<BaseMoviesResponse>
+    suspend fun getPopularMovies(page: Int): ResultWrapper<BaseMoviesResponse>
+    suspend fun getTopRatedMovies(page: Int): ResultWrapper<BaseMoviesResponse>
+    suspend fun getNowPlayingMovies(page: Int): ResultWrapper<BaseMoviesResponse>
+    suspend fun getMovieDetail(movieId: Int): ResultWrapper<MovieDetailResponse>
+    suspend fun getMovieCredits(movieId: Int): ResultWrapper<MovieCreditResponse>
+    suspend fun getMovieReviews(movieId: Int, page: Int): ResultWrapper<MovieReviewResponse>
+    suspend fun searchMovies(query: String, page: Int): ResultWrapper<BaseMoviesResponse>
+    suspend fun getMovieImages(id: Int): ResultWrapper<MovieImagesResponse>
+}
+
+class ApiServiceImpl @Inject constructor(
     private val client: HttpClient
-) {
+) : ApiService {
 
     // Already migrated example (shown for consistency)
-    suspend fun getUpComingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+    override suspend fun getUpComingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", "upcoming")
@@ -24,7 +36,7 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun getPopularMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+    override suspend fun getPopularMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", "popular")
@@ -32,7 +44,7 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun getTopRatedMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+    override suspend fun getTopRatedMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", "top_rated")
@@ -40,7 +52,7 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun getNowPlayingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
+    override suspend fun getNowPlayingMovies(page: Int): ResultWrapper<BaseMoviesResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", "now_playing")
@@ -48,21 +60,21 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun getMovieDetail(movieId: Int): ResultWrapper<MovieDetailResponse> =
+    override suspend fun getMovieDetail(movieId: Int): ResultWrapper<MovieDetailResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", movieId.toString())
             }
         }
 
-    suspend fun getMovieCredits(movieId: Int): ResultWrapper<MovieCreditResponse> =
+    override suspend fun getMovieCredits(movieId: Int): ResultWrapper<MovieCreditResponse> =
         safeCall(client) {
             url {
                 appendPathSegments("movie", movieId.toString(), "credits")
             }
         }
 
-    suspend fun getMovieReviews(
+    override suspend fun getMovieReviews(
         movieId: Int,
         page: Int
     ): ResultWrapper<MovieReviewResponse> =
@@ -73,7 +85,7 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun searchMovies(
+    override suspend fun searchMovies(
         query: String,
         page: Int
     ): ResultWrapper<BaseMoviesResponse> =
@@ -86,12 +98,10 @@ class ApiService @Inject constructor(
             }
         }
 
-    suspend fun getMovieImages(id: Int): ResultWrapper<MovieImagesResponse> =
+    override suspend fun getMovieImages(id: Int): ResultWrapper<MovieImagesResponse> =
         safeCall<MovieImagesResponse>(client) {
             url {
                 appendPathSegments("movie", id.toString(), "images")
             }
         }
-
-    // Add more endpoints following the same pattern as needed.
 }
