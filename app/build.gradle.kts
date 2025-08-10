@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
     alias(libs.plugins.compose)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -102,6 +103,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.androidx.navigation.compose)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
 
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "107930009814",
+    "project_id": "movies-d12be",
+    "storage_bucket": "movies-d12be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107930009814:android:14cee7a0862ef8d558c977",
+        "android_client_info": {
+          "package_name": "com.alican.multimodulemovies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3fxa4hEwDXaaPa2jXMa0uHY0nJpQ0-Aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.alican.multimodulemovies" />
+                  <option name="mobileSdkAppId" value="1:107930009814:android:14cee7a0862ef8d558c977" />
+                  <option name="projectId" value="movies-d12be" />
+                  <option name="projectNumber" value="107930009814" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
