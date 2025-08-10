@@ -54,13 +54,8 @@ class ThemeManager @Inject constructor(
      * Observe theme changes
      */
     fun observeTheme(): Flow<Boolean> = flow {
-        var lastValue: Boolean? = null
         while (true) {
-            val currentValue = appDataStore.isDarkMode()
-            if (currentValue != lastValue && currentValue != null) {
-                emit(currentValue)
-                lastValue = currentValue
-            }
+            emit(isDarkMode() ?: false)
             kotlinx.coroutines.delay(500)
         }
     }
