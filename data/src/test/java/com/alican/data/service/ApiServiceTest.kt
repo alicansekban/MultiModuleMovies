@@ -44,10 +44,10 @@ class ApiServiceTest {
         val result = fakeApiService.getUpComingMovies(1)
 
         // Then
-        assertTrue(result is ResultWrapper.GenericError)
-        val errorResult = result as ResultWrapper.GenericError
+        assertTrue(result is ResultWrapper.Error)
+        val errorResult = result as ResultWrapper.Error
         assertEquals(404, errorResult.code)
-        assertEquals("Not found", errorResult.error)
+        assertEquals("Not found", errorResult.message)
     }
 
     @Test
@@ -113,7 +113,7 @@ class ApiServiceTest {
         val result = fakeApiService.getMovieDetail(123)
 
         // Then
-        assertTrue(result is ResultWrapper.GenericError)
+        assertTrue(result is ResultWrapper.Error)
     }
 
     @Test
@@ -233,10 +233,10 @@ class ApiServiceTest {
             upcomingResult, popularResult, topRatedResult, nowPlayingResult,
             detailResult, creditsResult, reviewsResult, searchResult, imagesResult
         ).forEach { result ->
-            assertTrue(result is ResultWrapper.GenericError)
-            val errorResult = result as ResultWrapper.GenericError
+            assertTrue(result is ResultWrapper.Error)
+            val errorResult = result as ResultWrapper.Error
             assertEquals(500, errorResult.code)
-            assertEquals("Internal Server Error", errorResult.error)
+            assertEquals("Internal Server Error", errorResult.message)
         }
     }
 }

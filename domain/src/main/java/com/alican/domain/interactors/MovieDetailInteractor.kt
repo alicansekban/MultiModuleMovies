@@ -21,16 +21,12 @@ class MovieDetailInteractor @Inject constructor(
             emit(BaseUIModel.Loading)
             emit(
                 when (val response = repository.getMovieDetails(id)) {
-                    is ResultWrapper.GenericError -> {
-                        BaseUIModel.Error(response.error ?: "Error")
+                    is ResultWrapper.Error -> {
+                        BaseUIModel.Error(response.message ?: "Error")
                     }
 
                     ResultWrapper.Loading -> {
                         BaseUIModel.Loading
-                    }
-
-                    ResultWrapper.NetworkError -> {
-                        BaseUIModel.Error("Network Error")
                     }
 
                     is ResultWrapper.Success -> {
@@ -47,16 +43,12 @@ class MovieDetailInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = repository.getMovieImages(id)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
 
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
 
                 is ResultWrapper.Success -> {
@@ -75,16 +67,12 @@ class MovieDetailInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = repository.getMovieCredits(id)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
 
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
 
                 is ResultWrapper.Success -> {
@@ -100,16 +88,12 @@ class MovieDetailInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = repository.getMovieReviews(id, page)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
 
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
 
                 is ResultWrapper.Success -> {

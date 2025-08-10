@@ -17,14 +17,11 @@ class HomeInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getUpComingMovies(page)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
                 is ResultWrapper.Success -> {
                     val uiModel = response.value.results?.map {
@@ -40,14 +37,11 @@ class HomeInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getNowPlayingMovies(page)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
                 is ResultWrapper.Success -> {
                     val uiModel = response.value.results?.map {
@@ -59,18 +53,15 @@ class HomeInteractor @Inject constructor(
         }
     }
 
-    suspend fun getPopularMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
+    fun getPopularMovies(page: Int): Flow<BaseUIModel<List<MovieUIModel>>> {
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getPopularMovies(page)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
                 is ResultWrapper.Success -> {
                     val uiModel = response.value.results?.map {
@@ -86,14 +77,11 @@ class HomeInteractor @Inject constructor(
         return flow {
             emit(BaseUIModel.Loading)
             emit(when (val response = moviesRepository.getTopRatedMovies(page)) {
-                is ResultWrapper.GenericError -> {
-                    BaseUIModel.Error(response.error ?: "Error")
+                is ResultWrapper.Error -> {
+                    BaseUIModel.Error(response.message ?: "Error")
                 }
                 ResultWrapper.Loading -> {
                     BaseUIModel.Loading
-                }
-                ResultWrapper.NetworkError -> {
-                    BaseUIModel.Error("Network Error")
                 }
                 is ResultWrapper.Success -> {
                     val uiModel = response.value.results?.map {

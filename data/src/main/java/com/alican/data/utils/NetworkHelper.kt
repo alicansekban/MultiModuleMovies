@@ -2,14 +2,12 @@ package com.alican.data.utils
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.io.IOException
 
 @Deprecated(
     message = "Use safeCall(HttpClient, HttpRequestBuilder) instead.",
@@ -23,10 +21,7 @@ suspend fun <T> safeApiCall(
         try {
             ResultWrapper.Success(apiCall.invoke())
         } catch (throwable: Throwable) {
-            when (throwable) {
-                is IOException -> ResultWrapper.NetworkError
-                else -> ResultWrapper.GenericError()
-            }
+            ResultWrapper.Error(message = throwable.message)
         }
     }
 }
@@ -43,14 +38,9 @@ suspend inline fun <reified T> safeCall(
             val responseData: T = response.body()
             ResultWrapper.Success(responseData)
         } else {
-            ResultWrapper.GenericError(response.status.value)
+            ResultWrapper.Error(response.status.description)
         }
     } catch (throwable: Throwable) {
-        when (throwable) {
-            is ConnectTimeoutException,
-            is IOException -> ResultWrapper.NetworkError
-
-            else -> ResultWrapper.GenericError()
-        }
+        ResultWrapper.Error(message = throwable.message)
     }
 }

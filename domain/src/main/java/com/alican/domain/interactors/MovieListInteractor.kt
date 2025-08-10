@@ -48,16 +48,12 @@ class MovieListInteractor @Inject constructor(
             emit(BaseUIModel.Loading)
             emit(
                 when (val response = repository.getUpComingMovies(page)) {
-                    is ResultWrapper.GenericError -> {
-                        BaseUIModel.Error(response.error ?: "Error")
+                    is ResultWrapper.Error -> {
+                        BaseUIModel.Error(response.message ?: "Error")
                     }
 
                     ResultWrapper.Loading -> {
                         BaseUIModel.Loading
-                    }
-
-                    ResultWrapper.NetworkError -> {
-                        BaseUIModel.Error("Network Error")
                     }
 
                     is ResultWrapper.Success -> {
@@ -78,16 +74,12 @@ class MovieListInteractor @Inject constructor(
             emit(BaseUIModel.Loading)
             emit(
                 when (val response = repository.getNowPlayingMovies(page)) {
-                    is ResultWrapper.GenericError -> {
-                        BaseUIModel.Error(response.error ?: "Error")
+                    is ResultWrapper.Error -> {
+                        BaseUIModel.Error(response.message ?: "Error")
                     }
 
                     ResultWrapper.Loading -> {
                         BaseUIModel.Loading
-                    }
-
-                    ResultWrapper.NetworkError -> {
-                        BaseUIModel.Error("Network Error")
                     }
 
                     is ResultWrapper.Success -> {
@@ -108,16 +100,12 @@ class MovieListInteractor @Inject constructor(
             emit(BaseUIModel.Loading)
             emit(
                 when (val response = repository.getTopRatedMovies(page)) {
-                    is ResultWrapper.GenericError -> {
-                        BaseUIModel.Error(response.error ?: "Error")
+                    is ResultWrapper.Error -> {
+                        BaseUIModel.Error(response.message ?: "Error")
                     }
 
                     ResultWrapper.Loading -> {
                         BaseUIModel.Loading
-                    }
-
-                    ResultWrapper.NetworkError -> {
-                        BaseUIModel.Error("Network Error")
                     }
 
                     is ResultWrapper.Success -> {
@@ -138,16 +126,12 @@ class MovieListInteractor @Inject constructor(
             emit(BaseUIModel.Loading)
             emit(
                 when (val response = repository.getPopularMovies(page)) {
-                    is ResultWrapper.GenericError -> {
-                        BaseUIModel.Error(response.error ?: "Error")
+                    is ResultWrapper.Error -> {
+                        BaseUIModel.Error(response.message ?: "Error")
                     }
 
                     ResultWrapper.Loading -> {
                         BaseUIModel.Loading
-                    }
-
-                    ResultWrapper.NetworkError -> {
-                        BaseUIModel.Error("Network Error")
                     }
 
                     is ResultWrapper.Success -> {

@@ -8,6 +8,7 @@ import com.alican.data.BuildConfig
 import com.alican.data.data.local.AppDatabase
 import com.alican.data.data.remote.ApiService
 import com.alican.data.data.remote.ApiServiceImpl
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -82,6 +83,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApiService(client: HttpClient): ApiService = ApiServiceImpl(client)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 }
 
 private fun getCertificatePinner(): CertificatePinner {
