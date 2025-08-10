@@ -9,12 +9,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.alican.multimodulemovies.components.nav_graphs.homeGraph
 import com.alican.multimodulemovies.components.nav_graphs.favoritesGraph
+import com.alican.multimodulemovies.components.nav_graphs.homeGraph
 import com.alican.multimodulemovies.components.nav_graphs.searchGraph
 import com.alican.multimodulemovies.ui.detail.MovieDetailScreen
-import com.alican.multimodulemovies.utils.HomeHost
-import com.alican.multimodulemovies.utils.MovieDetailRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 
 @Composable
 fun MainNavigation(
@@ -24,7 +23,7 @@ fun MainNavigation(
     val context = LocalContext.current
     NavHost(
         navController = navController,
-        startDestination = HomeHost,
+        startDestination = ScreenRoute.HomeHost,
         modifier = modifier,
         enterTransition = {
             slideIntoContainer(
@@ -56,7 +55,7 @@ fun MainNavigation(
         searchGraph(navController = navController)
         favoritesGraph(navController = navController)
 
-        composable<MovieDetailRoute>{
+        composable<ScreenRoute.MovieDetailRoute> {
             MovieDetailScreen()
         }
     }

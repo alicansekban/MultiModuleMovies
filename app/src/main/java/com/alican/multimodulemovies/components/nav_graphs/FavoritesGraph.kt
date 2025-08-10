@@ -5,16 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.alican.multimodulemovies.ui.favorites.FavoritesScreen
-import com.alican.multimodulemovies.ui.home.HomeScreen
-import com.alican.multimodulemovies.utils.FavoritesHost
-import com.alican.multimodulemovies.utils.FavoritesScreenRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 
 fun NavGraphBuilder.favoritesGraph(navController: NavController) {
 
-    navigation<FavoritesHost>(
-        startDestination = FavoritesScreenRoute,
+    navigation<ScreenRoute.FavoritesHost>(
+        startDestination = ScreenRoute.FavoritesScreenRoute,
     ) {
-        composable<FavoritesScreenRoute> {
+        composable<ScreenRoute.FavoritesScreenRoute> {
             FavoritesScreen()
         }
 

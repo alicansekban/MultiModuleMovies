@@ -4,19 +4,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.alican.multimodulemovies.ui.home.HomeScreen
 import com.alican.multimodulemovies.ui.search.SearchScreen
-import com.alican.multimodulemovies.utils.HomeHost
-import com.alican.multimodulemovies.utils.HomeScreenRoute
-import com.alican.multimodulemovies.utils.SearchHost
-import com.alican.multimodulemovies.utils.SearchScreenRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 
 fun NavGraphBuilder.searchGraph(navController: NavController) {
 
-    navigation<SearchHost>(
-        startDestination = SearchScreenRoute,
+    navigation<ScreenRoute.SearchHost>(
+        startDestination = ScreenRoute.SearchScreenRoute,
     ) {
-        composable<SearchScreenRoute> {
+        composable<ScreenRoute.SearchScreenRoute> {
             SearchScreen()
         }
 

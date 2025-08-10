@@ -9,7 +9,7 @@ import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieCreditsUIModel
 import com.alican.domain.models.MovieDetailUIModel
 import com.alican.domain.models.MovieReviewsUIModel
-import com.alican.multimodulemovies.utils.MovieDetailRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +24,7 @@ class MovieDetailViewModel @Inject constructor(
     private val interactor: MovieDetailInteractor
 ) : ViewModel() {
 
-    private val id = savedStateHandle.toRoute<MovieDetailRoute>().movieId
+    private val id = savedStateHandle.toRoute<ScreenRoute.MovieDetailRoute>().movieId
 
     private val _movieDetail =
         MutableStateFlow<BaseUIModel<MovieDetailUIModel>>(BaseUIModel.Empty)

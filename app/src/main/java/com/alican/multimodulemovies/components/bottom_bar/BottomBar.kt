@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Man
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -26,9 +26,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.theme.Orange
-import com.alican.multimodulemovies.utils.HomeHost
-import com.alican.multimodulemovies.utils.FavoritesHost
-import com.alican.multimodulemovies.utils.SearchHost
+import com.alican.multimodulemovies.utils.ScreenRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -43,18 +41,23 @@ fun BottomBar(
     val items = listOf(
         BottomBarRoute(
             name = "Home",
-            route = HomeHost,
+            route = ScreenRoute.HomeHost,
             icon = Icons.Filled.Home
         ),
         BottomBarRoute(
             name = "Search",
-            route = SearchHost,
+            route = ScreenRoute.SearchHost,
             icon = Icons.Filled.Search
         ),
         BottomBarRoute(
             name = "Saved",
-            route = FavoritesHost,
+            route = ScreenRoute.FavoritesHost,
             icon = Icons.Filled.Bookmark
+        ),
+        BottomBarRoute(
+            name = "Profile",
+            route = ScreenRoute.ProfileHost,
+            icon = Icons.Filled.Man,
         )
     )
 

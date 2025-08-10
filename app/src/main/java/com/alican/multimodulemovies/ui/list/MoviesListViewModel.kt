@@ -8,7 +8,7 @@ import com.alican.domain.interactors.MovieListInteractor
 import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieType
-import com.alican.multimodulemovies.utils.MoviesListRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,7 +23,7 @@ class MoviesListViewModel @Inject constructor(
     private val interactor: MovieListInteractor
 ) : ViewModel() {
 
-    private val type = savedStateHandle.toRoute<MoviesListRoute>()
+    private val type = savedStateHandle.toRoute<ScreenRoute.MoviesListRoute>()
 
     private val _movies =
         MutableStateFlow(MovieListUIStateModel())

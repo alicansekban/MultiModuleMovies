@@ -6,20 +6,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.alican.multimodulemovies.ui.home.HomeScreen
 import com.alican.multimodulemovies.ui.list.MoviesListScreen
-import com.alican.multimodulemovies.utils.HomeHost
-import com.alican.multimodulemovies.utils.HomeScreenRoute
-import com.alican.multimodulemovies.utils.MovieDetailRoute
-import com.alican.multimodulemovies.utils.MoviesListRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 
 fun NavGraphBuilder.homeGraph(navController: NavController) {
 
-    navigation<HomeHost>(
-        startDestination = HomeScreenRoute,
+    navigation<ScreenRoute.HomeHost>(
+        startDestination = ScreenRoute.HomeScreenRoute,
     ) {
-        composable<HomeScreenRoute> {
+        composable<ScreenRoute.HomeScreenRoute> {
             HomeScreen(
                 openListScreen = {
-                    val route = MoviesListRoute(
+                    val route = ScreenRoute.MoviesListRoute(
                         movieType = it
                     )
                     navController.navigate(
@@ -27,8 +24,8 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
                     )
                 },
                 openMovieDetailScreen = {
-                    val route = MovieDetailRoute(
-                        movieId = it
+                    val route = ScreenRoute.MovieDetailRoute(
+                        movieId = it,
                     )
                     navController.navigate(
                         route = route
@@ -37,7 +34,7 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
             )
         }
 
-        composable<MoviesListRoute> {
+        composable<ScreenRoute.MoviesListRoute> {
             MoviesListScreen()
         }
     }

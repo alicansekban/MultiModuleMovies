@@ -28,9 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.alican.multimodulemovies.components.bottom_bar.BottomBar
 import com.alican.multimodulemovies.components.navigation.MainNavigation
 import com.alican.multimodulemovies.theme.MultiModuleMoviesTheme
-import com.alican.multimodulemovies.utils.FavoritesScreenRoute
-import com.alican.multimodulemovies.utils.HomeScreenRoute
-import com.alican.multimodulemovies.utils.SearchScreenRoute
+import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,9 +44,9 @@ class MainActivity : ComponentActivity() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val showBottomBar by remember {
                 derivedStateOf {
-                    navBackStackEntry?.destination?.hasRoute<HomeScreenRoute>() == true ||
-                    navBackStackEntry?.destination?.hasRoute<SearchScreenRoute>() == true ||
-                    navBackStackEntry?.destination?.hasRoute<FavoritesScreenRoute>() == true
+                    navBackStackEntry?.destination?.hasRoute<ScreenRoute.HomeScreenRoute>() == true ||
+                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.SearchScreenRoute>() == true ||
+                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.FavoritesScreenRoute>() == true
                 }
             }
             if (uiState.showThemeDialog) {

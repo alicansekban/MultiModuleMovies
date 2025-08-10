@@ -4,30 +4,39 @@ import com.alican.domain.models.MovieType
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeScreenRoute
+sealed class ScreenRoute {
+    @Serializable
+    data object SplashScreen : ScreenRoute()
 
-@Serializable
-object SearchScreenRoute
+    @Serializable
+    data object HomeHost : ScreenRoute()
 
-@Serializable
-object FavoritesScreenRoute
+    @Serializable
+    data object SearchHost : ScreenRoute()
 
+    @Serializable
+    data object FavoritesHost : ScreenRoute()
 
-@Serializable
-object HomeHost
+    @Serializable
+    data object ProfileHost : ScreenRoute()
 
-@Serializable
-object SearchHost
+    @Serializable
+    data object HomeScreenRoute : ScreenRoute()
 
-@Serializable
-object FavoritesHost
+    @Serializable
+    data object SearchScreenRoute : ScreenRoute()
 
-@Serializable
-data class MoviesListRoute(
-    val movieType: MovieType = MovieType.UPCOMING
-)
+    @Serializable
+    data object FavoritesScreenRoute : ScreenRoute()
 
-@Serializable
-data class MovieDetailRoute(
-    val movieId: Int
-)
+    @Serializable
+    data class MoviesListRoute(
+        val movieType: MovieType = MovieType.UPCOMING
+    ) : ScreenRoute()
+
+    @Serializable
+    data class MovieDetailRoute(
+        val movieId: Int
+    ) : ScreenRoute()
+
+}
