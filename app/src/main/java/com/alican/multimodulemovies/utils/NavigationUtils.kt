@@ -39,4 +39,7 @@ sealed class ScreenRoute {
         val movieId: Int
     ) : ScreenRoute()
 
+    @Serializable
+    data object ProfileScreenRoute : ScreenRoute()
+
 }

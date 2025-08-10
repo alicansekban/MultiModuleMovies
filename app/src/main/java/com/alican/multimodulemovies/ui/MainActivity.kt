@@ -46,7 +46,8 @@ class MainActivity : ComponentActivity() {
                 derivedStateOf {
                     navBackStackEntry?.destination?.hasRoute<ScreenRoute.HomeScreenRoute>() == true ||
                             navBackStackEntry?.destination?.hasRoute<ScreenRoute.SearchScreenRoute>() == true ||
-                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.FavoritesScreenRoute>() == true
+                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.FavoritesScreenRoute>() == true ||
+                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.ProfileScreenRoute>() == true
                 }
             }
             if (uiState.showThemeDialog) {
