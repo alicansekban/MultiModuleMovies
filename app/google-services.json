@@ -12,7 +12,20 @@
           "package_name": "com.alican.multimodulemovies"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "107930009814-co1qdf4bgrdv3q99d5qv5ud1ie3kp09r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alican.multimodulemovies",
+            "certificate_hash": "2402f524b307e8d381224070eb043012c2711415"
+          }
+        },
+        {
+          "client_id": "107930009814-sn09d1p9fv3d5rp1jhnc9l71cb57umqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA3fxa4hEwDXaaPa2jXMa0uHY0nJpQ0-Aw"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "107930009814-sn09d1p9fv3d5rp1jhnc9l71cb57umqa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

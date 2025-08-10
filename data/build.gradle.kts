@@ -91,4 +91,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    // auth
+    implementation(libs.google.auth)
+    // implementation(libs.firebase.auth)
 }

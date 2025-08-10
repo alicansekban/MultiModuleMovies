@@ -33,6 +33,8 @@ roomKtx = "2.7.2"
 runtimeAndroid = "1.8.3"
 googleServices = "4.4.3"
 firebaseBom = "34.1.0"
+firebaseCrashlyticsPlugin = "3.0.5"
+googleAuth = "21.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -102,6 +104,10 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 #firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase_auth = { module = "com.google.firebase:firebase-auth" }
+google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
 
 
 
@@ -114,4 +120,5 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
