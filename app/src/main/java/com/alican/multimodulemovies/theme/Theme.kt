@@ -12,6 +12,7 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun MultiModuleMoviesTheme(
+    isDarkMode: Boolean = false,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

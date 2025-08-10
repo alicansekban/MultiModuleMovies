@@ -33,8 +33,9 @@ roomKtx = "2.7.2"
 runtimeAndroid = "1.8.3"
 googleServices = "4.4.3"
 firebaseBom = "34.1.0"
-firebaseCrashlyticsPlugin = "3.0.5"
+firebaseCrashlyticsPlugin = "3.0.6"
 googleAuth = "21.4.0"
+datastore = "1.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -108,6 +109,10 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 firebase_auth = { module = "com.google.firebase:firebase-auth" }
 google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
+
+
+#datastore
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 
 

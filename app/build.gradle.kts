@@ -115,5 +115,8 @@ dependencies {
     //google auth
     implementation(libs.google.auth)
 
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
+
 
 }
