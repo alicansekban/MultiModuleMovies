@@ -110,8 +110,10 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.auth)
+
+    //google auth
     implementation(libs.google.auth)
-    //implementation(libs.firebase.auth)
 
 
 }
