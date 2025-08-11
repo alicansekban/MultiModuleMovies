@@ -1,30 +1,39 @@
 package com.alican.multimodulemovies.theme
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidedValue
+import androidx.compose.runtime.compositionLocalOf
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+internal val LocalAppColorScheme = compositionLocalOf<AppColorScheme> {
+    error("No ColorScheme provided")
+}
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-)
+internal val LocalAppTypography = compositionLocalOf<Typography> {
+    error("No Typography provided")
+}
+
+
+object AppTheme {
+    val colorScheme: AppColorScheme
+        @Composable get() = LocalAppColorScheme.current
+    val typography: Typography
+        @Composable get() = LocalAppTypography.current
+}
 
 @Composable
 fun MultiModuleMoviesTheme(
     isDarkMode: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    MaterialTheme(
-        colorScheme = if (isDarkMode) DarkColorScheme else LightColorScheme,
-        typography = Typography,
+
+    val providedValues = arrayListOf<ProvidedValue<*>>()
+    providedValues += LocalAppColorScheme provides if (isDarkMode) DarkColorScheme else LightColorScheme
+    providedValues += LocalAppTypography provides AppTypography
+
+    CompositionLocalProvider(
+        values = providedValues.toTypedArray(),
         content = content
     )
 }
