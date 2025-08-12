@@ -39,7 +39,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,7 +46,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -64,7 +62,6 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState
 
-    // Show error snackbar if there's an error
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             // Handle error display
@@ -74,7 +71,7 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(AppTheme.colorScheme.primaryBackground)
     ) {
         // Loading indicator
         if (uiState.isLoading) {
@@ -85,45 +82,18 @@ fun ProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    color = AppTheme.colorScheme.primaryButton
                 )
             }
         }
 
         // Error display
         uiState.error?.let { error ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Error,
-                        contentDescription = "Error",
-                        tint = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(onClick = { viewModel.clearError() }) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Clear Error",
-                            tint = MaterialTheme.colorScheme.onErrorContainer
-                        )
-                    }
-                }
-            }
+            ErrorCard(
+                error = error,
+                onDismiss = { viewModel.clearError() }
+            )
         }
 
         // Top Section - User Info
@@ -136,20 +106,16 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Settings Section
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text(
-                    text = "Settings",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                SectionHeader(title = "Settings")
             }
 
             item {
@@ -157,7 +123,8 @@ fun ProfileScreen(
                     icon = if (uiState.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
                     title = "Theme",
                     subtitle = if (uiState.isDarkTheme) "Dark Mode" else "Light Mode",
-                    onClick = { viewModel.toggleTheme() }
+                    onClick = { viewModel.toggleTheme() },
+                    iconTint = AppTheme.colorScheme.accent
                 )
             }
 
@@ -166,7 +133,8 @@ fun ProfileScreen(
                     icon = Icons.Default.Notifications,
                     title = "Notifications",
                     subtitle = "Manage your notification preferences",
-                    onClick = { /* Handle notifications */ }
+                    onClick = { /* Handle notifications */ },
+                    iconTint = AppTheme.colorScheme.warningColor
                 )
             }
 
@@ -175,7 +143,8 @@ fun ProfileScreen(
                     icon = Icons.Default.Help,
                     title = "Help & Support",
                     subtitle = "Get help and contact support",
-                    onClick = { /* Handle help */ }
+                    onClick = { /* Handle help */ },
+                    iconTint = AppTheme.colorScheme.primaryButton
                 )
             }
 
@@ -184,7 +153,8 @@ fun ProfileScreen(
                     icon = Icons.Default.Info,
                     title = "About",
                     subtitle = "App version and information",
-                    onClick = { /* Handle about */ }
+                    onClick = { /* Handle about */ },
+                    iconTint = AppTheme.colorScheme.secondaryText
                 )
             }
 
@@ -193,43 +163,63 @@ fun ProfileScreen(
                     icon = Icons.Default.Security,
                     title = "Privacy Policy",
                     subtitle = "Read our privacy policy",
-                    onClick = { /* Handle privacy policy */ }
+                    onClick = { /* Handle privacy policy */ },
+                    iconTint = AppTheme.colorScheme.successColor
                 )
             }
 
             if (uiState.isUserLoggedIn) {
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    Button(
-                        onClick = { viewModel.logout() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        enabled = !uiState.isLoading
-                    ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                color = MaterialTheme.colorScheme.onError
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Logout,
-                                contentDescription = "Logout"
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Logout",
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
+                    LogoutButton(
+                        isLoading = uiState.isLoading,
+                        onLogout = { viewModel.logout() }
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorCard(
+    error: String,
+    onDismiss: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = "Error",
+                tint = AppTheme.colorScheme.errorColor,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = error,
+                color = AppTheme.colorScheme.primaryText,
+                style = AppTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = onDismiss) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Clear Error",
+                    tint = AppTheme.colorScheme.errorColor,
+                    modifier = Modifier.size(18.dp)
+                )
             }
         }
     }
@@ -246,97 +236,152 @@ private fun UserInfoSection(
 ) {
     Card(
         modifier = modifier.padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = AppTheme.colorScheme.cardBackground
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // User Avatar
+            UserAvatar(
+                userImageUrl = userImageUrl,
+                isLoggedIn = isLoggedIn
+            )
 
-            if (userImageUrl != null) {
-                AsyncImage(
-                    model = userImageUrl,
-                    contentDescription = "User Avatar",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (isLoggedIn) Icons.Default.Person else Icons.Default.PersonOutline,
-                        contentDescription = "User Avatar",
-                        modifier = Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
+            // User Name
             Text(
                 text = "$userName $userSurname",
-                style = MaterialTheme.typography.headlineSmall,
+                style = AppTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = AppTheme.colorScheme.primaryText,
                 textAlign = TextAlign.Center
             )
 
+            // User Email or Status
+            Spacer(modifier = Modifier.height(6.dp))
             if (isLoggedIn && userEmail != null) {
                 Text(
                     text = userEmail,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colorScheme.secondaryText,
+                    textAlign = TextAlign.Center
                 )
             } else {
                 Text(
                     text = "Not signed in",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colorScheme.secondaryText,
+                    textAlign = TextAlign.Center
                 )
             }
 
             // User Status Badge
-            Row(
-                modifier = Modifier.padding(top = 8.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (isLoggedIn) Color.Green else Color.Gray
-                        )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = if (isLoggedIn) "Logged In" else "Guest User",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                )
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+            StatusBadge(isLoggedIn = isLoggedIn)
         }
     }
+}
+
+@Composable
+private fun UserAvatar(
+    userImageUrl: String?,
+    isLoggedIn: Boolean
+) {
+    if (userImageUrl != null) {
+        AsyncImage(
+            model = userImageUrl,
+            contentDescription = "User Avatar",
+            modifier = Modifier
+                .size(90.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 3.dp,
+                    color = AppTheme.colorScheme.accent,
+                    shape = CircleShape
+                ),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = Modifier
+                .size(90.dp)
+                .clip(CircleShape)
+                .background(
+                    if (isLoggedIn) AppTheme.colorScheme.primaryButton
+                    else AppTheme.colorScheme.secondaryBackground
+                )
+                .border(
+                    width = 3.dp,
+                    color = AppTheme.colorScheme.accent,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = if (isLoggedIn) Icons.Default.Person else Icons.Default.PersonOutline,
+                contentDescription = "User Avatar",
+                modifier = Modifier.size(45.dp),
+                tint = if (isLoggedIn) AppTheme.colorScheme.primaryBackground
+                else AppTheme.colorScheme.primaryText
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatusBadge(isLoggedIn: Boolean) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (isLoggedIn)
+                AppTheme.colorScheme.successColor.copy(alpha = 0.1f)
+            else
+                AppTheme.colorScheme.statusOffline.copy(alpha = 0.1f)
+        ),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(10.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isLoggedIn) AppTheme.colorScheme.statusOnline
+                        else AppTheme.colorScheme.statusOffline
+                    )
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (isLoggedIn) "Logged In" else "Guest User",
+                style = AppTheme.typography.bodySmall,
+                color = if (isLoggedIn) AppTheme.colorScheme.successColor
+                else AppTheme.colorScheme.statusOffline,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionHeader(title: String) {
+    Text(
+        text = title,
+        style = AppTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        color = AppTheme.colorScheme.primaryText,
+        modifier = Modifier.padding(vertical = 8.dp)
+    )
 }
 
 @Composable
@@ -345,30 +390,40 @@ private fun SettingsItem(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
+    iconTint: androidx.compose.ui.graphics.Color = AppTheme.colorScheme.primaryButton,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.primaryBackground
+            containerColor = AppTheme.colorScheme.cardSecondaryBackground
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            // Icon with background circle
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(iconTint.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    modifier = Modifier.size(20.dp),
+                    tint = iconTint
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -377,14 +432,15 @@ private fun SettingsItem(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = AppTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppTheme.colorScheme.primaryText
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colorScheme.secondaryText
                 )
             }
 
@@ -392,7 +448,46 @@ private fun SettingsItem(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = "Navigate",
                 modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                tint = AppTheme.colorScheme.secondaryText
+            )
+        }
+    }
+}
+
+@Composable
+private fun LogoutButton(
+    isLoading: Boolean,
+    onLogout: () -> Unit
+) {
+    Button(
+        onClick = onLogout,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AppTheme.colorScheme.errorColor,
+            contentColor = AppTheme.colorScheme.primaryBackground
+        ),
+        shape = RoundedCornerShape(16.dp),
+        enabled = !isLoading
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = AppTheme.colorScheme.primaryBackground,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Logout,
+                contentDescription = "Logout",
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Logout",
+                fontWeight = FontWeight.SemiBold,
+                style = AppTheme.typography.titleSmall
             )
         }
     }
