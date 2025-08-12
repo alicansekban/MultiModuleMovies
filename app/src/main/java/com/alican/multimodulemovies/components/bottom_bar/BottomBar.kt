@@ -25,6 +25,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.theme.Orange
 import com.alican.multimodulemovies.utils.ScreenRoute
 import kotlinx.coroutines.flow.Flow
@@ -64,7 +65,7 @@ fun BottomBar(
     Column(modifier = Modifier.fillMaxWidth()) {
          AnimatedVisibility(visible =isBottomBarVisible ) {
              NavigationBar(
-                containerColor = MaterialTheme.colorScheme.background,
+                 containerColor = AppTheme.colorScheme.primaryBackground,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items.forEach { item ->
