@@ -36,6 +36,7 @@ firebaseBom = "34.1.0"
 firebaseCrashlyticsPlugin = "3.0.6"
 googleAuth = "21.4.0"
 datastore = "1.1.7"
+runtime = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -113,6 +114,7 @@ google-auth = { module = "com.google.android.gms:play-services-auth", version.re
 
 #datastore
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 

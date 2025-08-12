@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Man
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -26,7 +25,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.multimodulemovies.theme.Orange
 import com.alican.multimodulemovies.utils.ScreenRoute
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -34,9 +32,8 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun BottomBar(
     navController: NavController,
-    isBottomBarVisible : Boolean
+    isBottomBarVisible: Boolean
 ) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val items = listOf(
@@ -63,9 +60,10 @@ fun BottomBar(
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-         AnimatedVisibility(visible =isBottomBarVisible ) {
-             NavigationBar(
-                 containerColor = AppTheme.colorScheme.primaryBackground,
+        AnimatedVisibility(visible = isBottomBarVisible) {
+            NavigationBar(
+                containerColor = AppTheme.colorScheme.cardBackground,
+                contentColor = AppTheme.colorScheme.primaryText,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items.forEach { item ->
@@ -91,11 +89,13 @@ fun BottomBar(
                         },
                         interactionSource = NoRippleInteractionSource,
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Orange,
-                            selectedTextColor = Orange,
-                            unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-                            unselectedTextColor = MaterialTheme.colorScheme.onBackground,
-                            indicatorColor = MaterialTheme.colorScheme.background
+                            selectedIconColor = AppTheme.colorScheme.accent,
+                            selectedTextColor = AppTheme.colorScheme.accent,
+                            unselectedIconColor = AppTheme.colorScheme.secondaryText,
+                            unselectedTextColor = AppTheme.colorScheme.secondaryText,
+                            indicatorColor = AppTheme.colorScheme.accent.copy(alpha = 0.1f),
+                            disabledIconColor = AppTheme.colorScheme.statusOffline,
+                            disabledTextColor = AppTheme.colorScheme.statusOffline
                         )
                     )
                 }
