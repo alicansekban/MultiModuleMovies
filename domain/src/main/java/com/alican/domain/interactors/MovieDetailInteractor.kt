@@ -4,106 +4,69 @@ import com.alican.data.BuildConfig
 import com.alican.data.data.repository.MoviesRepository
 import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
-import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieCreditsUIModel
 import com.alican.domain.models.MovieDetailUIModel
 import com.alican.domain.models.MovieReviewsUIModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.alican.domain.models.movie_detail.MovieDetailUIState
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class MovieDetailInteractor @Inject constructor(
-    private val repository: MoviesRepository
+    private val moviesRepository: MoviesRepository
 ) {
 
-    fun getMovieDetails(id: Int): Flow<BaseUIModel<MovieDetailUIModel>> {
-        return flow {
-            emit(BaseUIModel.Loading)
-            emit(
-                when (val response = repository.getMovieDetails(id)) {
-                    is ResultWrapper.Error -> {
-                        BaseUIModel.Error(response.message ?: "Error")
-                    }
+    suspend fun getAllMovieDetailData(movieId: Int): MovieDetailUIState = coroutineScope {
+        val movieDetailDeferred = async { getMovieDetailSync(movieId) }
+        val movieImagesDeferred = async { getMovieImagesSync(movieId) }
+        val movieCreditsDeferred = async { getMovieCreditsSync(movieId) }
+        val movieReviewsDeferred = async { getMovieReviewsSync(movieId, 1) }
 
-                    ResultWrapper.Loading -> {
-                        BaseUIModel.Loading
-                    }
+        MovieDetailUIState(
+            movieDetail = movieDetailDeferred.await(),
+            movieImages = movieImagesDeferred.await(),
+            movieCredits = movieCreditsDeferred.await(),
+            movieReviews = movieReviewsDeferred.await(),
+            isLoading = false
+        )
+    }
 
-                    is ResultWrapper.Success -> {
-                        val uiModel = response.value.toUIModel()
-
-                        BaseUIModel.Success(uiModel)
-                    }
-                }
-            )
+    private suspend fun getMovieDetailSync(movieId: Int): MovieDetailUIModel? {
+        return when (val response = moviesRepository.getMovieDetails(movieId)) {
+            is ResultWrapper.Success -> response.value.toUIModel()
+            else -> null
         }
     }
 
-    fun getMovieImages(id: Int): Flow<BaseUIModel<List<String>>> {
-        return flow {
-            emit(BaseUIModel.Loading)
-            emit(when (val response = repository.getMovieImages(id)) {
-                is ResultWrapper.Error -> {
-                    BaseUIModel.Error(response.message ?: "Error")
-                }
+    private suspend fun getMovieImagesSync(movieId: Int): List<String> {
+        return when (val response = moviesRepository.getMovieImages(movieId)) {
+            is ResultWrapper.Success -> {
+                response.value.posters?.filter { it.iso_639_1 == "en" }?.take(10)
+                    ?.map { BuildConfig.BASE_POSTER_URL + it.file_path.orEmpty() }
+                    ?: emptyList()
+            }
 
-                ResultWrapper.Loading -> {
-                    BaseUIModel.Loading
-                }
-
-                is ResultWrapper.Success -> {
-                    val uiModel =
-                        response.value.posters?.filter { it.iso_639_1 == "en" }?.take(10)
-                            ?.map { BuildConfig.BASE_POSTER_URL + it.file_path.orEmpty() }
-                            ?: emptyList()
-
-                    BaseUIModel.Success(uiModel)
-                }
-            })
+            else -> emptyList()
         }
     }
 
-    fun getMovieCredits(id: Int): Flow<BaseUIModel<List<MovieCreditsUIModel>>> {
-        return flow {
-            emit(BaseUIModel.Loading)
-            emit(when (val response = repository.getMovieCredits(id)) {
-                is ResultWrapper.Error -> {
-                    BaseUIModel.Error(response.message ?: "Error")
-                }
+    private suspend fun getMovieCreditsSync(movieId: Int): List<MovieCreditsUIModel> {
+        return when (val response = moviesRepository.getMovieCredits(movieId)) {
+            is ResultWrapper.Success -> {
+                response.value.cast?.map { it.toUIModel() } ?: emptyList()
+            }
 
-                ResultWrapper.Loading -> {
-                    BaseUIModel.Loading
-                }
-
-                is ResultWrapper.Success -> {
-                    val uiModel = response.value.cast?.map { it.toUIModel() } ?: emptyList()
-
-                    BaseUIModel.Success(uiModel)
-                }
-            })
+            else -> emptyList()
         }
     }
 
-    fun getMovieReviews(id: Int, page: Int): Flow<BaseUIModel<List<MovieReviewsUIModel>>> {
-        return flow {
-            emit(BaseUIModel.Loading)
-            emit(when (val response = repository.getMovieReviews(id, page)) {
-                is ResultWrapper.Error -> {
-                    BaseUIModel.Error(response.message ?: "Error")
-                }
+    private suspend fun getMovieReviewsSync(movieId: Int, page: Int): List<MovieReviewsUIModel> {
+        return when (val response = moviesRepository.getMovieReviews(movieId, page)) {
+            is ResultWrapper.Success -> {
+                response.value.results?.map { it.toUIModel() } ?: emptyList()
+            }
 
-                ResultWrapper.Loading -> {
-                    BaseUIModel.Loading
-                }
-
-                is ResultWrapper.Success -> {
-                    val uiModel = response.value.results?.map {
-                        it.toUIModel()
-                    } ?: emptyList()
-
-                    BaseUIModel.Success(uiModel)
-                }
-            })
+            else -> emptyList()
         }
     }
 }

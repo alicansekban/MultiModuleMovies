@@ -3,8 +3,8 @@ package com.alican.domain.interactors
 import com.alican.data.data.repository.MoviesRepository
 import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
-import com.alican.domain.models.HomeUIState
 import com.alican.domain.models.MovieUIModel
+import com.alican.domain.models.home.HomeUIState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject

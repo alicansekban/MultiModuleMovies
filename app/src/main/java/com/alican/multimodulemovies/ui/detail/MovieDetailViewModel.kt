@@ -5,18 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.alican.domain.interactors.MovieDetailInteractor
-import com.alican.domain.models.BaseUIModel
-import com.alican.domain.models.MovieCreditsUIModel
-import com.alican.domain.models.MovieDetailUIModel
-import com.alican.domain.models.MovieReviewsUIModel
+import com.alican.domain.models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
@@ -26,60 +23,24 @@ class MovieDetailViewModel @Inject constructor(
 
     private val id = savedStateHandle.toRoute<ScreenRoute.MovieDetailRoute>().movieId
 
-    private val _movieDetail =
-        MutableStateFlow<BaseUIModel<MovieDetailUIModel>>(BaseUIModel.Empty)
-    val movieDetail = _movieDetail.onStart {
-        getMovieDetail(id)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
+    private val _uiState = MutableStateFlow(MovieDetailUIState())
+    val uiState: StateFlow<MovieDetailUIState> = _uiState.asStateFlow()
 
-    private val _movieImages =
-        MutableStateFlow<BaseUIModel<List<String>>>(BaseUIModel.Empty)
-    val movieImages = _movieImages.onStart {
-        getMovieImages(id)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
+    init {
+        loadAllMovieDetailData()
+    }
 
-    private val _movieCredits =
-        MutableStateFlow<BaseUIModel<List<MovieCreditsUIModel>>>(BaseUIModel.Empty)
-    val movieCredits = _movieCredits.onStart {
-        getMovieCredits(id)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
-
-
-    private val _movieReviews =
-        MutableStateFlow<BaseUIModel<List<MovieReviewsUIModel>>>(BaseUIModel.Empty)
-    val movieReviews = _movieReviews.onStart {
-        getMovieReviews(id, 1)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
-
-    private fun getMovieDetail(id: Int) {
+    private fun loadAllMovieDetailData() {
         viewModelScope.launch {
-            interactor.getMovieDetails(id).collect {
-                _movieDetail.emit(it)
-            }
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            val detailData = interactor.getAllMovieDetailData(id)
+
+            _uiState.value = detailData
         }
     }
 
-    private fun getMovieImages(id: Int) {
-        viewModelScope.launch {
-            interactor.getMovieImages(id).collect {
-                _movieImages.emit(it)
-            }
-        }
-    }
-
-    private fun getMovieCredits(id: Int) {
-        viewModelScope.launch {
-            interactor.getMovieCredits(id).collect {
-                _movieCredits.emit(it)
-            }
-        }
-    }
-
-    private fun getMovieReviews(id: Int, page: Int) {
-        viewModelScope.launch {
-            interactor.getMovieReviews(id, page).collect {
-                _movieReviews.emit(it)
-            }
-        }
+    fun retry() {
+        loadAllMovieDetailData()
     }
 }

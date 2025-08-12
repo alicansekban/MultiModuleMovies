@@ -1,4 +1,6 @@
-package com.alican.domain.models
+package com.alican.domain.models.home
+
+import com.alican.domain.models.MovieUIModel
 
 data class HomeUIState(
     val upcomingMovies: List<MovieUIModel> = emptyList(),
