@@ -3,87 +3,38 @@ package com.alican.multimodulemovies.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.HomeInteractor
-import com.alican.domain.models.BaseUIModel
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.models.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val interactor: HomeInteractor
 ) : ViewModel() {
 
-    private val _upComingMovies =
-        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
-    val upComingMovies =
-        _upComingMovies.onStart {
-            getUpComingMovies()
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(10000L), BaseUIModel.Empty)
+    private val _uiState = MutableStateFlow(HomeUIState())
+    val uiState: StateFlow<HomeUIState> = _uiState.asStateFlow()
 
-    private val _nowPlayingMovies =
-        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
-    val nowPlayingMovies = _nowPlayingMovies.onStart {
-        getNowPlayingMovies()
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(10000L),
-        BaseUIModel.Empty
-    )
+    init {
+        loadAllMovies()
+    }
 
-    private val _topRatedMovies =
-        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
-    val topRatedMovies = _topRatedMovies.onStart {
-        getTopRatedMovies()
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(10000L),
-        BaseUIModel.Empty
-    )
-
-    private val _getPopularMovies =
-        MutableStateFlow<BaseUIModel<List<MovieUIModel>>>(BaseUIModel.Empty)
-    val popularMovies = _getPopularMovies.onStart {
-        getPopularMovies()
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(10000L),
-        BaseUIModel.Empty
-    )
-
-    private fun getUpComingMovies() {
+    private fun loadAllMovies(page: Int = 1) {
         viewModelScope.launch {
-            interactor.getUpComingMovies(1).collect { state ->
-                _upComingMovies.emit(state)
-            }
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            val homeData = interactor.getAllHomeMovies(page)
+
+            _uiState.value = homeData
         }
     }
 
-    private fun getNowPlayingMovies() {
-        viewModelScope.launch {
-            interactor.getNowPlayingMovies(1).collect { state ->
-                _nowPlayingMovies.emit(state)
-            }
-        }
-    }
-
-    private fun getPopularMovies() {
-        viewModelScope.launch {
-            interactor.getPopularMovies(1).collect { state ->
-                _getPopularMovies.emit(state)
-            }
-        }
-    }
-
-    private fun getTopRatedMovies() {
-        viewModelScope.launch {
-            interactor.getTopRatedMovies(1).collect { state ->
-                _topRatedMovies.emit(state)
-            }
-        }
+    fun retry() {
+        loadAllMovies()
     }
 }

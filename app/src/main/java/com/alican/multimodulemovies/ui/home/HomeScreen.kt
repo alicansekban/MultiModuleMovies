@@ -1,5 +1,6 @@
 package com.alican.multimodulemovies.ui.home
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
 import com.alican.multimodulemovies.components.pager.CustomPager
@@ -36,6 +36,7 @@ import com.alican.multimodulemovies.components.widget.toWidgetModel
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.utils.heightPercent
 
+
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
@@ -43,11 +44,7 @@ fun HomeScreen(
     openMovieDetailScreen: (id: Int) -> Unit
 ) {
     val configuration = LocalConfiguration.current
-
-    val upComingMovies by viewModel.upComingMovies.collectAsStateWithLifecycle()
-    val nowPlayingMovies by viewModel.nowPlayingMovies.collectAsStateWithLifecycle()
-    val topRatedMovies by viewModel.topRatedMovies.collectAsStateWithLifecycle()
-    val popularMovies by viewModel.popularMovies.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -58,125 +55,112 @@ fun HomeScreen(
         // Welcome Section
         WelcomeSection()
 
-        when (upComingMovies) {
-            BaseUIModel.Empty -> EmptyStateCard("No upcoming movies available")
-            is BaseUIModel.Error -> {
-                val errorMessage = (upComingMovies as BaseUIModel.Error).message
-                ErrorStateCard(errorMessage)
-            }
-
-            BaseUIModel.Loading -> LoadingStateCard()
-            is BaseUIModel.Success -> {
-                val movies = (upComingMovies as BaseUIModel.Success).data
-                val widgetMovies = movies.map { it.toWidgetModel() }
-                val widgetModel = MovieWidgetComponentModel(
-                    title = "Upcoming",
-                    items = widgetMovies
-                )
-
-                // Hero Pager Section
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = AppTheme.colorScheme.cardBackground
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    CustomPager(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightPercent(0.6f, configuration),
-                        images = movies.map { it.imageUrl ?: "" },
-                        onClick = {
-                            val movie = movies[it]
-                            movie.id?.let { movieId -> openMovieDetailScreen.invoke(movieId) }
-                        }
-                    )
-                }
-
-                CustomWidget(
-                    model = widgetModel,
-                    openListScreen = { openListScreen.invoke(MovieType.UPCOMING) },
-                    openMovieDetailScreen = openMovieDetailScreen
-                )
-            }
+        // Show loading state
+        if (uiState.isLoading) {
+            LoadingStateCard()
+            return@Column
         }
 
-        when (nowPlayingMovies) {
-            BaseUIModel.Empty -> EmptyStateCard("No movies playing now")
-            is BaseUIModel.Error -> {
-                val errorMessage = (nowPlayingMovies as BaseUIModel.Error).message
-                ErrorStateCard(errorMessage)
-            }
+        // Upcoming Movies Section
+        MovieSection(
+            movies = uiState.upcomingMovies,
+            title = "Upcoming",
+            movieType = MovieType.UPCOMING,
+            showPager = true,
+            configuration = configuration,
+            openListScreen = openListScreen,
+            openMovieDetailScreen = openMovieDetailScreen
+        )
 
-            BaseUIModel.Loading -> LoadingStateCard()
-            is BaseUIModel.Success -> {
-                val movies =
-                    (nowPlayingMovies as BaseUIModel.Success<List<MovieUIModel>>).data.map { it.toWidgetModel() }
-                val widgetModel = MovieWidgetComponentModel(
-                    title = "Now Playing",
-                    items = movies
-                )
-                CustomWidget(
-                    model = widgetModel,
-                    openListScreen = { openListScreen.invoke(MovieType.NOW_PLAYING) },
-                    openMovieDetailScreen = openMovieDetailScreen
-                )
-            }
-        }
+        // Now Playing Section
+        MovieSection(
+            movies = uiState.nowPlayingMovies,
+            title = "Now Playing",
+            movieType = MovieType.NOW_PLAYING,
+            showPager = false,
+            configuration = configuration,
+            openListScreen = openListScreen,
+            openMovieDetailScreen = openMovieDetailScreen
+        )
 
-        when (topRatedMovies) {
-            BaseUIModel.Empty -> EmptyStateCard("No top rated movies available")
-            is BaseUIModel.Error -> {
-                val errorMessage = (topRatedMovies as BaseUIModel.Error).message
-                ErrorStateCard(errorMessage)
-            }
+        // Top Rated Section
+        MovieSection(
+            movies = uiState.topRatedMovies,
+            title = "Top Rated",
+            movieType = MovieType.TOP_RATED,
+            showPager = false,
+            configuration = configuration,
+            openListScreen = openListScreen,
+            openMovieDetailScreen = openMovieDetailScreen
+        )
 
-            BaseUIModel.Loading -> LoadingStateCard()
-            is BaseUIModel.Success -> {
-                val movies =
-                    (topRatedMovies as BaseUIModel.Success<List<MovieUIModel>>).data.map { it.toWidgetModel() }
-                val widgetModel = MovieWidgetComponentModel(
-                    title = "Top Rated",
-                    items = movies
-                )
-                CustomWidget(
-                    model = widgetModel,
-                    openListScreen = { openListScreen.invoke(MovieType.TOP_RATED) },
-                    openMovieDetailScreen = openMovieDetailScreen
-                )
-            }
-        }
-
-        when (popularMovies) {
-            BaseUIModel.Empty -> EmptyStateCard("No popular movies available")
-            is BaseUIModel.Error -> {
-                val errorMessage = (popularMovies as BaseUIModel.Error).message
-                ErrorStateCard(errorMessage)
-            }
-
-            BaseUIModel.Loading -> LoadingStateCard()
-            is BaseUIModel.Success -> {
-                val movies =
-                    (popularMovies as BaseUIModel.Success<List<MovieUIModel>>).data.map { it.toWidgetModel() }
-                val widgetModel = MovieWidgetComponentModel(
-                    title = "Popular",
-                    items = movies
-                )
-                CustomWidget(
-                    model = widgetModel,
-                    openListScreen = { openListScreen.invoke(MovieType.POPULAR) },
-                    openMovieDetailScreen = openMovieDetailScreen
-                )
-            }
-        }
+        // Popular Section
+        MovieSection(
+            movies = uiState.popularMovies,
+            title = "Popular",
+            movieType = MovieType.POPULAR,
+            showPager = false,
+            configuration = configuration,
+            openListScreen = openListScreen,
+            openMovieDetailScreen = openMovieDetailScreen
+        )
 
         // Bottom spacing
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+@Composable
+private fun MovieSection(
+    movies: List<MovieUIModel>,
+    title: String,
+    movieType: MovieType,
+    showPager: Boolean,
+    configuration: Configuration,
+    openListScreen: (MovieType) -> Unit,
+    openMovieDetailScreen: (Int) -> Unit
+) {
+    if (movies.isEmpty()) {
+        EmptyStateCard("No $title movies available")
+        return
+    }
+
+    val widgetMovies = movies.map { it.toWidgetModel() }
+    val widgetModel = MovieWidgetComponentModel(
+        title = title,
+        items = widgetMovies
+    )
+
+    if (showPager) {
+        // Hero Pager Section for Upcoming Movies
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = AppTheme.colorScheme.cardBackground
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            CustomPager(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightPercent(0.6f, configuration),
+                images = movies.map { it.imageUrl ?: "" },
+                onClick = { index ->
+                    val movie = movies[index]
+                    movie.id?.let { movieId -> openMovieDetailScreen.invoke(movieId) }
+                }
+            )
+        }
+    }
+
+    CustomWidget(
+        model = widgetModel,
+        openListScreen = { openListScreen.invoke(movieType) },
+        openMovieDetailScreen = openMovieDetailScreen
+    )
 }
 
 @Composable
@@ -234,40 +218,6 @@ private fun LoadingStateCard() {
             CircularProgressIndicator(
                 modifier = Modifier.size(32.dp),
                 color = AppTheme.colorScheme.primaryButton
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorStateCard(message: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Error",
-                style = AppTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.errorColor
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = message,
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.primaryText,
-                textAlign = TextAlign.Center
             )
         }
     }
