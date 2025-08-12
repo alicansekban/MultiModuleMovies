@@ -3,6 +3,7 @@ package com.alican.multimodulemovies.helpers.theme
 import android.content.Context
 import android.content.res.Configuration
 import com.alican.multimodulemovies.helpers.data_store.AppDataStore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -56,7 +57,7 @@ class ThemeManager @Inject constructor(
     fun observeTheme(): Flow<Boolean> = flow {
         while (true) {
             emit(isDarkMode() ?: false)
-            kotlinx.coroutines.delay(500)
+            delay(500)
         }
     }
 }
