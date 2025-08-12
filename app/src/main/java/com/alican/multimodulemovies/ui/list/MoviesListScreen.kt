@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,20 +43,23 @@ fun MoviesListScreen(
     modifier: Modifier = Modifier,
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.movies.collectAsStateWithLifecycle()
+    val paginationState by viewModel.movies.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
+
+    // Keep your derivedState logic but use new pagination state
     val shouldFetchNextPage by remember {
         derivedStateOf {
             val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
             lastVisibleIndex != null &&
-                    lastVisibleIndex >= uiState.uiModel.movies.size - 10 &&
-                    uiState.uiModel.canLoadMore
+                    lastVisibleIndex >= paginationState.items.size - 10 &&
+                    paginationState.hasNextPage &&
+                    !paginationState.isLoadingMore
         }
     }
 
     LaunchedEffect(shouldFetchNextPage) {
         if (shouldFetchNextPage) {
-            viewModel.updateEvents(event = MovieListUIEvents.GetNextPage)
+            viewModel.loadNextPage()
         }
     }
 
@@ -69,6 +73,27 @@ fun MoviesListScreen(
         // Header Section
         MovieListHeader()
 
+        // Show initial loading state
+        if (paginationState.isLoading && paginationState.items.isEmpty()) {
+            LoadingStateCard()
+            return@Column
+        }
+
+        // Show error state for first page
+        if (paginationState.hasError && paginationState.items.isEmpty()) {
+            ErrorStateCard(
+                message = paginationState.errorMessage ?: "Unknown error occurred",
+                onRetry = { viewModel.retry() }
+            )
+            return@Column
+        }
+
+        // Show empty state
+        if (paginationState.isEmpty) {
+            EmptyStateCard("No movies found")
+            return@Column
+        }
+
         LazyVerticalGrid(
             modifier = modifier.fillMaxSize(),
             columns = GridCells.Fixed(2),
@@ -77,17 +102,17 @@ fun MoviesListScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(uiState.uiModel.movies) { movie ->
+            // Movie items
+            items(paginationState.items) { movie ->
                 MovieGridItem(
                     imageUrl = movie.imageUrl,
                     title = movie.title,
-                    rating = movie.overview,
                     modifier = Modifier.heightPercent(0.45f, configuration)
                 )
             }
 
-            // Loading indicator at bottom
-            if (uiState.uiModel.canLoadMore) {
+            // Bottom loading indicator for pagination
+            if (paginationState.isLoadingMore) {
                 item {
                     Box(
                         modifier = Modifier
@@ -99,6 +124,70 @@ fun MoviesListScreen(
                             modifier = Modifier.size(24.dp),
                             color = AppTheme.colorScheme.primaryButton
                         )
+                    }
+                }
+            }
+
+            // Error indicator for pagination
+            if (paginationState.hasError && paginationState.items.isNotEmpty()) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Failed to load more movies",
+                                style = AppTheme.typography.bodyMedium,
+                                color = AppTheme.colorScheme.errorColor,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(
+                                onClick = { viewModel.retry() }
+                            ) {
+                                Text("Retry")
+                            }
+                        }
+                    }
+                }
+            }
+
+            // End of list indicator
+            if (paginationState.items.isNotEmpty() && !paginationState.hasNextPage && !paginationState.isLoadingMore) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = AppTheme.colorScheme.cardSecondaryBackground
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "You've reached the end! 🎬\n${paginationState.totalResults} movies total",
+                                style = AppTheme.typography.bodyMedium,
+                                color = AppTheme.colorScheme.secondaryText,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -144,7 +233,6 @@ private fun MovieListHeader() {
 private fun MovieGridItem(
     imageUrl: String?,
     title: String?,
-    rating: String?,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -155,7 +243,10 @@ private fun MovieGridItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             // Movie Image
             imageUrl?.let {
                 CustomImageViewWithLoading(
@@ -166,11 +257,13 @@ private fun MovieGridItem(
                 )
             }
 
-            // Movie Info
-            Column(
+            // Fixed height container for title
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
+                    .height(56.dp) // Fixed height for 2 lines of text
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+                contentAlignment = Alignment.Center
             ) {
                 title?.let {
                     Text(
@@ -178,28 +271,110 @@ private fun MovieGridItem(
                         style = AppTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = AppTheme.colorScheme.primaryText,
-                        maxLines = 2
+                        maxLines = 2,
+                        textAlign = TextAlign.Center
                     )
                 }
-
-                rating?.let {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = AppTheme.colorScheme.accent.copy(alpha = 0.1f)
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = "⭐ $it",
-                            style = AppTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                            color = AppTheme.colorScheme.accent,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
-                }
             }
+        }
+    }
+}
+@Composable
+private fun LoadingStateCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.cardBackground
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(32.dp),
+                color = AppTheme.colorScheme.primaryButton
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorStateCard(
+    message: String,
+    onRetry: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Error Loading Movies",
+                style = AppTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AppTheme.colorScheme.errorColor
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = message,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colorScheme.primaryText,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyStateCard(message: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.cardSecondaryBackground
+        ),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No Movies Found",
+                style = AppTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AppTheme.colorScheme.secondaryText
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = message,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colorScheme.secondaryText,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
