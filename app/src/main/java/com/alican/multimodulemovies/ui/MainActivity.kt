@@ -6,20 +6,25 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.alican.multimodulemovies.components.FirstTimeThemeDialog
 import com.alican.multimodulemovies.components.bottom_bar.BottomBar
+import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
 import com.alican.multimodulemovies.components.navigation.MainNavigation
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.theme.MultiModuleMoviesTheme
@@ -49,6 +54,19 @@ class MainActivity : ComponentActivity() {
             MultiModuleMoviesTheme(
                 isDarkMode = uiState.isDarkMode,
             ) {
+
+                val primaryColor = AppTheme.colorScheme.primaryBackground.toArgb()
+                SideEffect {
+                    val window = window
+                    val insetsController =
+                        WindowCompat.getInsetsController(window, window.decorView)
+
+                    // Only set icon colors - let the padding handle the visual appearance
+                    insetsController.isAppearanceLightStatusBars = !uiState.isDarkMode
+                    insetsController.isAppearanceLightNavigationBars = !uiState.isDarkMode
+                }
+
+
                 if (uiState.showThemeDialog) {
                     FirstTimeThemeDialog(
                         onDismiss = {
@@ -62,23 +80,38 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-                Scaffold(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(AppTheme.colorScheme.primaryBackground),
-                    bottomBar = {
-                        BottomBar(
-                            navController = navController,
-                            isBottomBarVisible = showBottomBar
-                        )
+                        .background(AppTheme.colorScheme.primaryBackground)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        // Status bar area with custom background
+
+
+                        // Main content area
+                        Scaffold(
+                            modifier = Modifier.weight(1f),
+                            containerColor = AppTheme.colorScheme.primaryBackground,
+                            bottomBar = {
+                                BottomBar(
+                                    navController = navController,
+                                    isBottomBarVisible = showBottomBar
+                                )
+                            }
+                        ) { innerPadding ->
+                            MainNavigation(
+                                navController = navController,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding)
+                            )
+                        }
                     }
-                ) { innerPadding ->
-                    MainNavigation(
-                        navController = navController, modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    )
                 }
+
             }
         }
     }

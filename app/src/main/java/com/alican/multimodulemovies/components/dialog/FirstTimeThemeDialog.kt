@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.components
+package com.alican.multimodulemovies.components.dialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
