@@ -11,12 +11,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -26,21 +26,32 @@ import androidx.navigation.compose.rememberNavController
 import com.alican.multimodulemovies.components.bottom_bar.BottomBar
 import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
 import com.alican.multimodulemovies.components.navigation.MainNavigation
+import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.theme.MultiModuleMoviesTheme
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var navController: NavHostController
+
+    @Inject
+    lateinit var appRouter: AppRouter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             navController = rememberNavController()
+
+            LaunchedEffect(navController) {
+                appRouter.setNavController(navController)
+            }
+
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val showBottomBar by remember {
                 derivedStateOf {
@@ -55,7 +66,6 @@ class MainActivity : ComponentActivity() {
                 isDarkMode = uiState.isDarkMode,
             ) {
 
-                val primaryColor = AppTheme.colorScheme.primaryBackground.toArgb()
                 SideEffect {
                     val window = window
                     val insetsController =
