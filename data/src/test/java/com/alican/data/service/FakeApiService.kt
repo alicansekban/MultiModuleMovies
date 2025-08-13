@@ -60,7 +60,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getUpComingMovies(page: Int): ResultWrapper<BaseMoviesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             ResultWrapper.Success(createBaseMoviesResponse(page))
         }
@@ -68,7 +68,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getPopularMovies(page: Int): ResultWrapper<BaseMoviesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             ResultWrapper.Success(createBaseMoviesResponse(page))
         }
@@ -76,7 +76,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getTopRatedMovies(page: Int): ResultWrapper<BaseMoviesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             ResultWrapper.Success(createBaseMoviesResponse(page))
         }
@@ -84,7 +84,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getNowPlayingMovies(page: Int): ResultWrapper<BaseMoviesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             ResultWrapper.Success(createBaseMoviesResponse(page))
         }
@@ -92,7 +92,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getMovieDetail(movieId: Int): ResultWrapper<MovieDetailResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             val movieDetail = MovieDetailResponse(
                 id = movieId,
@@ -117,7 +117,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getMovieCredits(movieId: Int): ResultWrapper<MovieCreditResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             val credits = MovieCreditResponse(
                 id = movieId,
@@ -133,7 +133,7 @@ class FakeApiService : ApiService {
         page: Int
     ): ResultWrapper<MovieReviewResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             val reviews = MovieReviewResponse(
                 page = page,
@@ -145,7 +145,7 @@ class FakeApiService : ApiService {
 
     override suspend fun searchMovies(query: String, page: Int): ResultWrapper<BaseMoviesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             val filteredMovies = if (query.isNotEmpty()) {
                 sampleMovies.filter {
@@ -165,7 +165,7 @@ class FakeApiService : ApiService {
 
     override suspend fun getMovieImages(id: Int): ResultWrapper<MovieImagesResponse> {
         return if (shouldReturnError) {
-            ResultWrapper.Error(code = errorCode, message = errorMessage)
+            ResultWrapper.Error(message = errorMessage)
         } else {
             val images = MovieImagesResponse(
                 id = id,

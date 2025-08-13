@@ -46,7 +46,6 @@ class ApiServiceTest {
         // Then
         assertTrue(result is ResultWrapper.Error)
         val errorResult = result as ResultWrapper.Error
-        assertEquals(404, errorResult.code)
         assertEquals("Not found", errorResult.message)
     }
 
@@ -235,7 +234,6 @@ class ApiServiceTest {
         ).forEach { result ->
             assertTrue(result is ResultWrapper.Error)
             val errorResult = result as ResultWrapper.Error
-            assertEquals(500, errorResult.code)
             assertEquals("Internal Server Error", errorResult.message)
         }
     }

@@ -97,4 +97,5 @@ dependencies {
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    testImplementation(kotlin("test"))
 }
