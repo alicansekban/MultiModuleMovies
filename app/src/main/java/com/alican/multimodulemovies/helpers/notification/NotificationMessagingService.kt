@@ -1,6 +1,5 @@
 package com.alican.multimodulemovies.helpers.notification
 
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -10,7 +9,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.alican.multimodulemovies.R
-import com.alican.multimodulemovies.helpers.data_store.AppDataStore
 import com.alican.multimodulemovies.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -25,7 +23,8 @@ import javax.inject.Inject
 class NotificationMessagingService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var appDataStore: AppDataStore
+    lateinit var notificationManager: AppNotificationManager
+
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     companion object {
@@ -47,8 +46,9 @@ class NotificationMessagingService : FirebaseMessagingService() {
 
         serviceScope.launch {
             try {
-                // Store token locally
-                appDataStore.setFirebaseToken(token)
+                // Store token using NotificationManager
+                notificationManager.saveFirebaseToken(token)
+
 
                 Log.d(TAG, "Token saved successfully")
             } catch (e: Exception) {
@@ -64,12 +64,14 @@ class NotificationMessagingService : FirebaseMessagingService() {
 
         serviceScope.launch {
             try {
-                // Save notification to local database
+                // Create and save notification to local storage
                 val notification = createNotificationModel(remoteMessage)
-                //  notificationRepository.saveNotification(notification)
+                notificationManager.saveNotification(notification)
 
-                // Show notification to user
-                showNotification(remoteMessage)
+                // Show notification to user if permission is granted
+                if (notificationManager.isNotificationPermissionGranted()) {
+                    showNotification(remoteMessage)
+                }
 
                 Log.d(TAG, "Notification processed successfully")
             } catch (e: Exception) {
@@ -104,7 +106,7 @@ class NotificationMessagingService : FirebaseMessagingService() {
         )
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // You'll need to add this icon
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
