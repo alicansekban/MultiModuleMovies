@@ -1,7 +1,6 @@
 package com.alican.multimodulemovies.ui.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,10 +25,11 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PersonOutline
+import androidx.compose.material.icons.filled.PersonOff
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,143 +39,124 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.alican.multimodulemovies.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onLoginClick: () -> Unit
 ) {
     val uiState by viewModel.uiState
 
-    LaunchedEffect(uiState.error) {
-        uiState.error?.let {
-            // Handle error display
-        }
-    }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(AppTheme.colorScheme.primaryBackground)
     ) {
-        // Loading indicator
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = AppTheme.colorScheme.primaryButton
-                )
-            }
-        }
-
-        // Error display
-        uiState.error?.let { error ->
-            ErrorCard(
-                error = error,
-                onDismiss = { viewModel.clearError() }
-            )
-        }
-
-        // Top Section - User Info
-        UserInfoSection(
-            isLoggedIn = uiState.isUserLoggedIn,
-            userName = uiState.userName,
-            userSurname = uiState.userSurname,
-            userImageUrl = uiState.userImageUrl,
-            userEmail = uiState.currentUser?.email,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Settings Section
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                SectionHeader(title = "Settings")
-            }
-
-            item {
-                SettingsItem(
-                    icon = if (uiState.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
-                    title = "Theme",
-                    subtitle = if (uiState.isDarkTheme) "Dark Mode" else "Light Mode",
-                    onClick = { viewModel.toggleTheme() },
-                    iconTint = AppTheme.colorScheme.accent
+            // Show error if exists
+            uiState.error?.let { error ->
+                ErrorCard(
+                    error = error,
+                    onDismiss = viewModel::clearError
                 )
             }
 
-            item {
-                SettingsItem(
-                    icon = Icons.Default.Notifications,
-                    title = "Notifications",
-                    subtitle = "Manage your notification preferences",
-                    onClick = { /* Handle notifications */ },
-                    iconTint = AppTheme.colorScheme.warningColor
-                )
-            }
+            // User Info Section
+            UserInfoSection(
+                isLoggedIn = uiState.isUserLoggedIn,
+                userName = uiState.userName,
+                userSurname = uiState.userSurname,
+                userImageUrl = uiState.userImageUrl,
+                userEmail = uiState.currentUser?.email,
+                onLoginClick = onLoginClick
+            )
 
-            item {
-                SettingsItem(
-                    icon = Icons.Default.Help,
-                    title = "Help & Support",
-                    subtitle = "Get help and contact support",
-                    onClick = { /* Handle help */ },
-                    iconTint = AppTheme.colorScheme.primaryButton
-                )
-            }
-
-            item {
-                SettingsItem(
-                    icon = Icons.Default.Info,
-                    title = "About",
-                    subtitle = "App version and information",
-                    onClick = { /* Handle about */ },
-                    iconTint = AppTheme.colorScheme.secondaryText
-                )
-            }
-
-            item {
-                SettingsItem(
-                    icon = Icons.Default.Security,
-                    title = "Privacy Policy",
-                    subtitle = "Read our privacy policy",
-                    onClick = { /* Handle privacy policy */ },
-                    iconTint = AppTheme.colorScheme.successColor
-                )
-            }
-
-            if (uiState.isUserLoggedIn) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    SectionHeader(title = "Settings")
+                }
 
-                    LogoutButton(
-                        isLoading = uiState.isLoading,
-                        onLogout = { viewModel.logout() }
+                item {
+                    SettingsItem(
+                        icon = if (uiState.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
+                        title = "Theme",
+                        subtitle = if (uiState.isDarkTheme) "Dark Mode" else "Light Mode",
+                        onClick = { viewModel.toggleTheme() },
+                        iconTint = AppTheme.colorScheme.accent
                     )
+                }
+
+                item {
+                    SettingsItem(
+                        icon = Icons.Default.Notifications,
+                        title = "Notifications",
+                        subtitle = "Manage your notification preferences",
+                        onClick = { /* Handle notifications */ },
+                        iconTint = AppTheme.colorScheme.warningColor
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        icon = Icons.Default.Help,
+                        title = "Help & Support",
+                        subtitle = "Get help and contact support",
+                        onClick = { /* Handle help */ },
+                        iconTint = AppTheme.colorScheme.primaryButton
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        icon = Icons.Default.Info,
+                        title = "About",
+                        subtitle = "App version and information",
+                        onClick = { /* Handle about */ },
+                        iconTint = AppTheme.colorScheme.secondaryText
+                    )
+                }
+
+                item {
+                    SettingsItem(
+                        icon = Icons.Default.Security,
+                        title = "Privacy Policy",
+                        subtitle = "Read our privacy policy",
+                        onClick = { /* Handle privacy policy */ },
+                        iconTint = AppTheme.colorScheme.successColor
+                    )
+                }
+
+                if (uiState.isUserLoggedIn) {
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        LogoutButton(
+                            isLoading = uiState.isLoading,
+                            onLogout = { viewModel.logout() }
+                        )
+                    }
                 }
             }
         }
@@ -188,37 +169,35 @@ private fun ErrorCard(
     onDismiss: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
+            containerColor = MaterialTheme.colorScheme.errorContainer
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.Default.Error,
                 contentDescription = "Error",
-                tint = AppTheme.colorScheme.errorColor,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.error
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = error,
-                color = AppTheme.colorScheme.primaryText,
                 style = AppTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onDismiss) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Clear Error",
-                    tint = AppTheme.colorScheme.errorColor,
-                    modifier = Modifier.size(18.dp)
+                    contentDescription = "Dismiss",
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }
@@ -232,60 +211,68 @@ private fun UserInfoSection(
     userSurname: String,
     userImageUrl: String?,
     userEmail: String?,
+    onLoginClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.padding(16.dp),
-        shape = RoundedCornerShape(20.dp),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = AppTheme.colorScheme.cardBackground
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(28.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // User Avatar
-            UserAvatar(
-                userImageUrl = userImageUrl,
-                isLoggedIn = isLoggedIn
-            )
+            UserAvatar(userImageUrl, isLoggedIn)
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // User Name
             Text(
                 text = "$userName $userSurname",
                 style = AppTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.primaryText,
-                textAlign = TextAlign.Center
+                color = AppTheme.colorScheme.primaryText
             )
 
-            // User Email or Status
-            Spacer(modifier = Modifier.height(6.dp))
             if (isLoggedIn && userEmail != null) {
                 Text(
                     text = userEmail,
                     style = AppTheme.typography.bodyMedium,
-                    color = AppTheme.colorScheme.secondaryText,
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                Text(
-                    text = "Not signed in",
-                    style = AppTheme.typography.bodyMedium,
-                    color = AppTheme.colorScheme.secondaryText,
-                    textAlign = TextAlign.Center
+                    color = AppTheme.colorScheme.secondaryText
                 )
             }
 
-            // User Status Badge
-            Spacer(modifier = Modifier.height(16.dp))
-            StatusBadge(isLoggedIn = isLoggedIn)
+            Spacer(modifier = Modifier.height(8.dp))
+            StatusBadge(isLoggedIn)
+
+            // Login/Register button for guest users
+            if (!isLoggedIn) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = onLoginClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppTheme.colorScheme.primaryButton
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Login,
+                        contentDescription = "Login",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Login / Register",
+                        style = AppTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }
@@ -295,43 +282,36 @@ private fun UserAvatar(
     userImageUrl: String?,
     isLoggedIn: Boolean
 ) {
-    if (userImageUrl != null) {
-        AsyncImage(
-            model = userImageUrl,
-            contentDescription = "User Avatar",
-            modifier = Modifier
-                .size(90.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 3.dp,
-                    color = AppTheme.colorScheme.accent,
-                    shape = CircleShape
-                ),
-            contentScale = ContentScale.Crop
+    Card(
+        modifier = Modifier.size(80.dp),
+        shape = RoundedCornerShape(40.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isLoggedIn)
+                AppTheme.colorScheme.primaryButton.copy(alpha = 0.1f)
+            else
+                AppTheme.colorScheme.cardSecondaryBackground
         )
-    } else {
+    ) {
         Box(
-            modifier = Modifier
-                .size(90.dp)
-                .clip(CircleShape)
-                .background(
-                    if (isLoggedIn) AppTheme.colorScheme.primaryButton
-                    else AppTheme.colorScheme.secondaryBackground
-                )
-                .border(
-                    width = 3.dp,
-                    color = AppTheme.colorScheme.accent,
-                    shape = CircleShape
-                ),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = if (isLoggedIn) Icons.Default.Person else Icons.Default.PersonOutline,
-                contentDescription = "User Avatar",
-                modifier = Modifier.size(45.dp),
-                tint = if (isLoggedIn) AppTheme.colorScheme.primaryBackground
-                else AppTheme.colorScheme.primaryText
-            )
+            if (userImageUrl != null) {
+                // TODO: Add AsyncImage for user profile image
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier.size(40.dp),
+                    tint = AppTheme.colorScheme.primaryButton
+                )
+            } else {
+                Icon(
+                    imageVector = if (isLoggedIn) Icons.Default.Person else Icons.Default.PersonOff,
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier.size(40.dp),
+                    tint = if (isLoggedIn) AppTheme.colorScheme.primaryButton else AppTheme.colorScheme.secondaryText
+                )
+            }
         }
     }
 }
@@ -341,32 +321,29 @@ private fun StatusBadge(isLoggedIn: Boolean) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = if (isLoggedIn)
-                AppTheme.colorScheme.successColor.copy(alpha = 0.1f)
+                AppTheme.colorScheme.statusOnline.copy(alpha = 0.1f)
             else
                 AppTheme.colorScheme.statusOffline.copy(alpha = 0.1f)
         ),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(12.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(10.dp)
-                    .clip(CircleShape)
+                    .size(8.dp)
                     .background(
-                        if (isLoggedIn) AppTheme.colorScheme.statusOnline
-                        else AppTheme.colorScheme.statusOffline
+                        color = if (isLoggedIn) AppTheme.colorScheme.statusOnline else AppTheme.colorScheme.statusOffline,
+                        shape = RoundedCornerShape(4.dp)
                     )
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (isLoggedIn) "Logged In" else "Guest User",
+                text = if (isLoggedIn) "Online" else "Guest",
                 style = AppTheme.typography.bodySmall,
-                color = if (isLoggedIn) AppTheme.colorScheme.successColor
-                else AppTheme.colorScheme.statusOffline,
+                color = if (isLoggedIn) AppTheme.colorScheme.statusOnline else AppTheme.colorScheme.statusOffline,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -379,8 +356,7 @@ private fun SectionHeader(title: String) {
         text = title,
         style = AppTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
-        color = AppTheme.colorScheme.primaryText,
-        modifier = Modifier.padding(vertical = 8.dp)
+        color = AppTheme.colorScheme.primaryText
     )
 }
 
@@ -461,21 +437,18 @@ private fun LogoutButton(
 ) {
     Button(
         onClick = onLogout,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
+        modifier = Modifier.fillMaxWidth(),
+        enabled = !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppTheme.colorScheme.errorColor,
-            contentColor = AppTheme.colorScheme.primaryBackground
+            containerColor = MaterialTheme.colorScheme.error,
+            contentColor = MaterialTheme.colorScheme.onError
         ),
-        shape = RoundedCornerShape(16.dp),
-        enabled = !isLoading
+        shape = RoundedCornerShape(8.dp)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(20.dp),
-                color = AppTheme.colorScheme.primaryBackground,
-                strokeWidth = 2.dp
+                color = MaterialTheme.colorScheme.onError
             )
         } else {
             Icon(
@@ -483,12 +456,12 @@ private fun LogoutButton(
                 contentDescription = "Logout",
                 modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Logout",
-                fontWeight = FontWeight.SemiBold,
-                style = AppTheme.typography.titleSmall
-            )
         }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = if (isLoading) "Logging out..." else "Logout",
+            style = AppTheme.typography.titleMedium,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
