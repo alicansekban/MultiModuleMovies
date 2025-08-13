@@ -30,4 +30,17 @@ class AppDataStore @Inject constructor(
             isDarkMode
         )
     }
+
+    suspend fun getFirebaseToken(): String? {
+        return dataStoreManager.readValue(
+            DataStoreKeys.FCM_TOKEN_KEY
+        )
+    }
+
+    suspend fun setFirebaseToken(token: String) {
+        dataStoreManager.storeValue(
+            DataStoreKeys.FCM_TOKEN_KEY,
+            token
+        )
+    }
 }
