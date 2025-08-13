@@ -29,3 +29,11 @@ fun AppRouter.navigateToFavorites() {
 fun AppRouter.navigateToProfile() {
     navigateTo(ScreenRoute.ProfileHost)
 }
+
+fun AppRouter.navigateToLogin() {
+    navigateTo(ScreenRoute.LoginScreenRoute)
+}
+
+fun AppRouter.navigateToRegister() {
+    navigateTo(ScreenRoute.RegisterScreenRoute)
+}

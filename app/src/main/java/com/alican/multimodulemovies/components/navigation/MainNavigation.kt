@@ -14,6 +14,8 @@ import com.alican.multimodulemovies.components.nav_graphs.homeGraph
 import com.alican.multimodulemovies.components.nav_graphs.profileGraph
 import com.alican.multimodulemovies.components.nav_graphs.searchGraph
 import com.alican.multimodulemovies.ui.detail.MovieDetailScreen
+import com.alican.multimodulemovies.ui.login.LoginScreen
+import com.alican.multimodulemovies.ui.register.RegisterScreen
 import com.alican.multimodulemovies.utils.ScreenRoute
 
 @Composable
@@ -59,6 +61,13 @@ fun MainNavigation(
 
         composable<ScreenRoute.MovieDetailRoute> {
             MovieDetailScreen()
+        }
+
+        composable<ScreenRoute.LoginScreenRoute> {
+            LoginScreen()
+        }
+        composable<ScreenRoute.RegisterScreenRoute> {
+            RegisterScreen()
         }
     }
 

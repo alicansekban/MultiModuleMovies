@@ -42,4 +42,10 @@ sealed class ScreenRoute {
     @Serializable
     data object ProfileScreenRoute : ScreenRoute()
 
+    @Serializable
+    data object LoginScreenRoute : ScreenRoute()
+
+    @Serializable
+    data object RegisterScreenRoute : ScreenRoute()
+
 }
