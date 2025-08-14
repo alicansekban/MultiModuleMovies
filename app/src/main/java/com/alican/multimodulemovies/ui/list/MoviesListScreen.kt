@@ -30,9 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alican.domain.models.MovieUIModel
+import com.alican.domain.models.pagination.PaginationUIModel
 import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.components.card.LoadingStateCard
 import com.alican.multimodulemovies.theme.AppTheme
@@ -48,22 +51,37 @@ fun MoviesListScreen(
     viewModel: MoviesListViewModel = hiltViewModel()
 ) {
     val paginationState by viewModel.movies.collectAsStateWithLifecycle()
+
+    paginationState
+    MoviesListScreenContent(
+        modifier = modifier,
+        uiState = paginationState,
+        onEvent = viewModel::onScreenEvent
+    )
+}
+
+@Composable
+fun MoviesListScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: PaginationUIModel<MovieUIModel>,
+    onEvent: (MovieListUIEvents) -> Unit = {}
+) {
     val gridState = rememberLazyGridState()
 
-    // Keep your derivedState logic but use new pagination state
+    // Keep your derivedState logic
     val shouldFetchNextPage by remember {
         derivedStateOf {
             val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
             lastVisibleIndex != null &&
-                    lastVisibleIndex >= paginationState.items.size - 10 &&
-                    paginationState.hasNextPage &&
-                    !paginationState.isLoadingMore
+                    lastVisibleIndex >= uiState.items.size - 10 &&
+                    uiState.hasNextPage &&
+                    !uiState.isLoadingMore
         }
     }
 
     LaunchedEffect(shouldFetchNextPage) {
         if (shouldFetchNextPage) {
-            viewModel.loadNextPage()
+            onEvent(MovieListUIEvents.LoadNextPage)
         }
     }
 
@@ -78,22 +96,22 @@ fun MoviesListScreen(
         MovieListHeader()
 
         // Show initial loading state
-        if (paginationState.isLoading && paginationState.items.isEmpty()) {
+        if (uiState.isLoading && uiState.items.isEmpty()) {
             LoadingStateCard()
             return@Column
         }
 
         // Show error state for first page
-        if (paginationState.hasError && paginationState.items.isEmpty()) {
+        if (uiState.hasError && uiState.items.isEmpty()) {
             ErrorStateCard(
-                message = paginationState.errorMessage ?: "Unknown error occurred",
-                onRetry = { viewModel.retry() }
+                message = uiState.errorMessage ?: "Unknown error occurred",
+                onRetry = { onEvent(MovieListUIEvents.Retry) }
             )
             return@Column
         }
 
         // Show empty state
-        if (paginationState.isEmpty) {
+        if (uiState.isEmpty) {
             EmptyStateCard("No movies found")
             return@Column
         }
@@ -107,16 +125,17 @@ fun MoviesListScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Movie items
-            items(paginationState.items, key = { it.id ?: UUID.randomUUID().toString() }) { movie ->
+            items(uiState.items, key = { it.id ?: UUID.randomUUID().toString() }) { movie ->
                 MovieGridItem(
                     imageUrl = movie.imageUrl,
                     title = movie.title,
-                    modifier = Modifier.heightPercent(0.45f, configuration)
+                    modifier = Modifier.heightPercent(0.45f, configuration),
+                    onClick = { onEvent(MovieListUIEvents.OpenMovieDetail(movie.id ?: 0)) }
                 )
             }
 
             // Bottom loading indicator for pagination
-            if (paginationState.isLoadingMore) {
+            if (uiState.isLoadingMore) {
                 item {
                     Box(
                         modifier = Modifier
@@ -133,7 +152,7 @@ fun MoviesListScreen(
             }
 
             // Error indicator for pagination
-            if (paginationState.hasError && paginationState.items.isNotEmpty()) {
+            if (uiState.hasError && uiState.items.isNotEmpty()) {
                 item {
                     Card(
                         modifier = Modifier
@@ -158,7 +177,7 @@ fun MoviesListScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
-                                onClick = { viewModel.retry() }
+                                onClick = { onEvent(MovieListUIEvents.Retry) }
                             ) {
                                 Text("Retry")
                             }
@@ -168,7 +187,7 @@ fun MoviesListScreen(
             }
 
             // End of list indicator
-            if (paginationState.items.isNotEmpty() && !paginationState.hasNextPage && !paginationState.isLoadingMore) {
+            if (uiState.items.isNotEmpty() && !uiState.hasNextPage && !uiState.isLoadingMore) {
                 item {
                     Card(
                         modifier = Modifier
@@ -186,7 +205,7 @@ fun MoviesListScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "You've reached the end! 🎬\n${paginationState.totalResults} movies total",
+                                text = "You've reached the end! 🎬\n${uiState.totalResults} movies total",
                                 style = AppTheme.typography.bodyMedium,
                                 color = AppTheme.colorScheme.secondaryText,
                                 textAlign = TextAlign.Center
@@ -196,5 +215,244 @@ fun MoviesListScreen(
                 }
             }
         }
+    }
+}
+
+// Preview Composables
+@Preview(name = "Movies List Light - Loading")
+@Composable
+private fun MoviesListLoadingPreview() {
+    AppTheme(isDarkMode = false) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = true,
+                isLoadingMore = false,
+                hasError = false,
+                canLoadMore = true,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Dark - Loading")
+@Composable
+private fun MoviesListLoadingDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = true,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Light - Error")
+@Composable
+private fun MoviesListErrorPreview() {
+    AppTheme(isDarkMode = false) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = true,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = "Failed to load movies. Please check your connection."
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Dark - Error")
+@Composable
+private fun MoviesListErrorDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = true,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = "Network error occurred"
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Light - Empty")
+@Composable
+private fun MoviesListEmptyPreview() {
+    AppTheme(isDarkMode = false) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Dark - Empty")
+@Composable
+private fun MoviesListEmptyDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = emptyList(),
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 0,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Light - With Data")
+@Composable
+private fun MoviesListWithDataPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
+            ),
+            MovieUIModel(
+                id = 2,
+                title = "Inception",
+                overview = "A mind-bending thriller",
+            ),
+            MovieUIModel(
+                id = 3,
+                title = "The Dark Knight",
+                overview = "Batman's greatest challenge",
+            ),
+            MovieUIModel(
+                id = 4,
+                title = "Avengers: Endgame",
+                overview = "The epic conclusion",
+            )
+        )
+
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = sampleMovies,
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 150,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Dark - With Data")
+@Composable
+private fun MoviesListWithDataDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
+            ),
+            MovieUIModel(
+                id = 2,
+                title = "Inception",
+                overview = "A mind-bending thriller",
+            )
+        )
+
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = sampleMovies,
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 75,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Light - Loading More")
+@Composable
+private fun MoviesListLoadingMorePreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
+            ),
+            MovieUIModel(
+                id = 2,
+                title = "Inception",
+                overview = "A mind-bending thriller",
+            )
+        )
+
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = sampleMovies,
+                isLoading = false,
+                isLoadingMore = true,
+                hasError = false,
+                currentPage = 1,
+                totalResults = 200,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Movies List Light - End of List")
+@Composable
+private fun MoviesListEndOfListPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
+            )
+        )
+
+        MoviesListScreenContent(
+            uiState = PaginationUIModel(
+                items = sampleMovies,
+                isLoading = false,
+                isLoadingMore = false,
+                hasError = false,
+                currentPage = 5,
+                totalResults = 50,
+                errorMessage = null
+            )
+        )
     }
 }

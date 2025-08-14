@@ -1,3 +1,4 @@
+
 package com.alican.multimodulemovies.ui.list
 
 import androidx.lifecycle.SavedStateHandle
@@ -6,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.alican.domain.interactors.MovieListInteractor
 import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
+import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,11 +16,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// Update your MovieListViewModel
 @HiltViewModel
 class MoviesListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val interactor: MovieListInteractor
+    private val interactor: MovieListInteractor,
+    private val appRouter: AppRouter
 ) : ViewModel() {
 
     private val movieType = savedStateHandle.toRoute<ScreenRoute.MoviesListRoute>()
@@ -33,25 +36,36 @@ class MoviesListViewModel @Inject constructor(
         loadMovies()
     }
 
+    fun onScreenEvent(event: MovieListUIEvents) {
+        when (event) {
+            MovieListUIEvents.LoadNextPage -> loadNextPage()
+            MovieListUIEvents.Retry -> retry()
+            MovieListUIEvents.Refresh -> refresh()
+            is MovieListUIEvents.OpenMovieDetail -> {
+                appRouter.navigateToMovieDetail(event.movieId)
+            }
+        }
+    }
+
     private fun loadMovies() {
         viewModelScope.launch {
             interactor.loadMoviesByType(movieType.movieType)
         }
     }
 
-    fun loadNextPage() {
+    private fun loadNextPage() {
         viewModelScope.launch {
             interactor.loadNextPage()
         }
     }
 
-    fun retry() {
+    private fun retry() {
         viewModelScope.launch {
             interactor.retry()
         }
     }
 
-    fun refresh() {
+    private fun refresh() {
         viewModelScope.launch {
             interactor.reset()
             interactor.loadFirstPage()

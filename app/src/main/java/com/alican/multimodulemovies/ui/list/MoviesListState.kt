@@ -1,14 +1,9 @@
 package com.alican.multimodulemovies.ui.list
 
-import com.alican.domain.models.MovieListUIModel
-
 sealed interface MovieListUIEvents {
-    data object GetNextPage : MovieListUIEvents
+    data object LoadNextPage : MovieListUIEvents
+    data object Retry : MovieListUIEvents
+    data object Refresh : MovieListUIEvents
+    data class OpenMovieDetail(val movieId: Int) : MovieListUIEvents
 }
 
-
-
-data class MovieListUIStateModel(
-    val uiModel: MovieListUIModel = MovieListUIModel(),
-    val isLoading: Boolean = false,
-)

@@ -23,7 +23,8 @@ import com.alican.multimodulemovies.theme.AppTheme
 fun MovieGridItem(
     imageUrl: String?,
     title: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -31,7 +32,8 @@ fun MovieGridItem(
             containerColor = AppTheme.colorScheme.cardBackground
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        onClick = onClick,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
