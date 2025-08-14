@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.ui.home.components
+package com.alican.multimodulemovies.components.card
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

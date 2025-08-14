@@ -29,13 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
+import com.alican.multimodulemovies.components.card.EmptyStateCard
+import com.alican.multimodulemovies.components.card.LoadingStateCard
 import com.alican.multimodulemovies.theme.AppTheme
+import com.alican.multimodulemovies.ui.list.components.ErrorStateCard
+import com.alican.multimodulemovies.ui.list.components.MovieGridItem
+import com.alican.multimodulemovies.ui.list.components.MovieListHeader
 import com.alican.multimodulemovies.utils.heightPercent
 import java.util.UUID
 
@@ -192,190 +195,6 @@ fun MoviesListScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun MovieListHeader() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardSecondaryBackground
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Movies Collection",
-                style = AppTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.primaryText
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Browse through our extensive movie library",
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.secondaryText,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-private fun MovieGridItem(
-    imageUrl: String?,
-    title: String?,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Movie Image
-            imageUrl?.let {
-                CustomImageViewWithLoading(
-                    imageUrl = it,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                )
-            }
-
-            // Fixed height container for title
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp) // Fixed height for 2 lines of text
-                    .padding(vertical = 8.dp, horizontal = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                title?.let {
-                    Text(
-                        text = it,
-                        style = AppTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = AppTheme.colorScheme.primaryText,
-                        maxLines = 2,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-    }
-}
-@Composable
-private fun LoadingStateCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardBackground
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(32.dp),
-                color = AppTheme.colorScheme.primaryButton
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorStateCard(
-    message: String,
-    onRetry: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.errorColor.copy(alpha = 0.1f)
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Error Loading Movies",
-                style = AppTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.errorColor
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = message,
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.primaryText,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = onRetry) {
-                Text("Retry")
-            }
-        }
-    }
-}
-
-@Composable
-private fun EmptyStateCard(message: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardSecondaryBackground
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "No Movies Found",
-                style = AppTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.secondaryText
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = message,
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.secondaryText,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }

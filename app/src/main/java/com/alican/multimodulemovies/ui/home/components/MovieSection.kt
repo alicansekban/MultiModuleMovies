@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
+import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.components.pager.CustomPager
 import com.alican.multimodulemovies.components.widget.CustomWidget
 import com.alican.multimodulemovies.components.widget.MovieWidgetComponentModel

@@ -17,8 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
+import com.alican.multimodulemovies.components.card.LoadingStateCard
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.multimodulemovies.ui.home.components.LoadingStateCard
 import com.alican.multimodulemovies.ui.home.components.MovieSection
 import com.alican.multimodulemovies.ui.home.components.WelcomeSection
 
