@@ -1,50 +1,54 @@
 package com.alican.multimodulemovies.ui.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
-import com.alican.multimodulemovies.components.pager.CustomPager
-import com.alican.multimodulemovies.components.widget.CustomWidget
-import com.alican.multimodulemovies.components.widget.MovieWidgetComponentModel
-import com.alican.multimodulemovies.components.widget.toWidgetModel
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.multimodulemovies.utils.heightPercent
+import com.alican.multimodulemovies.ui.home.components.LoadingStateCard
+import com.alican.multimodulemovies.ui.home.components.MovieSection
+import com.alican.multimodulemovies.ui.home.components.WelcomeSection
 
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel(),
-    openListScreen: (type: MovieType) -> Unit,
-    openMovieDetailScreen: (id: Int) -> Unit
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colorScheme.primaryBackground)
+    ) {
+        HomeScreenContent(
+            uiState = uiState,
+            onEvent = viewModel::onScreenEvent
+        )
+
+    }
+}
+
+
+@Composable
+fun HomeScreenContent(
+    uiState: HomeUIState,
+    onEvent: (HomeUIEvents) -> Unit = {}
 ) {
     val configuration = LocalConfiguration.current
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -68,8 +72,8 @@ fun HomeScreen(
             movieType = MovieType.UPCOMING,
             showPager = true,
             configuration = configuration,
-            openListScreen = openListScreen,
-            openMovieDetailScreen = openMovieDetailScreen
+            openListScreen = { onEvent(HomeUIEvents.OpenMovieList(it)) },
+            openMovieDetailScreen = { onEvent(HomeUIEvents.OpenMovieDetail(it)) }
         )
 
         // Now Playing Section
@@ -79,8 +83,8 @@ fun HomeScreen(
             movieType = MovieType.NOW_PLAYING,
             showPager = false,
             configuration = configuration,
-            openListScreen = openListScreen,
-            openMovieDetailScreen = openMovieDetailScreen
+            openListScreen = { onEvent(HomeUIEvents.OpenMovieList(it)) },
+            openMovieDetailScreen = { onEvent(HomeUIEvents.OpenMovieDetail(it)) }
         )
 
         // Top Rated Section
@@ -90,8 +94,8 @@ fun HomeScreen(
             movieType = MovieType.TOP_RATED,
             showPager = false,
             configuration = configuration,
-            openListScreen = openListScreen,
-            openMovieDetailScreen = openMovieDetailScreen
+            openListScreen = { onEvent(HomeUIEvents.OpenMovieList(it)) },
+            openMovieDetailScreen = { onEvent(HomeUIEvents.OpenMovieDetail(it)) }
         )
 
         // Popular Section
@@ -101,8 +105,8 @@ fun HomeScreen(
             movieType = MovieType.POPULAR,
             showPager = false,
             configuration = configuration,
-            openListScreen = openListScreen,
-            openMovieDetailScreen = openMovieDetailScreen
+            openListScreen = { onEvent(HomeUIEvents.OpenMovieList(it)) },
+            openMovieDetailScreen = { onEvent(HomeUIEvents.OpenMovieDetail(it)) }
         )
 
         // Bottom spacing
@@ -110,149 +114,129 @@ fun HomeScreen(
     }
 }
 
+@Preview(name = "Home Screen Light - Loading")
 @Composable
-private fun MovieSection(
-    movies: List<MovieUIModel>,
-    title: String,
-    movieType: MovieType,
-    showPager: Boolean,
-    configuration: Configuration,
-    openListScreen: (MovieType) -> Unit,
-    openMovieDetailScreen: (Int) -> Unit
-) {
-    if (movies.isEmpty()) {
-        EmptyStateCard("No $title movies available")
-        return
+private fun HomeScreenLoadingPreview() {
+    AppTheme(isDarkMode = false) {
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = emptyList(),
+                nowPlayingMovies = emptyList(),
+                popularMovies = emptyList(),
+                topRatedMovies = emptyList(),
+                isLoading = true
+            )
+        )
     }
+}
 
-    val widgetMovies = movies.map { it.toWidgetModel() }
-    val widgetModel = MovieWidgetComponentModel(
-        title = title,
-        items = widgetMovies
-    )
+@Preview(name = "Home Screen Dark - Loading")
+@Composable
+private fun HomeScreenLoadingDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = emptyList(),
+                nowPlayingMovies = emptyList(),
+                popularMovies = emptyList(),
+                topRatedMovies = emptyList(),
+                isLoading = true
+            )
+        )
+    }
+}
 
-    if (showPager) {
-        // Hero Pager Section for Upcoming Movies
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = AppTheme.colorScheme.cardBackground
+@Preview(name = "Home Screen Light - Empty")
+@Composable
+private fun HomeScreenEmptyPreview() {
+    AppTheme(isDarkMode = false) {
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = emptyList(),
+                nowPlayingMovies = emptyList(),
+                popularMovies = emptyList(),
+                topRatedMovies = emptyList(),
+                isLoading = false
+            )
+        )
+    }
+}
+
+@Preview(name = "Home Screen Dark - Empty")
+@Composable
+private fun HomeScreenEmptyDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = emptyList(),
+                nowPlayingMovies = emptyList(),
+                popularMovies = emptyList(),
+                topRatedMovies = emptyList(),
+                isLoading = false
+            )
+        )
+    }
+}
+
+@Preview(name = "Home Screen Light - With Data")
+@Composable
+private fun HomeScreenWithDataPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            CustomPager(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightPercent(0.6f, configuration),
-                images = movies.map { it.imageUrl ?: "" },
-                onClick = { index ->
-                    val movie = movies[index]
-                    movie.id?.let { movieId -> openMovieDetailScreen.invoke(movieId) }
-                }
+            MovieUIModel(
+                id = 2,
+                title = "Inception",
+                overview = "A mind-bending thriller",
+            ),
+            MovieUIModel(
+                id = 3,
+                title = "The Dark Knight",
+                overview = "Batman's greatest challenge",
             )
-        }
-    }
+        )
 
-    CustomWidget(
-        model = widgetModel,
-        openListScreen = { openListScreen.invoke(movieType) },
-        openMovieDetailScreen = openMovieDetailScreen
-    )
-}
-
-@Composable
-private fun WelcomeSection() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardSecondaryBackground
-        ),
-        shape = RoundedCornerShape(20.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Welcome to Movies",
-                style = AppTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.primaryText,
-                textAlign = TextAlign.Center
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = sampleMovies,
+                nowPlayingMovies = sampleMovies.take(2),
+                popularMovies = sampleMovies.reversed(),
+                topRatedMovies = sampleMovies.drop(1),
+                isLoading = false
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Discover the latest movies, trending shows, and more",
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.secondaryText,
-                textAlign = TextAlign.Center
-            )
-        }
+        )
     }
 }
 
+@Preview(name = "Home Screen Dark - With Data")
 @Composable
-private fun LoadingStateCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardBackground
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(32.dp),
-                color = AppTheme.colorScheme.primaryButton
+private fun HomeScreenWithDataDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        val sampleMovies = listOf(
+            MovieUIModel(
+                id = 1,
+                title = "The Amazing Spider-Man",
+                overview = "A great superhero movie",
+            ),
+            MovieUIModel(
+                id = 2,
+                title = "Inception",
+                overview = "A mind-bending thriller",
             )
-        }
-    }
-}
+        )
 
-@Composable
-private fun EmptyStateCard(message: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.cardSecondaryBackground
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "No Content",
-                style = AppTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppTheme.colorScheme.secondaryText
+        HomeScreenContent(
+            uiState = HomeUIState(
+                upcomingMovies = sampleMovies,
+                nowPlayingMovies = sampleMovies.take(2),
+                popularMovies = sampleMovies.reversed(),
+                topRatedMovies = sampleMovies.drop(1),
+                isLoading = false
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = message,
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colorScheme.secondaryText,
-                textAlign = TextAlign.Center
-            )
-        }
+        )
     }
 }

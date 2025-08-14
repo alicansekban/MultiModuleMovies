@@ -14,24 +14,7 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
         startDestination = ScreenRoute.HomeScreenRoute,
     ) {
         composable<ScreenRoute.HomeScreenRoute> {
-            HomeScreen(
-                openListScreen = {
-                    val route = ScreenRoute.MoviesListRoute(
-                        movieType = it
-                    )
-                    navController.navigate(
-                        route = route
-                    )
-                },
-                openMovieDetailScreen = {
-                    val route = ScreenRoute.MovieDetailRoute(
-                        movieId = it,
-                    )
-                    navController.navigate(
-                        route = route
-                    )
-                }
-            )
+            HomeScreen()
         }
 
         composable<ScreenRoute.MoviesListRoute> {
