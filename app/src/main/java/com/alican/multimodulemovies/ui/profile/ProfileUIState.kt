@@ -1,7 +1,7 @@
+
 package com.alican.multimodulemovies.ui.profile
 
 import com.alican.domain.models.UserAuthUIModel
-
 
 data class ProfileUIState(
     val isUserLoggedIn: Boolean = false,
@@ -13,3 +13,14 @@ data class ProfileUIState(
     val isLoading: Boolean = false,
     val error: String? = null
 )
+
+sealed interface ProfileUIEvents {
+    data object ToggleTheme : ProfileUIEvents
+    data object Logout : ProfileUIEvents
+    data object ClearError : ProfileUIEvents
+    data object NavigateToLogin : ProfileUIEvents
+    data object HandleNotifications : ProfileUIEvents
+    data object HandleHelp : ProfileUIEvents
+    data object HandleAbout : ProfileUIEvents
+    data object HandlePrivacyPolicy : ProfileUIEvents
+}

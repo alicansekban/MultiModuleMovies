@@ -12,11 +12,7 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
         startDestination = ScreenRoute.ProfileScreenRoute,
     ) {
         composable<ScreenRoute.ProfileScreenRoute> {
-            ProfileScreen(
-                onLoginClick = {
-                    navController.navigate(ScreenRoute.LoginScreenRoute)
-                }
-            )
+            ProfileScreen()
         }
     }
 }

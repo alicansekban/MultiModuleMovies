@@ -42,24 +42,51 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alican.domain.models.UserAuthUIModel
 import com.alican.multimodulemovies.theme.AppTheme
+
+@Composable
+fun ProfileScreen(
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Handle navigation to login
+    LaunchedEffect(Unit) {
+        // This can be used for one-time events if needed
+    }
+
+    ProfileScreenContent(
+        uiState = uiState,
+        onEvent = viewModel::onScreenEvent
+    )
+
+    // Clear error when screen recomposes
+    LaunchedEffect(uiState.error) {
+        if (uiState.error != null) {
+            kotlinx.coroutines.delay(3000) // Clear error after 5 seconds
+            viewModel.onScreenEvent(ProfileUIEvents.ClearError)
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
-    onLoginClick: () -> Unit
+fun ProfileScreenContent(
+    uiState: ProfileUIState,
+    onEvent: (ProfileUIEvents) -> Unit = {}
 ) {
-    val uiState by viewModel.uiState
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +102,7 @@ fun ProfileScreen(
             uiState.error?.let { error ->
                 ErrorCard(
                     error = error,
-                    onDismiss = viewModel::clearError
+                    onDismiss = { onEvent(ProfileUIEvents.ClearError) }
                 )
             }
 
@@ -86,7 +113,7 @@ fun ProfileScreen(
                 userSurname = uiState.userSurname,
                 userImageUrl = uiState.userImageUrl,
                 userEmail = uiState.currentUser?.email,
-                onLoginClick = onLoginClick
+                onLoginClick = { onEvent(ProfileUIEvents.NavigateToLogin) }
             )
 
             LazyColumn(
@@ -103,7 +130,7 @@ fun ProfileScreen(
                         icon = if (uiState.isDarkTheme) Icons.Default.DarkMode else Icons.Default.LightMode,
                         title = "Theme",
                         subtitle = if (uiState.isDarkTheme) "Dark Mode" else "Light Mode",
-                        onClick = { viewModel.toggleTheme() },
+                        onClick = { onEvent(ProfileUIEvents.ToggleTheme) },
                         iconTint = AppTheme.colorScheme.accent
                     )
                 }
@@ -113,7 +140,7 @@ fun ProfileScreen(
                         icon = Icons.Default.Notifications,
                         title = "Notifications",
                         subtitle = "Manage your notification preferences",
-                        onClick = { /* Handle notifications */ },
+                        onClick = { onEvent(ProfileUIEvents.HandleNotifications) },
                         iconTint = AppTheme.colorScheme.warningColor
                     )
                 }
@@ -123,7 +150,7 @@ fun ProfileScreen(
                         icon = Icons.Default.Help,
                         title = "Help & Support",
                         subtitle = "Get help and contact support",
-                        onClick = { /* Handle help */ },
+                        onClick = { onEvent(ProfileUIEvents.HandleHelp) },
                         iconTint = AppTheme.colorScheme.primaryButton
                     )
                 }
@@ -133,7 +160,7 @@ fun ProfileScreen(
                         icon = Icons.Default.Info,
                         title = "About",
                         subtitle = "App version and information",
-                        onClick = { /* Handle about */ },
+                        onClick = { onEvent(ProfileUIEvents.HandleAbout) },
                         iconTint = AppTheme.colorScheme.secondaryText
                     )
                 }
@@ -143,7 +170,7 @@ fun ProfileScreen(
                         icon = Icons.Default.Security,
                         title = "Privacy Policy",
                         subtitle = "Read our privacy policy",
-                        onClick = { /* Handle privacy policy */ },
+                        onClick = { onEvent(ProfileUIEvents.HandlePrivacyPolicy) },
                         iconTint = AppTheme.colorScheme.successColor
                     )
                 }
@@ -154,7 +181,7 @@ fun ProfileScreen(
 
                         LogoutButton(
                             isLoading = uiState.isLoading,
-                            onLogout = { viewModel.logout() }
+                            onLogout = { onEvent(ProfileUIEvents.Logout) }
                         )
                     }
                 }
@@ -462,6 +489,141 @@ private fun LogoutButton(
             text = if (isLoading) "Logging out..." else "Logout",
             style = AppTheme.typography.titleMedium,
             fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+// Preview Composables
+@Preview(name = "Profile Screen Light - Logged In")
+@Composable
+private fun ProfileScreenLoggedInPreview() {
+    AppTheme(isDarkMode = false) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = true,
+                currentUser = UserAuthUIModel(
+                    uid = "1",
+                    email = "john.doe@example.com",
+                    displayName = "John Doe",
+                    isEmailVerified = true,
+                    isLoggedIn = true
+                ),
+                userName = "John",
+                userSurname = "Doe",
+                userImageUrl = null,
+                isDarkTheme = false,
+                isLoading = false,
+                error = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Profile Screen Dark - Logged In")
+@Composable
+private fun ProfileScreenLoggedInDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = true,
+                currentUser = UserAuthUIModel(
+                    uid = "1",
+                    email = "john.doe@example.com",
+                    displayName = "John Doe",
+                    isEmailVerified = true,
+                    isLoggedIn = true
+
+                ),
+                userName = "John",
+                userSurname = "Doe",
+                userImageUrl = null,
+                isDarkTheme = true,
+                isLoading = false,
+                error = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Profile Screen Light - Guest User")
+@Composable
+private fun ProfileScreenGuestPreview() {
+    AppTheme(isDarkMode = false) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = false,
+                currentUser = null,
+                userName = "Guest",
+                userSurname = "User",
+                userImageUrl = null,
+                isDarkTheme = false,
+                isLoading = false,
+                error = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Profile Screen Dark - Guest User")
+@Composable
+private fun ProfileScreenGuestDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = false,
+                currentUser = null,
+                userName = "Guest",
+                userSurname = "User",
+                userImageUrl = null,
+                isDarkTheme = true,
+                isLoading = false,
+                error = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Profile Screen Light - Loading")
+@Composable
+private fun ProfileScreenLoadingPreview() {
+    AppTheme(isDarkMode = false) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = true,
+                currentUser = UserAuthUIModel(
+                    uid = "1",
+                    email = "john.doe@example.com",
+                    displayName = "John Doe",
+                    isEmailVerified = true,
+                    isLoggedIn = true
+
+                ),
+                userName = "John",
+                userSurname = "Doe",
+                userImageUrl = null,
+                isDarkTheme = false,
+                isLoading = true,
+                error = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Profile Screen Light - With Error")
+@Composable
+private fun ProfileScreenErrorPreview() {
+    AppTheme(isDarkMode = false) {
+        ProfileScreenContent(
+            uiState = ProfileUIState(
+                isUserLoggedIn = false,
+                currentUser = null,
+                userName = "Guest",
+                userSurname = "User",
+                userImageUrl = null,
+                isDarkTheme = false,
+                isLoading = false,
+                error = "Failed to load user data. Please try again."
+            )
         )
     }
 }

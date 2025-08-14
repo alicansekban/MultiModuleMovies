@@ -1,28 +1,45 @@
 package com.alican.multimodulemovies.ui.profile
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
 import com.alican.domain.models.BaseUIModel
+import com.alican.multimodulemovies.helpers.navigation.navigateToLogin
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
+import com.alican.multimodulemovies.navigation.AppRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userAuthInteractor: UserAuthInteractor,
-    private val themeManager: ThemeManager
+    private val themeManager: ThemeManager,
+    private val appRouter: AppRouter
 ) : ViewModel() {
 
-    private val _uiState = mutableStateOf(ProfileUIState())
-    val uiState: State<ProfileUIState> = _uiState
+    private val _uiState = MutableStateFlow(ProfileUIState())
+    val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
 
     init {
         loadUserData()
         observeTheme()
+    }
+
+    fun onScreenEvent(event: ProfileUIEvents) {
+        when (event) {
+            ProfileUIEvents.ClearError -> clearError()
+            ProfileUIEvents.Logout -> logout()
+            ProfileUIEvents.ToggleTheme -> toggleTheme()
+            ProfileUIEvents.NavigateToLogin -> handleLogin()
+            ProfileUIEvents.HandleNotifications -> handleNotifications()
+            ProfileUIEvents.HandleHelp -> handleHelp()
+            ProfileUIEvents.HandleAbout -> handleAbout()
+            ProfileUIEvents.HandlePrivacyPolicy -> handlePrivacyPolicy()
+        }
     }
 
     private fun loadUserData() {
@@ -114,7 +131,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun toggleTheme() {
+    private fun toggleTheme() {
         viewModelScope.launch {
             try {
                 val newTheme = !_uiState.value.isDarkTheme
@@ -127,7 +144,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    private fun logout() {
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true, error = null)
@@ -161,7 +178,28 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun clearError() {
+    private fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
+    }
+
+
+    private fun handleLogin() {
+        appRouter.navigateToLogin()
+    }
+
+    private fun handleNotifications() {
+        // TODO: Implement notifications handling
+    }
+
+    private fun handleHelp() {
+        // TODO: Implement help handling
+    }
+
+    private fun handleAbout() {
+        // TODO: Implement about handling
+    }
+
+    private fun handlePrivacyPolicy() {
+        // TODO: Implement privacy policy handling
     }
 }
