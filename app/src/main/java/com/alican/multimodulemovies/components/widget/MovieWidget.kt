@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
+import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.utils.heightPercent
 import com.alican.multimodulemovies.utils.widthPercent
 
@@ -49,11 +50,15 @@ fun CustomWidget(
                 Text(
                     modifier = Modifier.weight(1f),
                     text = it,
+                    color = AppTheme.colorScheme.primaryText,
+                    style = AppTheme.typography.titleMedium
                 )
             }
             Text(
                 text = "View all",
                 textDecoration = TextDecoration.Underline,
+                color = AppTheme.colorScheme.primaryButton,
+                style = AppTheme.typography.bodyMedium
             )
         }
         LazyRow(Modifier.fillMaxWidth(), contentPadding = PaddingValues(start = 16.dp)) {
@@ -96,6 +101,8 @@ fun WidgetItem(
                 text = it,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                color = AppTheme.colorScheme.primaryText,
+                style = AppTheme.typography.bodyMedium
             )
         }
     }

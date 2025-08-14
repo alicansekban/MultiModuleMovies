@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.multimodulemovies.components.imageView.CustomImageViewWithLoading
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.utils.heightPercent
+import java.util.UUID
 
 @Composable
 fun MoviesListScreen(
@@ -103,7 +104,7 @@ fun MoviesListScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Movie items
-            items(paginationState.items) { movie ->
+            items(paginationState.items, key = { it.id ?: UUID.randomUUID().toString() }) { movie ->
                 MovieGridItem(
                     imageUrl = movie.imageUrl,
                     title = movie.title,

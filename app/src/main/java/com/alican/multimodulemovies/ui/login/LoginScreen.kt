@@ -125,9 +125,17 @@ fun LoginScreen(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = AppTheme.colorScheme.primaryButton,
                         focusedLabelColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.5f),
-                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText
+                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.7f),
+                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText,
+                        focusedTextColor = AppTheme.colorScheme.primaryText,
+                        unfocusedTextColor = AppTheme.colorScheme.primaryText,
+                        cursorColor = AppTheme.colorScheme.primaryButton,
+                        focusedLeadingIconColor = AppTheme.colorScheme.primaryButton,
+                        unfocusedLeadingIconColor = AppTheme.colorScheme.secondaryText,
+                        focusedTrailingIconColor = AppTheme.colorScheme.primaryButton,
+                        unfocusedTrailingIconColor = AppTheme.colorScheme.secondaryText
                     )
+
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -157,9 +165,17 @@ fun LoginScreen(
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = AppTheme.colorScheme.primaryButton,
                         focusedLabelColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.5f),
-                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText
+                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.7f),
+                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText,
+                        focusedTextColor = AppTheme.colorScheme.primaryText,
+                        unfocusedTextColor = AppTheme.colorScheme.primaryText,
+                        cursorColor = AppTheme.colorScheme.primaryButton,
+                        focusedLeadingIconColor = AppTheme.colorScheme.primaryButton,
+                        unfocusedLeadingIconColor = AppTheme.colorScheme.secondaryText,
+                        focusedTrailingIconColor = AppTheme.colorScheme.primaryButton,
+                        unfocusedTrailingIconColor = AppTheme.colorScheme.secondaryText
                     )
+
                 )
 
                 // Error Message
