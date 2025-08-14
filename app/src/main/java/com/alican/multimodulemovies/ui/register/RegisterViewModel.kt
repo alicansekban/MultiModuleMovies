@@ -1,3 +1,4 @@
+
 package com.alican.multimodulemovies.ui.register
 
 import androidx.lifecycle.ViewModel
@@ -22,31 +23,45 @@ class RegisterViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
 
-    fun updateEmail(email: String) {
+    fun onScreenEvent(event: RegisterUIEvents) {
+        when (event) {
+            RegisterUIEvents.ClearError -> clearError()
+            RegisterUIEvents.ClearSuccess -> clearSuccess()
+            RegisterUIEvents.Register -> register()
+            RegisterUIEvents.ToggleConfirmPasswordVisibility -> toggleConfirmPasswordVisibility()
+            RegisterUIEvents.TogglePasswordVisibility -> togglePasswordVisibility()
+            RegisterUIEvents.NavigateToLogin -> navigateToLogin()
+            is RegisterUIEvents.UpdateConfirmPassword -> updateConfirmPassword(event.confirmPassword)
+            is RegisterUIEvents.UpdateEmail -> updateEmail(event.email)
+            is RegisterUIEvents.UpdatePassword -> updatePassword(event.password)
+        }
+    }
+
+    private fun updateEmail(email: String) {
         _uiState.value = _uiState.value.copy(email = email, errorMessage = null)
     }
 
-    fun updatePassword(password: String) {
+    private fun updatePassword(password: String) {
         _uiState.value = _uiState.value.copy(password = password, errorMessage = null)
     }
 
-    fun updateConfirmPassword(confirmPassword: String) {
+    private fun updateConfirmPassword(confirmPassword: String) {
         _uiState.value = _uiState.value.copy(confirmPassword = confirmPassword, errorMessage = null)
     }
 
-    fun togglePasswordVisibility() {
+    private fun togglePasswordVisibility() {
         _uiState.value = _uiState.value.copy(
             isPasswordVisible = !_uiState.value.isPasswordVisible
         )
     }
 
-    fun toggleConfirmPasswordVisibility() {
+    private fun toggleConfirmPasswordVisibility() {
         _uiState.value = _uiState.value.copy(
             isConfirmPasswordVisible = !_uiState.value.isConfirmPasswordVisible
         )
     }
 
-    fun register() {
+    private fun register() {
         val currentState = _uiState.value
 
         if (!validateInputs(currentState)) return
@@ -108,7 +123,7 @@ class RegisterViewModel @Inject constructor(
         return true
     }
 
-    fun navigateToLogin() {
+    private fun navigateToLogin() {
         appRouter.navigateBack()
     }
 
@@ -116,7 +131,11 @@ class RegisterViewModel @Inject constructor(
         appRouter.navigateAndClearBackStack(ScreenRoute.HomeHost)
     }
 
-    fun clearError() {
+    private fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
+    }
+
+    private fun clearSuccess() {
+        _uiState.value = _uiState.value.copy(registrationSuccess = false)
     }
 }

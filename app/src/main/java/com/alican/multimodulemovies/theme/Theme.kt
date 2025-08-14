@@ -23,7 +23,7 @@ object AppTheme {
 }
 
 @Composable
-fun MultiModuleMoviesTheme(
+fun AppTheme(
     isDarkMode: Boolean = false,
     content: @Composable () -> Unit
 ) {

@@ -17,18 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -37,13 +30,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alican.multimodulemovies.components.textfield.DynamicTextField
+import com.alican.multimodulemovies.components.textfield.PasswordTrailingIcon
 import com.alican.multimodulemovies.theme.AppTheme
 
 @Composable
@@ -52,6 +49,25 @@ fun RegisterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    RegisterScreenContent(
+        uiState = uiState,
+        onEvent = viewModel::onScreenEvent
+    )
+
+    // Clear error when screen recomposes
+    LaunchedEffect(uiState.errorMessage) {
+        if (uiState.errorMessage != null) {
+            kotlinx.coroutines.delay(3000) // Clear error after 3 seconds
+            viewModel.onScreenEvent(RegisterUIEvents.ClearError)
+        }
+    }
+}
+
+@Composable
+fun RegisterScreenContent(
+    uiState: RegisterUIState,
+    onEvent: (RegisterUIEvents) -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -112,110 +128,71 @@ fun RegisterScreen(
                     .padding(24.dp)
             ) {
                 // Email Field
-                OutlinedTextField(
+                DynamicTextField(
                     value = uiState.email,
-                    onValueChange = viewModel::updateEmail,
-                    label = { Text("Email") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Email, contentDescription = "Email")
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    onValueChange = { onEvent(RegisterUIEvents.UpdateEmail(it)) },
+                    label = "Email",
+                    leadingIcon = Icons.Default.Email,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AppTheme.colorScheme.primaryButton,
-                        focusedLabelColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.5f),
-                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText
-                    )
+                    maxLength = 100
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Password Field
-                OutlinedTextField(
+                DynamicTextField(
                     value = uiState.password,
-                    onValueChange = viewModel::updatePassword,
-                    label = { Text("Password") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Lock, contentDescription = "Password")
-                    },
+                    onValueChange = { onEvent(RegisterUIEvents.UpdatePassword(it)) },
+                    label = "Password",
+                    leadingIcon = Icons.Default.Lock,
                     trailingIcon = {
-                        IconButton(onClick = viewModel::togglePasswordVisibility) {
-                            Icon(
-                                if (uiState.isPasswordVisible) Icons.Default.Visibility
-                                else Icons.Default.VisibilityOff,
-                                contentDescription = if (uiState.isPasswordVisible) "Hide password" else "Show password"
-                            )
-                        }
+                        PasswordTrailingIcon(
+                            isVisible = uiState.isPasswordVisible,
+                            onToggle = { onEvent(RegisterUIEvents.TogglePasswordVisibility) }
+                        )
                     },
-                    visualTransformation = if (uiState.isPasswordVisible)
-                        VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AppTheme.colorScheme.primaryButton,
-                        focusedLabelColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.7f),
-                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText,
-                        focusedTextColor = AppTheme.colorScheme.primaryText,
-                        unfocusedTextColor = AppTheme.colorScheme.primaryText,
-                        cursorColor = AppTheme.colorScheme.primaryButton,
-                        focusedLeadingIconColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedLeadingIconColor = AppTheme.colorScheme.secondaryText,
-                        focusedTrailingIconColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedTrailingIconColor = AppTheme.colorScheme.secondaryText
-                    )
-
+                    maxLength = 50
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Confirm Password Field
-                OutlinedTextField(
+                DynamicTextField(
                     value = uiState.confirmPassword,
-                    onValueChange = viewModel::updateConfirmPassword,
-                    label = { Text("Confirm Password") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Lock, contentDescription = "Confirm Password")
-                    },
+                    onValueChange = { onEvent(RegisterUIEvents.UpdateConfirmPassword(it)) },
+                    label = "Confirm Password",
+                    leadingIcon = Icons.Default.Lock,
                     trailingIcon = {
-                        IconButton(onClick = viewModel::toggleConfirmPasswordVisibility) {
-                            Icon(
-                                if (uiState.isConfirmPasswordVisible) Icons.Default.Visibility
-                                else Icons.Default.VisibilityOff,
-                                contentDescription = if (uiState.isConfirmPasswordVisible) "Hide password" else "Show password"
-                            )
-                        }
+                        PasswordTrailingIcon(
+                            isVisible = uiState.isConfirmPasswordVisible,
+                            onToggle = { onEvent(RegisterUIEvents.ToggleConfirmPasswordVisibility) }
+                        )
                     },
-                    visualTransformation = if (uiState.isConfirmPasswordVisible)
-                        VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    visualTransformation = if (uiState.isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = AppTheme.colorScheme.primaryButton,
-                        focusedLabelColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedBorderColor = AppTheme.colorScheme.secondaryText.copy(alpha = 0.7f),
-                        unfocusedLabelColor = AppTheme.colorScheme.secondaryText,
-                        focusedTextColor = AppTheme.colorScheme.primaryText,
-                        unfocusedTextColor = AppTheme.colorScheme.primaryText,
-                        cursorColor = AppTheme.colorScheme.primaryButton,
-                        focusedLeadingIconColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedLeadingIconColor = AppTheme.colorScheme.secondaryText,
-                        focusedTrailingIconColor = AppTheme.colorScheme.primaryButton,
-                        unfocusedTrailingIconColor = AppTheme.colorScheme.secondaryText
-                    )
-
+                    maxLength = 50
                 )
 
                 // Error Message
                 if (uiState.errorMessage != null) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = uiState.errorMessage.orEmpty(),
-                        color = MaterialTheme.colorScheme.error,
+                        text = uiState.errorMessage,
+                        color = AppTheme.colorScheme.errorColor,
                         style = AppTheme.typography.bodySmall
                     )
                 }
@@ -224,7 +201,7 @@ fun RegisterScreen(
 
                 // Register Button
                 Button(
-                    onClick = viewModel::register,
+                    onClick = { onEvent(RegisterUIEvents.Register) },
                     enabled = !uiState.isLoading,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -274,7 +251,7 @@ fun RegisterScreen(
                     color = AppTheme.colorScheme.secondaryText
                 )
                 TextButton(
-                    onClick = viewModel::navigateToLogin
+                    onClick = { onEvent(RegisterUIEvents.NavigateToLogin) }
                 ) {
                     Text(
                         text = "Sign In",
@@ -288,12 +265,40 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
     }
+}
 
-    // Clear error when screen recomposes
-    LaunchedEffect(uiState.errorMessage) {
-        if (uiState.errorMessage != null) {
-            kotlinx.coroutines.delay(3000) // Clear error after 3 seconds
-            viewModel.clearError()
-        }
+@Preview(name = "Register Screen Light")
+@Composable
+private fun RegisterScreenPreview() {
+    AppTheme {
+        RegisterScreenContent(
+            uiState = RegisterUIState(
+                email = "user@example.com",
+                password = "password123",
+                confirmPassword = "password123",
+                isPasswordVisible = false,
+                isConfirmPasswordVisible = false,
+                isLoading = false,
+                errorMessage = null
+            )
+        )
+    }
+}
+
+@Preview(name = "Register Screen Dark")
+@Composable
+private fun RegisterScreenDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        RegisterScreenContent(
+            uiState = RegisterUIState(
+                email = "user@example.com",
+                password = "password123",
+                confirmPassword = "password12",
+                isPasswordVisible = false,
+                isConfirmPasswordVisible = false,
+                isLoading = false,
+                errorMessage = "Passwords don't match"
+            )
+        )
     }
 }

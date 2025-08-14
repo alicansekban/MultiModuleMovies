@@ -1,12 +1,12 @@
 package com.alican.multimodulemovies.ui.login
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
 import com.alican.domain.models.BaseUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToRegister
 import com.alican.multimodulemovies.navigation.AppRouter
+import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,32 +23,35 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
 
-    fun updateEmail(email: String) {
+    fun onScreenEvent(event: LoginUIEvents) {
+        when (event) {
+            LoginUIEvents.ClearError -> clearError()
+            LoginUIEvents.Login -> login()
+            LoginUIEvents.NavigateToRegister -> navigateToRegister()
+            LoginUIEvents.TogglePasswordVisibility -> togglePasswordVisibility()
+            is LoginUIEvents.UpdateEmail -> updateEmail(event.email)
+            is LoginUIEvents.UpdatePassword -> updatePassword(event.password)
+        }
+    }
+
+    private fun updateEmail(email: String) {
         _uiState.value = _uiState.value.copy(email = email, errorMessage = null)
     }
 
-    fun updatePassword(password: String) {
+    private fun updatePassword(password: String) {
         _uiState.value = _uiState.value.copy(password = password, errorMessage = null)
     }
 
-    fun togglePasswordVisibility() {
+    private fun togglePasswordVisibility() {
         _uiState.value = _uiState.value.copy(
             isPasswordVisible = !_uiState.value.isPasswordVisible
         )
     }
 
-    fun login() {
+    private fun login() {
         val currentState = _uiState.value
 
-        if (currentState.email.isBlank()) {
-            _uiState.value = currentState.copy(errorMessage = "Email is required")
-            return
-        }
-
-        if (currentState.password.isBlank()) {
-            _uiState.value = currentState.copy(errorMessage = "Password is required")
-            return
-        }
+        if (!validateInputs(currentState)) return
 
         viewModelScope.launch {
             _uiState.value = currentState.copy(isLoading = true, errorMessage = null)
@@ -74,15 +77,30 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun navigateToRegister() {
+    private fun validateInputs(state: LoginUIState): Boolean {
+        when {
+            state.email.isBlank() -> {
+                _uiState.value = state.copy(errorMessage = "Email is required")
+                return false
+            }
+
+            state.password.isBlank() -> {
+                _uiState.value = state.copy(errorMessage = "Password is required")
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun navigateToRegister() {
         appRouter.navigateToRegister()
     }
 
     private fun navigateToHome() {
-        appRouter.navigateAndClearBackStack(com.alican.multimodulemovies.utils.ScreenRoute.HomeHost)
+        appRouter.navigateAndClearBackStack(ScreenRoute.HomeHost)
     }
 
-    fun clearError() {
+    private fun clearError() {
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 }

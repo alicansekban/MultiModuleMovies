@@ -39,7 +39,6 @@ import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
 import com.alican.multimodulemovies.components.navigation.MainNavigation
 import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.multimodulemovies.theme.MultiModuleMoviesTheme
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -91,7 +90,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            MultiModuleMoviesTheme(
+            AppTheme(
                 isDarkMode = uiState.isDarkMode,
             ) {
 
