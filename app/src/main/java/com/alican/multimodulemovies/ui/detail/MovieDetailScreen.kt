@@ -24,23 +24,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.models.MovieCreditsUIModel
 import com.alican.domain.models.MovieDetailUIModel
 import com.alican.domain.models.MovieReviewsUIModel
+import com.alican.domain.models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.components.pager.CustomPager
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.ui.detail.components.MovieDetailInformation
 import com.alican.multimodulemovies.utils.heightPercent
 
+@Composable
+fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel()) {
+    val configuration = LocalConfiguration.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MovieDetailScreenContent(
+        uiState = uiState,
+        configuration = configuration
+    )
+}
 
 @Composable
-fun MovieDetailScreen(viewmodel: MovieDetailViewModel = hiltViewModel()) {
-    val configuration = LocalConfiguration.current
-    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
-
+fun MovieDetailScreenContent(
+    uiState: MovieDetailUIState,
+    configuration: Configuration
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -323,5 +335,387 @@ private fun EmptyImageSection() {
                 color = AppTheme.colorScheme.secondaryText
             )
         }
+    }
+}
+
+// Preview Composables
+@Preview(name = "Movie Detail Light - Loading")
+@Composable
+private fun MovieDetailLoadingPreview() {
+    AppTheme(isDarkMode = false) {
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = true,
+                movieDetail = null,
+                movieImages = emptyList(),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Dark - Loading")
+@Composable
+private fun MovieDetailLoadingDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = true,
+                movieDetail = null,
+                movieImages = emptyList(),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Light - With Data")
+@Composable
+private fun MovieDetailWithDataPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 1,
+            title = "The Amazing Spider-Man",
+            overview = "After Peter Parker is bitten by a genetically altered spider, he gains newfound, spider-like powers and ventures out to save the city from the machinations of a mysterious reptilian foe.",
+            releaseDate = "2024-01-15",
+            voteAvg = "8.5",
+            duration = "136 min",
+            imageUrl = "/sample_poster.jpg"
+        )
+
+        val sampleCredits = listOf(
+            MovieCreditsUIModel(
+                name = "Tom Holland",
+                characterName = "Peter Parker / Spider-Man"
+            ),
+            MovieCreditsUIModel(
+                name = "Zendaya",
+                characterName = "MJ"
+            ),
+            MovieCreditsUIModel(
+                name = "Benedict Cumberbatch",
+                characterName = "Doctor Strange"
+            ),
+            MovieCreditsUIModel(
+                name = "Jacob Batalon",
+                characterName = "Ned Leeds"
+            ),
+            MovieCreditsUIModel(
+                name = "Marisa Tomei",
+                characterName = "Aunt May"
+            ),
+            MovieCreditsUIModel(
+                name = "Jon Favreau",
+                characterName = "Happy Hogan"
+            )
+        )
+
+        val sampleReviews = listOf(
+            MovieReviewsUIModel(
+                author = "John Doe",
+                content = "An amazing superhero movie with great action sequences and excellent character development. Tom Holland delivers a fantastic performance as Spider-Man, bringing both humor and heart to the role. The visual effects are stunning and the story keeps you engaged throughout."
+            ),
+            MovieReviewsUIModel(
+                author = "Jane Smith",
+                content = "Visually stunning with incredible special effects. The story is engaging and the cast chemistry is perfect. This movie sets a new standard for superhero films."
+            ),
+            MovieReviewsUIModel(
+                author = "Mike Johnson",
+                content = "Great movie! Really enjoyed the character development and the action scenes. Highly recommended for all Marvel fans."
+            ),
+            MovieReviewsUIModel(
+                author = "Sarah Wilson",
+                content = "Excellent cinematography and outstanding performances from the entire cast. The movie balances action and emotion perfectly."
+            )
+        )
+
+        val sampleImages = listOf(
+            "/backdrop1.jpg",
+            "/backdrop2.jpg",
+            "/poster1.jpg",
+            "/poster2.jpg",
+            "/still1.jpg"
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = sampleImages,
+                movieCredits = sampleCredits,
+                movieReviews = sampleReviews
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Dark - With Data")
+@Composable
+private fun MovieDetailWithDataDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 2,
+            title = "Inception",
+            overview = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+            releaseDate = "2024-02-20",
+            voteAvg = "9.0",
+            duration = "148 min",
+            imageUrl = "/inception_poster.jpg"
+        )
+
+        val sampleCredits = listOf(
+            MovieCreditsUIModel(
+                name = "Leonardo DiCaprio",
+                characterName = "Dom Cobb"
+            ),
+            MovieCreditsUIModel(
+                name = "Marion Cotillard",
+                characterName = "Mal"
+            ),
+            MovieCreditsUIModel(
+                name = "Tom Hardy",
+                characterName = "Eames"
+            )
+        )
+
+        val sampleReviews = listOf(
+            MovieReviewsUIModel(
+                author = "Cinema Critic",
+                content = "Christopher Nolan's masterpiece. A complex and brilliantly executed film that challenges the audience while delivering spectacular visuals and performances."
+            )
+        )
+
+        val sampleImages = listOf(
+            "/inception_backdrop1.jpg",
+            "/inception_poster1.jpg"
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = sampleImages,
+                movieCredits = sampleCredits,
+                movieReviews = sampleReviews
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Light - Minimal Data")
+@Composable
+private fun MovieDetailMinimalDataPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 3,
+            title = "Sample Movie",
+            overview = "A short overview of this sample movie.",
+            releaseDate = "2024-03-10",
+            voteAvg = "7.2",
+            duration = "90 min",
+            imageUrl = "/sample.jpg"
+        )
+
+        val sampleCredits = listOf(
+            MovieCreditsUIModel(
+                name = "Actor One",
+                characterName = "Main Character"
+            ),
+            MovieCreditsUIModel(
+                name = "Actor Two",
+                characterName = "Supporting Character"
+            )
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = listOf("/sample.jpg"),
+                movieCredits = sampleCredits,
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Dark - Minimal Data")
+@Composable
+private fun MovieDetailMinimalDataDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 4,
+            title = "Another Sample",
+            overview = null,
+            releaseDate = "2024-04-05",
+            voteAvg = "6.8",
+            duration = null,
+            imageUrl = null
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = listOf("/backdrop_only.jpg"),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Light - Empty Images")
+@Composable
+private fun MovieDetailEmptyImagesPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 5,
+            title = "Movie Without Images",
+            overview = "This movie doesn't have any images available.",
+            releaseDate = "2024-05-15",
+            voteAvg = "7.8",
+            duration = "120 min",
+            imageUrl = null
+        )
+
+        val sampleCredits = listOf(
+            MovieCreditsUIModel(
+                name = "Famous Actor",
+                characterName = "Lead Role"
+            )
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = emptyList(),
+                movieCredits = sampleCredits,
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Dark - Empty Images")
+@Composable
+private fun MovieDetailEmptyImagesDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 6,
+            title = "Dark Movie Without Images",
+            overview = "This is a dark theme preview without images.",
+            releaseDate = "2024-06-20",
+            voteAvg = "8.2",
+            duration = "95 min",
+            imageUrl = null
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = emptyList(),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Light - No Movie Data")
+@Composable
+private fun MovieDetailNoDataPreview() {
+    AppTheme(isDarkMode = false) {
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = null,
+                movieImages = emptyList(),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Dark - No Movie Data")
+@Composable
+private fun MovieDetailNoDataDarkPreview() {
+    AppTheme(isDarkMode = true) {
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = null,
+                movieImages = emptyList(),
+                movieCredits = emptyList(),
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
+    }
+}
+
+@Preview(name = "Movie Detail Light - Many Credits")
+@Composable
+private fun MovieDetailManyCreditsPreview() {
+    AppTheme(isDarkMode = false) {
+        val sampleMovieDetail = MovieDetailUIModel(
+            id = 7,
+            title = "Avengers: Endgame",
+            overview = "The epic conclusion to the Infinity Saga that became the highest-grossing film of all time.",
+            releaseDate = "2019-04-26",
+            voteAvg = "9.2",
+            duration = "181 min",
+            imageUrl = "/avengers_poster.jpg"
+        )
+
+        val sampleCredits = listOf(
+            MovieCreditsUIModel(
+                name = "Robert Downey Jr.",
+                characterName = "Tony Stark / Iron Man"
+            ),
+            MovieCreditsUIModel(
+                name = "Chris Evans",
+                characterName = "Steve Rogers / Captain America"
+            ),
+            MovieCreditsUIModel(name = "Mark Ruffalo", characterName = "Bruce Banner / Hulk"),
+            MovieCreditsUIModel(name = "Chris Hemsworth", characterName = "Thor"),
+            MovieCreditsUIModel(
+                name = "Scarlett Johansson",
+                characterName = "Natasha Romanoff / Black Widow"
+            ),
+            MovieCreditsUIModel(name = "Jeremy Renner", characterName = "Clint Barton / Hawkeye"),
+            MovieCreditsUIModel(name = "Don Cheadle", characterName = "James Rhodes / War Machine"),
+            MovieCreditsUIModel(name = "Paul Rudd", characterName = "Scott Lang / Ant-Man"),
+            MovieCreditsUIModel(
+                name = "Brie Larson",
+                characterName = "Carol Danvers / Captain Marvel"
+            ),
+            MovieCreditsUIModel(name = "Karen Gillan", characterName = "Nebula")
+        )
+
+        MovieDetailScreenContent(
+            uiState = MovieDetailUIState(
+                isLoading = false,
+                movieDetail = sampleMovieDetail,
+                movieImages = listOf("/avengers_backdrop1.jpg", "/avengers_poster1.jpg"),
+                movieCredits = sampleCredits,
+                movieReviews = emptyList()
+            ),
+            configuration = LocalConfiguration.current
+        )
     }
 }

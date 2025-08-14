@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -30,6 +29,28 @@ class MovieDetailViewModel @Inject constructor(
         loadAllMovieDetailData()
     }
 
+    fun onScreenEvent(event: MovieDetailUIEvents) {
+        when (event) {
+            MovieDetailUIEvents.Retry -> retry()
+            MovieDetailUIEvents.GoBack -> {
+                // This will be handled by the screen composable
+            }
+
+            MovieDetailUIEvents.ToggleFavorite -> toggleFavorite()
+            MovieDetailUIEvents.ShareMovie -> {
+                // This will be handled by the screen composable
+            }
+
+            is MovieDetailUIEvents.OpenTrailer -> {
+                // This will be handled by the screen composable
+            }
+
+            is MovieDetailUIEvents.OpenActorProfile -> {
+                // This will be handled by the screen composable
+            }
+        }
+    }
+
     private fun loadAllMovieDetailData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -40,7 +61,14 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-    fun retry() {
+    private fun retry() {
         loadAllMovieDetailData()
+    }
+
+    private fun toggleFavorite() {
+        viewModelScope.launch {
+            // TODO: Implement favorite toggle logic
+            // interactor.toggleFavorite(id)
+        }
     }
 }
