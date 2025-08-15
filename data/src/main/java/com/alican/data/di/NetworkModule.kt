@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import androidx.room.Room
 import com.alican.data.BuildConfig
 import com.alican.data.data.local.AppDatabase
+import com.alican.data.data.local.dao.MoviesDao
 import com.alican.data.data.remote.ApiService
 import com.alican.data.data.remote.ApiServiceImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -78,6 +79,12 @@ object AppModule {
         return Room.databaseBuilder(context, AppDatabase::class.java, BuildConfig.ROOM_DB_NAME)
             .fallbackToDestructiveMigration(false)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMovieDao(database: AppDatabase): MoviesDao {
+        return database.moviesDao()
     }
 
     @Provides

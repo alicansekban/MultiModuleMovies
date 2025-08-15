@@ -9,10 +9,22 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MoviesDao {
+
+    @Query("SELECT * FROM favorite_movies ORDER BY addedAt DESC")
+    fun getFavoriteMovies(): Flow<List<MoviesEntity>>
+
+    @Query("SELECT movieId FROM favorite_movies")
+    fun getFavoriteMovieIds(): Flow<List<Int>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorite_movies WHERE movieId = :movieId)")
+    fun isMovieFavorite(movieId: Int): Flow<Boolean>
+
     @Insert(onConflict = REPLACE)
-    suspend fun insertCities(movies: List<MoviesEntity>)
+    suspend fun addToFavorites(movie: MoviesEntity)
 
-    @Query("SELECT * FROM movies")
-    suspend fun getMovies() : Flow<List<MoviesEntity>>
+    @Query("DELETE FROM favorite_movies WHERE movieId = :movieId")
+    suspend fun removeFromFavorites(movieId: Int)
 
+    @Query("SELECT COUNT(*) FROM favorite_movies")
+    fun getFavoritesCount(): Flow<Int>
 }

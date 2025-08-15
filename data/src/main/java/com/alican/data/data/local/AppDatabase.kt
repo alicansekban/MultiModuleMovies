@@ -2,6 +2,7 @@ package com.alican.data.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.alican.data.data.local.dao.MoviesDao
 import com.alican.data.data.local.entity.MoviesEntity
 
 @Database(
@@ -9,4 +10,5 @@ import com.alican.data.data.local.entity.MoviesEntity
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
- }
+    abstract fun moviesDao(): MoviesDao
+}
