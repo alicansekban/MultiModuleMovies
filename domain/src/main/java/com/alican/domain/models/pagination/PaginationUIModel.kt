@@ -19,7 +19,7 @@ data class PaginationUIModel<T>(
         get() = currentPage == 1
 
     val hasNextPage: Boolean
-        get() = currentPage < totalPages && canLoadMore
+        get() = currentPage < totalPages
 
     val nextPage: Int
         get() = if (hasNextPage) currentPage + 1 else currentPage

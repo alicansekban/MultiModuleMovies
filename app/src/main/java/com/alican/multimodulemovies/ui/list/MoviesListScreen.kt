@@ -73,9 +73,7 @@ fun MoviesListScreenContent(
         derivedStateOf {
             val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
             lastVisibleIndex != null &&
-                    lastVisibleIndex >= uiState.items.size - 10 &&
-                    uiState.hasNextPage &&
-                    !uiState.isLoadingMore
+                    lastVisibleIndex >= uiState.items.size - 10
         }
     }
 
@@ -129,7 +127,7 @@ fun MoviesListScreenContent(
                 MovieGridItem(
                     imageUrl = movie.imageUrl,
                     title = movie.title,
-                    modifier = Modifier.heightPercent(0.45f, configuration),
+                    modifier = Modifier.heightPercent(0.30f, configuration),
                     onClick = { onEvent(MovieListUIEvents.OpenMovieDetail(movie.id ?: 0)) }
                 )
             }
