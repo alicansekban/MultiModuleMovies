@@ -134,10 +134,12 @@ fun MoviesListScreenContent(
             // Movie items
             items(uiState.items, key = { it.id ?: UUID.randomUUID().toString() }) { movie ->
                 MovieGridItem(
+                    isFavorite = movie.isFavorite,
                     imageUrl = movie.imageUrl,
                     title = movie.title,
                     modifier = Modifier.heightPercent(0.30f, configuration),
-                    onClick = { onEvent(MovieListUIEvents.OpenMovieDetail(movie.id ?: 0)) }
+                    onClick = { onEvent(MovieListUIEvents.OpenMovieDetail(movie.id ?: 0)) },
+                    onFavoriteClick = { onEvent(MovieListUIEvents.ToggleFavorite(movie)) }
                 )
             }
 

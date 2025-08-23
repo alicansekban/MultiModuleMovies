@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.alican.domain.interactors.MovieListInteractor
+import com.alican.domain.models.MovieUIModel
 import com.alican.domain.models.pagination.PaginationUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
 import com.alican.multimodulemovies.navigation.AppRouter
@@ -25,12 +26,13 @@ class MoviesListViewModel @Inject constructor(
 
     private val movieType = savedStateHandle.toRoute<ScreenRoute.MoviesListRoute>()
 
-    val movies = interactor.paginationState
+    val movies = interactor.moviesWithFavoriteState
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
             PaginationUIModel()
         )
+
 
     init {
         loadMovies()
@@ -44,6 +46,8 @@ class MoviesListViewModel @Inject constructor(
             is MovieListUIEvents.OpenMovieDetail -> {
                 appRouter.navigateToMovieDetail(event.movieId)
             }
+
+            is MovieListUIEvents.ToggleFavorite -> toggleFavorite(event.movie) // Add this
         }
     }
 
@@ -71,4 +75,11 @@ class MoviesListViewModel @Inject constructor(
             interactor.loadFirstPage()
         }
     }
+
+    private fun toggleFavorite(movie: MovieUIModel) {
+        viewModelScope.launch {
+            interactor.toggleFavorite(movie)
+        }
+    }
+
 }

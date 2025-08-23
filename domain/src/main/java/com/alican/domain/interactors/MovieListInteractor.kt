@@ -7,17 +7,31 @@ import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
+import com.alican.domain.models.pagination.PaginationUIModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 
 // Update your MovieListInteractor to use the new pagination system
 class MovieListInteractor @Inject constructor(
     private val repository: MoviesRepository,
-    override val coroutineScope: CoroutineScope
+    override val coroutineScope: CoroutineScope,
+    private val favoritesInteractor: FavoritesInteractor
 ) : BasePaginatedInteractor<MovieUIModel, MovieListUIModel>() {
 
     private var currentMovieType: MovieType = MovieType.POPULAR
+
+    val moviesWithFavoriteState: Flow<PaginationUIModel<MovieUIModel>> =
+        paginationState.combine(favoritesInteractor.getFavoriteMovieIds()) { pagination, favoriteIds ->
+            pagination.copy(
+                items = pagination.items.map { movie ->
+                    movie.copy(isFavorite = favoriteIds.contains(movie.id))
+                }
+            )
+        }
+
 
     override suspend fun fetchData(page: Int): BaseUIModel<MovieListUIModel> {
         // Set loading state before making the request
@@ -67,4 +81,10 @@ class MovieListInteractor @Inject constructor(
             loadFirstPage()
         }
     }
+
+    // Add favorite toggle functionality
+    suspend fun toggleFavorite(movie: MovieUIModel) {
+        favoritesInteractor.toggleFavorite(movie)
+    }
+
 }
