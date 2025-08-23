@@ -60,9 +60,13 @@ fun MoviesListScreen(
         derivedStateOf {
             val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
             lastVisibleIndex != null &&
-                    lastVisibleIndex >= paginationState.items.size - 10
+                    lastVisibleIndex >= paginationState.items.size - 10 &&
+                    paginationState.canLoadMore &&
+                    !paginationState.isLoadingMore &&
+                    !paginationState.hasError
         }
     }
+
 
     LaunchedEffect(shouldFetchNextPage) {
         if (shouldFetchNextPage) {

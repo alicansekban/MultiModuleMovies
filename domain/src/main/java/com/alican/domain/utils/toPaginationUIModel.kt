@@ -20,7 +20,7 @@ fun <T> MovieListUIModel.toPaginationUIModel(
 }
 
 // Extension to handle ResultWrapper and update PaginationStateManager
-fun <T, R> PaginationStateManager<T>.handleResult(
+suspend fun <T, R> PaginationStateManager<T>.handleResult(
     result: BaseUIModel<R>,
     page: Int,
     isFirstPage: Boolean = false,

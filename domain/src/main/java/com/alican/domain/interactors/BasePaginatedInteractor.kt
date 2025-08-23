@@ -5,11 +5,14 @@ import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.pagination.PaginationUIModel
 import com.alican.domain.utils.PaginationStateManager
 import com.alican.domain.utils.handleResult
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 abstract class BasePaginatedInteractor<T, R> {
 
     protected val paginationManager = PaginationStateManager<T>()
+    protected abstract val coroutineScope: CoroutineScope
 
     val paginationState: Flow<PaginationUIModel<T>> = paginationManager.state
 
@@ -44,10 +47,20 @@ abstract class BasePaginatedInteractor<T, R> {
     }
 
     fun retry() {
-        paginationManager.retry()
+        coroutineScope.launch {
+            val currentState = paginationManager.state.value
+            val isFirstPage = currentState.items.isEmpty()
+
+            if (isFirstPage) {
+                loadFirstPage()
+            } else {
+                loadNextPage()
+            }
+        }
     }
 
-    fun reset() {
+
+    suspend fun reset() {
         paginationManager.reset()
     }
 }
