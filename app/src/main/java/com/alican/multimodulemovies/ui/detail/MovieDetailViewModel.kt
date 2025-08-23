@@ -4,20 +4,24 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.alican.domain.interactors.FavoritesInteractor
 import com.alican.domain.interactors.MovieDetailInteractor
+import com.alican.domain.models.MovieUIModel
 import com.alican.domain.models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val interactor: MovieDetailInteractor
+    private val interactor: MovieDetailInteractor,
+    private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
 
     private val id = savedStateHandle.toRoute<ScreenRoute.MovieDetailRoute>().movieId
@@ -58,6 +62,7 @@ class MovieDetailViewModel @Inject constructor(
             val detailData = interactor.getAllMovieDetailData(id)
 
             _uiState.value = detailData
+            collectFavoriteState(id)
         }
     }
 
@@ -66,9 +71,30 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     private fun toggleFavorite() {
+        val movie = uiState.value.movieDetail ?: return
         viewModelScope.launch {
-            // TODO: Implement favorite toggle logic
-            // interactor.toggleFavorite(id)
+            favoritesInteractor.toggleFavorite(
+                movie = MovieUIModel(
+                    id = movie.id,
+                    title = movie.title,
+                    overview = movie.overview,
+                    imageUrl = movie.imageUrl,
+                    isFavorite = movie.isFavorite,
+                )
+            )
+        }
+    }
+
+    private fun collectFavoriteState(id: Int) {
+        viewModelScope.launch {
+            favoritesInteractor.isMovieFavorite(id).collect { isFavorite ->
+                _uiState.update {
+                    it.copy(
+                        movieDetail = it.movieDetail?.copy(isFavorite = isFavorite)
+                            ?: it.movieDetail,
+                    )
+                }
+            }
         }
     }
 }

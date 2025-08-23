@@ -13,14 +13,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,45 +50,69 @@ fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel()) {
 
     MovieDetailScreenContent(
         uiState = uiState,
-        configuration = configuration
+        configuration = configuration,
+        onEvent = viewModel::onScreenEvent
     )
 }
 
 @Composable
 fun MovieDetailScreenContent(
     uiState: MovieDetailUIState,
-    configuration: Configuration
+    configuration: Configuration,
+    onEvent: (MovieDetailUIEvents) -> Unit = {},
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppTheme.colorScheme.primaryBackground)
-            .verticalScroll(rememberScrollState())
-    ) {
-        // Show loading state
-        if (uiState.isLoading) {
-            LoadingSection()
-            return@Column
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AppTheme.colorScheme.primaryBackground)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Show loading state
+            if (uiState.isLoading) {
+                LoadingSection()
+                return@Column
+            }
+
+            // Movie Images Section
+            MovieImagesSection(
+                images = uiState.movieImages,
+                configuration = configuration
+            )
+
+            // Movie Details Section
+            MovieDetailSection(movieDetail = uiState.movieDetail)
+
+            // Movie Credits Section
+            MovieCreditsSection(credits = uiState.movieCredits)
+
+            // Movie Reviews Section
+            MovieReviewsSection(reviews = uiState.movieReviews)
+
+            // Bottom spacing
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
-        // Movie Images Section
-        MovieImagesSection(
-            images = uiState.movieImages,
-            configuration = configuration
-        )
-
-        // Movie Details Section
-        MovieDetailSection(movieDetail = uiState.movieDetail)
-
-        // Movie Credits Section
-        MovieCreditsSection(credits = uiState.movieCredits)
-
-        // Movie Reviews Section
-        MovieReviewsSection(reviews = uiState.movieReviews)
-
-        // Bottom spacing
-        Spacer(modifier = Modifier.height(16.dp))
+        // Favorite Icon
+        IconButton(
+            onClick = {
+                onEvent(MovieDetailUIEvents.ToggleFavorite)
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .size(40.dp)
+        ) {
+            Icon(
+                imageVector = if (uiState.movieDetail?.isFavorite == true) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                contentDescription = if (uiState.movieDetail?.isFavorite == true) "Remove from favorites" else "Add to favorites",
+                tint = if (uiState.movieDetail?.isFavorite == true) Color.Red else AppTheme.colorScheme.primaryText.copy(
+                    alpha = 0.7f
+                ),
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
+
 }
 
 @Composable
