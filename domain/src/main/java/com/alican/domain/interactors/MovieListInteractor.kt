@@ -3,6 +3,7 @@ package com.alican.domain.interactors
 import com.alican.data.data.repository.MoviesRepository
 import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
+import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieType
 import com.alican.domain.models.MovieUIModel
@@ -16,7 +17,7 @@ class MovieListInteractor @Inject constructor(
 
     private var currentMovieType: MovieType = MovieType.POPULAR
 
-    override suspend fun fetchData(page: Int): ResultWrapper<MovieListUIModel> {
+    override suspend fun fetchData(page: Int): BaseUIModel<MovieListUIModel> {
         return when (currentMovieType) {
             MovieType.UPCOMING -> repository.getUpComingMovies(page)
             MovieType.NOW_PLAYING -> repository.getNowPlayingMovies(page)
@@ -24,14 +25,11 @@ class MovieListInteractor @Inject constructor(
             MovieType.POPULAR -> repository.getPopularMovies(page)
         }.let { result ->
             when (result) {
-                is ResultWrapper.Success -> ResultWrapper.Success(
-                    result.value.toUIModel(
-                        MovieListUIModel()
-                    )
-                )
-
-                is ResultWrapper.Error -> result
-                ResultWrapper.Loading -> ResultWrapper.Loading
+                is ResultWrapper.Error -> BaseUIModel.Error(result.message.orEmpty())
+                ResultWrapper.Loading -> BaseUIModel.Loading
+                is ResultWrapper.Success -> {
+                    BaseUIModel.Success(result.value.toUIModel(MovieListUIModel()))
+                }
             }
         }
     }

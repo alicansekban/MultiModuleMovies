@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -52,9 +53,27 @@ fun MoviesListScreen(
 ) {
     val paginationState by viewModel.movies.collectAsStateWithLifecycle()
 
-    paginationState
+    val gridState = rememberLazyGridState()
+
+    // Keep your derivedState logic
+    val shouldFetchNextPage by remember {
+        derivedStateOf {
+            val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            lastVisibleIndex != null &&
+                    lastVisibleIndex >= paginationState.items.size - 10
+        }
+    }
+
+    LaunchedEffect(shouldFetchNextPage) {
+        if (shouldFetchNextPage) {
+            viewModel.onScreenEvent(MovieListUIEvents.LoadNextPage)
+        }
+    }
+
+
     MoviesListScreenContent(
         modifier = modifier,
+        gridState = gridState,
         uiState = paginationState,
         onEvent = viewModel::onScreenEvent
     )
@@ -63,25 +82,11 @@ fun MoviesListScreen(
 @Composable
 fun MoviesListScreenContent(
     modifier: Modifier = Modifier,
+    gridState: LazyGridState = rememberLazyGridState(),
     uiState: PaginationUIModel<MovieUIModel>,
     onEvent: (MovieListUIEvents) -> Unit = {}
 ) {
-    val gridState = rememberLazyGridState()
 
-    // Keep your derivedState logic
-    val shouldFetchNextPage by remember {
-        derivedStateOf {
-            val lastVisibleIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-            lastVisibleIndex != null &&
-                    lastVisibleIndex >= uiState.items.size - 10
-        }
-    }
-
-    LaunchedEffect(shouldFetchNextPage) {
-        if (shouldFetchNextPage) {
-            onEvent(MovieListUIEvents.LoadNextPage)
-        }
-    }
 
     val configuration = LocalConfiguration.current
 

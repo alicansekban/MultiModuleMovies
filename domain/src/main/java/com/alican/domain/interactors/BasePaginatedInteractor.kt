@@ -1,7 +1,7 @@
 // Create this file: domain/src/main/java/com/alican/domain/interactors/BasePaginatedInteractor.kt
 package com.alican.domain.interactors
 
-import com.alican.data.utils.ResultWrapper
+import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.pagination.PaginationUIModel
 import com.alican.domain.utils.PaginationStateManager
 import com.alican.domain.utils.handleResult
@@ -13,7 +13,7 @@ abstract class BasePaginatedInteractor<T, R> {
 
     val paginationState: Flow<PaginationUIModel<T>> = paginationManager.state
 
-    abstract suspend fun fetchData(page: Int): ResultWrapper<R>
+    abstract suspend fun fetchData(page: Int): BaseUIModel<R>
     abstract fun mapToUIModel(data: R): List<T>
     abstract fun getTotalPages(data: R): Int
     abstract fun getTotalResults(data: R): Int

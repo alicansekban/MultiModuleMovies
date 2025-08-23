@@ -1,7 +1,7 @@
 // Create this file: domain/src/main/java/com/alican/domain/utils/PaginationExtensions.kt
 package com.alican.domain.utils
 
-import com.alican.data.utils.ResultWrapper
+import com.alican.domain.models.BaseUIModel
 import com.alican.domain.models.MovieListUIModel
 import com.alican.domain.models.MovieUIModel
 import com.alican.domain.models.pagination.PaginationUIModel
@@ -21,7 +21,7 @@ fun <T> MovieListUIModel.toPaginationUIModel(
 
 // Extension to handle ResultWrapper and update PaginationStateManager
 fun <T, R> PaginationStateManager<T>.handleResult(
-    result: ResultWrapper<R>,
+    result: BaseUIModel<R>,
     page: Int,
     isFirstPage: Boolean = false,
     dataExtractor: (R) -> List<T>,
@@ -29,14 +29,14 @@ fun <T, R> PaginationStateManager<T>.handleResult(
     totalResultsExtractor: (R) -> Int = { 0 }
 ) {
     when (result) {
-        is ResultWrapper.Loading -> {
+        is BaseUIModel.Loading -> {
             setLoading(isFirstPage)
         }
 
-        is ResultWrapper.Success -> {
-            val items = dataExtractor(result.value)
-            val totalPages = totalPagesExtractor(result.value)
-            val totalResults = totalResultsExtractor(result.value)
+        is BaseUIModel.Success -> {
+            val items = dataExtractor(result.data)
+            val totalPages = totalPagesExtractor(result.data)
+            val totalResults = totalResultsExtractor(result.data)
 
             setSuccess(
                 newItems = items,
@@ -47,8 +47,10 @@ fun <T, R> PaginationStateManager<T>.handleResult(
             )
         }
 
-        is ResultWrapper.Error -> {
-            setError(result.message ?: "Unknown error", isFirstPage)
+        is BaseUIModel.Error -> {
+            setError(result.message, isFirstPage)
         }
+
+        BaseUIModel.Empty -> {}
     }
 }
