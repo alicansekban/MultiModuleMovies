@@ -15,3 +15,8 @@ sealed interface FavoritesUIEvents {
     data class RemoveFromFavorites(val movieId: Int) : FavoritesUIEvents
     data class OpenMovieDetail(val movieId: Int) : FavoritesUIEvents
 }
+
+sealed interface FavoritesUIEffects {
+    data class ShowError(val message: String) : FavoritesUIEffects
+    data class ShowToast(val message: String) : FavoritesUIEffects
+}

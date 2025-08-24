@@ -36,7 +36,7 @@ fun HomeScreen(
     ) {
         HomeScreenContent(
             uiState = uiState,
-            onEvent = viewModel::onScreenEvent
+            onEvent = viewModel::handleEvent
         )
 
     }

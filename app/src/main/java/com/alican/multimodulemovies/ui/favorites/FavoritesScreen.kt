@@ -13,9 +13,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -29,7 +33,9 @@ import com.alican.domain.models.MovieUIModel
 import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.ui.list.components.MovieGridItem
+import com.alican.multimodulemovies.utils.CollectFlowAsEvent
 import com.alican.multimodulemovies.utils.heightPercent
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -38,12 +44,47 @@ fun FavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
-    FavoritesScreenContent(
-        modifier = modifier,
-        uiState = uiState,
-        onEvent = viewModel::onEvent
-    )
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    CollectFlowAsEvent(viewModel.uiEffect) { effect ->
+        when (effect) {
+            is FavoritesUIEffects.ShowError -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+            }
+
+            is FavoritesUIEffects.ShowToast -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+            }
+        }
+    }
+
+
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppTheme.colorScheme.primaryBackground)
+    ) {
+        FavoritesScreenContent(
+            modifier = modifier,
+            uiState = uiState,
+            onEvent = viewModel::handleEvent
+        )
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+
 }
 
 @Composable

@@ -11,3 +11,7 @@ sealed interface HomeUIEvents {
     data class OpenMovieDetail(val movieId: Int) : HomeUIEvents
     data class OpenMovieList(val movieType: MovieType) : HomeUIEvents
 }
+
+sealed interface HomeUIEffects {
+
+}
