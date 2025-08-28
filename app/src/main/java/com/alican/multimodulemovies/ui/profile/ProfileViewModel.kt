@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
 import com.alican.domain.models.BaseUIModel
+import com.alican.multimodulemovies.helpers.navigation.navigateToAboutUs
 import com.alican.multimodulemovies.helpers.navigation.navigateToLogin
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
 import com.alican.multimodulemovies.navigation.AppRouter
@@ -196,7 +197,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun handleAbout() {
-        // TODO: Implement about handling
+        appRouter.navigateToAboutUs()
     }
 
     private fun handlePrivacyPolicy() {

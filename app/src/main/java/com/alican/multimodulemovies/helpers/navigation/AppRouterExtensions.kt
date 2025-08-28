@@ -37,3 +37,7 @@ fun AppRouter.navigateToLogin() {
 fun AppRouter.navigateToRegister() {
     navigateTo(ScreenRoute.RegisterScreenRoute)
 }
+
+fun AppRouter.navigateToAboutUs() {
+    navigateTo(ScreenRoute.AboutScreenRoute)
+}

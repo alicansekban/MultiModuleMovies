@@ -23,7 +23,7 @@ data class NotificationSettings(
 
 @Singleton
 class AppNotificationManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @field:ApplicationContext private val context: Context,
     private val appDataStore: AppDataStore
 ) {
     companion object Companion {
