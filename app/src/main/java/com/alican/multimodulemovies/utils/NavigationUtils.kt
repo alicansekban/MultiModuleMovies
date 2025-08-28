@@ -50,4 +50,7 @@ sealed class ScreenRoute {
 
     @Serializable
     data object AboutScreenRoute : ScreenRoute()
+
+    @Serializable
+    data object HelpScreenRoute : ScreenRoute()
 }

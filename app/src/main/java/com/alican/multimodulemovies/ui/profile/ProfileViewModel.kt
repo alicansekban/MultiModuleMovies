@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
 import com.alican.domain.models.BaseUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToAboutUs
+import com.alican.multimodulemovies.helpers.navigation.navigateToHelp
 import com.alican.multimodulemovies.helpers.navigation.navigateToLogin
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
 import com.alican.multimodulemovies.navigation.AppRouter
@@ -193,7 +194,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun handleHelp() {
-        // TODO: Implement help handling
+        appRouter.navigateToHelp()
     }
 
     private fun handleAbout() {

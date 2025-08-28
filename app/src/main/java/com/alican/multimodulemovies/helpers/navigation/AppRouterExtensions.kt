@@ -41,3 +41,7 @@ fun AppRouter.navigateToRegister() {
 fun AppRouter.navigateToAboutUs() {
     navigateTo(ScreenRoute.AboutScreenRoute)
 }
+
+fun AppRouter.navigateToHelp() {
+    navigateTo(ScreenRoute.HelpScreenRoute)
+}
