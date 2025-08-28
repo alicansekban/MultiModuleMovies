@@ -45,3 +45,7 @@ fun AppRouter.navigateToAboutUs() {
 fun AppRouter.navigateToHelp() {
     navigateTo(ScreenRoute.HelpScreenRoute)
 }
+
+fun AppRouter.navigateToPrivacyPolicy() {
+    navigateTo(ScreenRoute.PrivacyPolicyScreenRoute)
+}

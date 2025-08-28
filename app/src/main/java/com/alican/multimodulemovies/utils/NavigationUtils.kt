@@ -53,4 +53,7 @@ sealed class ScreenRoute {
 
     @Serializable
     data object HelpScreenRoute : ScreenRoute()
+
+    @Serializable
+    data object PrivacyPolicyScreenRoute : ScreenRoute()
 }

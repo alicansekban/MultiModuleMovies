@@ -7,6 +7,7 @@ import com.alican.domain.models.BaseUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToAboutUs
 import com.alican.multimodulemovies.helpers.navigation.navigateToHelp
 import com.alican.multimodulemovies.helpers.navigation.navigateToLogin
+import com.alican.multimodulemovies.helpers.navigation.navigateToPrivacyPolicy
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
 import com.alican.multimodulemovies.navigation.AppRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -202,6 +203,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun handlePrivacyPolicy() {
-        // TODO: Implement privacy policy handling
+        appRouter.navigateToPrivacyPolicy()
     }
 }
