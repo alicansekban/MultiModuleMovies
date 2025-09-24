@@ -56,4 +56,7 @@ sealed class ScreenRoute {
 
     @Serializable
     data object PrivacyPolicyScreenRoute : ScreenRoute()
+
+    @Serializable
+    data object SecurityScreenRoute : ScreenRoute()
 }

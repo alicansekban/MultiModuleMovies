@@ -4,6 +4,7 @@ import android.content.Context
 import com.alican.multimodulemovies.helpers.data_store.AppDataStore
 import com.alican.multimodulemovies.helpers.data_store.DataStoreManager
 import com.alican.multimodulemovies.helpers.notification.AppNotificationManager
+import com.alican.multimodulemovies.helpers.security.SecurityManager
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
 import dagger.Module
 import dagger.Provides
@@ -37,4 +38,9 @@ object AppModule {
     @Singleton
     fun provideNotificationManager(appDataStore: AppDataStore, context: Context) =
         AppNotificationManager(appDataStore = appDataStore, context = context)
+
+    @Provides
+    @Singleton
+    fun provideSecurityManager(context: Context) =
+        SecurityManager(context = context)
 }

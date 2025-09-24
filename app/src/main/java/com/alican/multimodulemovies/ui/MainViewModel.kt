@@ -5,10 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.multimodulemovies.helpers.data_store.AppDataStore
 import com.alican.multimodulemovies.helpers.notification.AppNotificationManager
+import com.alican.multimodulemovies.helpers.security.SecurityManager
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
+import com.alican.multimodulemovies.navigation.AppRouter
+import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,19 +22,40 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val themeManager: ThemeManager,
     private val appNotificationManager: AppNotificationManager,
-    private val appDataStore: AppDataStore
+    private val appDataStore: AppDataStore,
+    private val securityManager: SecurityManager,
+    private val appRouter: AppRouter
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUIState())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.onStart {
+        getTheme()
+        observeNotificationSettings()
+        checkAppSecurity()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = MainActivityUIState()
+    )
 
     companion object {
         private const val TAG = "MainViewModel"
     }
 
-    init {
-        getTheme()
-        observeNotificationSettings()
+    private fun checkAppSecurity() {
+        viewModelScope.launch {
+            try {
+                val isDeviceNotSecure = securityManager.isDeviceNotSecure()
+                if (isDeviceNotSecure) {
+                    appRouter.navigateAndClearBackStack(
+                        ScreenRoute.SecurityScreenRoute
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Error checking app security", e)
+            }
+        }
     }
 
     private fun getTheme() {
