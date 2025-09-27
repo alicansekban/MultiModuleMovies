@@ -1,0 +1,50 @@
+name: Deploy Dev Release
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  deploy-dev:
+    name: Build & Deploy Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build Dev Release APK
+        env:
+          RELEASE_STORE_FILE: keystore.jks
+          RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleDevRelease
+
+      - name: Find APK file
+        id: find_apk
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/dev/release/ -name "*.apk" -type f | head -1)
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: testers
+          file: ${{ steps.find_apk.outputs.apk_path }}
+          releaseNotes: |
+            Dev Release - ${{ github.sha }}
+            ${{ github.event.head_commit.message }}
