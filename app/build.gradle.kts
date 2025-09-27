@@ -34,6 +34,20 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+
+        }
+    }
+    flavorDimensions += "default"
+
+    productFlavors {
+        create("prod") {
+            dimension = "default"
+        }
+        create("dev") {
+            dimension = "default"
+            applicationIdSuffix = ".dev"
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
