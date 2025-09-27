@@ -25,10 +25,26 @@ android {
             useSupportLibrary = true
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(providers.gradleProperty("RELEASE_STORE_FILE"))
+            storePassword = providers.gradleProperty("RELEASE_STORE_PASSWORD").get()
+            keyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS").get()
+            keyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD").get()
+
+            setProperty(
+                "archivesBaseName",
+                "Movies-v${libs.versions.applicationVersionName.get()}-${libs.versions.applicationVersionCode.get()}"
+            )
+        }
+
+    }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -46,7 +62,6 @@ android {
         }
         create("dev") {
             dimension = "default"
-            applicationIdSuffix = ".dev"
         }
     }
     compileOptions {
