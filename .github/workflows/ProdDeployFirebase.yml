@@ -43,7 +43,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: beta-testers
+          groups: testers
           file: ${{ steps.find_apk.outputs.apk_path }}
           releaseNotes: |
             Production Release - ${{ github.sha }}
