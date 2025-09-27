@@ -1,0 +1,86 @@
+name: PR Validation - Unit Tests
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Determine Test Target
+        id: test_target
+        run: |
+          if [[ "${{ github.base_ref }}" == "develop" ]]; then
+            echo "test_task=testDevDebugUnitTest" >> $GITHUB_OUTPUT
+            echo "flavor=Dev" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "test_task=testProdDebugUnitTest" >> $GITHUB_OUTPUT
+            echo "flavor=Prod" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Unit Tests
+        run: ./gradlew ${{ steps.test_target.outputs.test_task }} --stacktrace
+
+      - name: Comment Test Results on PR - Success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **Unit Tests Passed!**
+            
+              **Target Branch:** \`${{ github.base_ref }}\`
+              **Flavor Tested:** ${{ steps.test_target.outputs.flavor }}
+              **Test Task:** \`${{ steps.test_target.outputs.test_task }}\`
+            
+              🎉 This PR is ready for review and can be merged safely.`
+            })
+
+      - name: Comment Test Results on PR - Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ **Unit Tests Failed!**
+            
+              **Target Branch:** \`${{ github.base_ref }}\`
+              **Flavor Tested:** ${{ steps.test_target.outputs.flavor }}
+              **Test Task:** \`${{ steps.test_target.outputs.test_task }}\`
+            
+              Please check the [test results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) and fix the failing tests before merging.`
+            })
