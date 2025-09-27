@@ -48,5 +48,4 @@ jobs:
           groups: testers
           file: ${{ steps.find_apk.outputs.apk_path }}
           releaseNotes: |
-            Dev Release - ${{ github.sha }}
-            ${{ github.event.head_commit.message }}
+            Dev Release - ${{ github.event.head_commit.message }}
