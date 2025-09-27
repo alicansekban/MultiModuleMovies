@@ -52,6 +52,8 @@ import com.alican.multimodulemovies.theme.AppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HelpSupportScreen(
+
+
     onBackClicked: () -> Unit = {},
     onContactEmail: () -> Unit = {},
     onContactPhone: () -> Unit = {},
