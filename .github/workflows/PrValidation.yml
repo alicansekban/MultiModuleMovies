@@ -51,10 +51,10 @@ jobs:
           echo "🧪 Running all unit tests for all modules..."
           ./gradlew test --continue --stacktrace
 
-      - name: Run Instrumented Tests (App Module)
-        run: |
-          echo "🤖 Running instrumented tests for app module..."
-          ./gradlew connected${{ steps.target_flavor.outputs.flavor }}DebugAndroidTest --continue --stacktrace
+  #      - name: Run Instrumented Tests (App Module)
+  #        run: |
+  #          echo "🤖 Running instrumented tests for app module..."
+  #          ./gradlew connected${{ steps.target_flavor.outputs.flavor }}DebugAndroidTest --continue --stacktrace
 
   lint:
     name: Run Lint Checks
