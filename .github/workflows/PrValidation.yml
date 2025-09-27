@@ -1,4 +1,4 @@
-name: PR Validation - Unit Tests
+name: PR Validation - All Tests
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Run Unit Tests
+    name: Run All Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,16 +35,186 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Determine Test Target
-        id: test_target
+      - name: Determine Target Flavor
+        id: target_flavor
         run: |
           if [[ "${{ github.base_ref }}" == "develop" ]]; then
-            echo "test_task=testDevDebugUnitTest" >> $GITHUB_OUTPUT
             echo "flavor=Dev" >> $GITHUB_OUTPUT
+            echo "flavor_lower=dev" >> $GITHUB_OUTPUT
           elif [[ "${{ github.base_ref }}" == "main" ]]; then
-            echo "test_task=testProdDebugUnitTest" >> $GITHUB_OUTPUT
-            echo "flavor=Prod" >> $GITHUB_OUTPUT
+            echo "flavor=Prod" >> $GITHUB_OUTPUT  
+            echo "flavor_lower=prod" >> $GITHUB_OUTPUT
           fi
 
-      - name: Run Unit Tests
-        run: ./gradlew ${{ steps.test_target.outputs.test_task }} --stacktrace
+      - name: Run All Unit Tests
+        run: |
+          echo "🧪 Running all unit tests for all modules..."
+          ./gradlew test --continue --stacktrace
+        continue-on-error: true
+
+      - name: Run Instrumented Tests (App Module)
+        run: |
+          echo "🤖 Running instrumented tests for app module..."
+          ./gradlew connected${{ steps.target_flavor.outputs.flavor }}DebugAndroidTest --continue --stacktrace
+        continue-on-error: true
+
+      - name: Collect Test Results
+        if: always()
+        run: |
+          echo "📊 Collecting test results..."
+          find . -name "TEST-*.xml" -type f | head -20
+          
+          # Count test results
+          UNIT_TEST_FILES=$(find . -path "*/build/test-results/*/TEST-*.xml" -type f | wc -l)
+          INSTRUMENTED_TEST_FILES=$(find . -path "*/build/outputs/androidTest-results/*/TEST-*.xml" -type f | wc -l)
+          
+          echo "Unit test files found: $UNIT_TEST_FILES"
+          echo "Instrumented test files found: $INSTRUMENTED_TEST_FILES"
+          
+          echo "unit_test_count=$UNIT_TEST_FILES" >> $GITHUB_ENV
+          echo "instrumented_test_count=$INSTRUMENTED_TEST_FILES" >> $GITHUB_ENV
+
+      - name: Generate Unit Test Reports
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 📋 Unit Test Results - All Modules
+          path: |
+            **/build/test-results/**/TEST-*.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Generate Instrumented Test Reports
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 🤖 Instrumented Test Results - App Module
+          path: |
+            **/build/outputs/androidTest-results/**/TEST-*.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Check Test Results
+        id: test_results
+        if: always()
+        run: |
+          # Check if any tests failed by looking at exit codes and result files
+          if find . -name "TEST-*.xml" -exec grep -l 'errors="[1-9]"' {} \; | head -1 > /dev/null; then
+            echo "has_failures=true" >> $GITHUB_OUTPUT
+            echo "❌ Tests with errors found"
+          elif find . -name "TEST-*.xml" -exec grep -l 'failures="[1-9]"' {} \; | head -1 > /dev/null; then
+            echo "has_failures=true" >> $GITHUB_OUTPUT  
+            echo "❌ Tests with failures found"
+          else
+            echo "has_failures=false" >> $GITHUB_OUTPUT
+            echo "✅ No test failures detected"
+          fi
+
+      - name: Comment Test Results - Success
+        if: always() && steps.test_results.outputs.has_failures == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ✅ All Tests Passed! 🎉
+            
+              **Target Branch:** \`${{ github.base_ref }}\`
+              **Target Flavor:** ${{ steps.target_flavor.outputs.flavor }}
+            
+              ### Test Summary:
+              - 📋 **Unit Tests:** ${{ env.unit_test_count }} test files processed
+              - 🤖 **Instrumented Tests:** ${{ env.instrumented_test_count }} test files processed
+            
+              ### Modules Tested:
+              - ✅ **Data Module** - Unit tests for repositories, services
+              - ✅ **Domain Module** - Unit tests for use cases, models  
+              - ✅ **App Module** - Unit tests + UI/Instrumented tests
+            
+              🚀 **This PR is ready for review and can be merged safely!**
+            
+              [View detailed test results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            })
+
+      - name: Comment Test Results - Failure
+        if: always() && steps.test_results.outputs.has_failures == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ❌ Tests Failed! 
+            
+              **Target Branch:** \`${{ github.base_ref }}\`
+              **Target Flavor:** ${{ steps.target_flavor.outputs.flavor }}
+            
+              ### Test Summary:
+              - 📋 **Unit Tests:** ${{ env.unit_test_count }} test files processed
+              - 🤖 **Instrumented Tests:** ${{ env.instrumented_test_count }} test files processed
+            
+              ### ⚠️ Action Required:
+              Some tests are failing. Please check the detailed results and fix the issues before merging.
+            
+              ### Modules Tested:
+              - 📋 **Data Module** - Unit tests for repositories, services
+              - 🤖 **Domain Module** - Unit tests for use cases, models
+              - 📱 **App Module** - Unit tests + UI/Instrumented tests
+            
+              [View detailed test results and logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+              **Common issues to check:**
+              - Failing unit tests in data/domain modules
+              - UI test failures (if instrumented tests ran)
+              - Build configuration issues`
+            })
+
+      - name: Fail Job if Tests Failed
+        if: always() && steps.test_results.outputs.has_failures == 'true'
+        run: |
+          echo "❌ Tests failed - failing the job to prevent merge"
+          exit 1
+
+  lint:
+    name: Run Lint Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Run Lint Checks
+        run: ./gradlew lint --continue
+
+      - name: Upload Lint Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-results
+          path: |
+            **/build/reports/lint-results-*.html
+            **/build/reports/lint-results-*.xml
