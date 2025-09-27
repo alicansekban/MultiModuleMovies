@@ -37,14 +37,13 @@ jobs:
         run: |
           APK_PATH=$(find app/build/outputs/apk/dev/release/ -name "*.apk" -type f | head -1)
           echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+          echo "Found APK: $APK_PATH"
+          ls -la "$APK_PATH"
 
+      # Try with minimal parameters first
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.7.0
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
           file: ${{ steps.find_apk.outputs.apk_path }}
-          releaseNotes: |
-            Dev Release - ${{ github.sha }}
-            ${{ github.event.head_commit.message }}
