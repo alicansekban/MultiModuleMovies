@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, pipeline-testing ]
   workflow_dispatch:
 
 jobs:
@@ -35,10 +35,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
           cache: 'gradle'
 
-      # Keystore'u Secrets'taki base64'ten dosyaya çevir
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # Decode keystore from secrets
       - name: Decode keystore from secrets
         run: |
           if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then
@@ -53,7 +56,9 @@ jobs:
           bundler-cache: true
 
       - name: Install gems
-        run: bundle install --path vendor/bundle
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install
 
       - name: Lint (Fastlane)
         run: bundle exec fastlane checks
