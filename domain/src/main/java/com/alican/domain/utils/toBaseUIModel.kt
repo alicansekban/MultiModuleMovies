@@ -1,7 +1,7 @@
 package com.alican.domain.utils
 
 import com.alican.data.utils.ResultWrapper
-import com.alican.domain.models.BaseUIModel
+import com.alican.domain.ui_models.BaseUIModel
 
 fun <T> ResultWrapper<T>.toBaseUIModel(): BaseUIModel<T> {
     return when (this) {

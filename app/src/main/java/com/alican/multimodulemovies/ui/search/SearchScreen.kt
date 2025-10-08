@@ -42,8 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.domain.models.MovieUIModel
-import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.ui_models.pagination.PaginationUIModel
 import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.components.card.LoadingStateCard
 import com.alican.multimodulemovies.theme.AppTheme

@@ -1,7 +1,7 @@
 
 package com.alican.multimodulemovies.ui.profile
 
-import com.alican.domain.models.UserAuthUIModel
+import com.alican.domain.ui_models.user.UserAuthUIModel
 
 data class ProfileUIState(
     val isUserLoggedIn: Boolean = false,

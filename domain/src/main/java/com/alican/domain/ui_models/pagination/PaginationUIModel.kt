@@ -1,5 +1,5 @@
 // Create this file: domain/src/main/java/com/alican/domain/models/PaginationUIModel.kt
-package com.alican.domain.models.pagination
+package com.alican.domain.ui_models.pagination
 
 data class PaginationUIModel<T>(
     val items: List<T> = emptyList(),

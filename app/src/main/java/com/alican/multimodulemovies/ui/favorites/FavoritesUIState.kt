@@ -1,6 +1,6 @@
 package com.alican.multimodulemovies.ui.favorites
 
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
 
 data class FavoritesUIState(
     val favoriteMovies: List<MovieUIModel> = emptyList(),

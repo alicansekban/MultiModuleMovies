@@ -10,8 +10,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.alican.domain.models.MovieType
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieType
+import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.components.pager.CustomPager
 import com.alican.multimodulemovies.components.widget.CustomWidget

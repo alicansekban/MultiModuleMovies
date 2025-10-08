@@ -3,10 +3,10 @@ package com.alican.domain.interactors
 import com.alican.data.data.repository.MoviesRepository
 import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
-import com.alican.domain.models.BaseUIModel
-import com.alican.domain.models.MovieListUIModel
-import com.alican.domain.models.MovieUIModel
-import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.domain.ui_models.BaseUIModel
+import com.alican.domain.ui_models.movie.MovieListUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.ui_models.pagination.PaginationUIModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

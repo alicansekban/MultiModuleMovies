@@ -1,5 +1,4 @@
-package com.alican.domain.models
-
+package com.alican.domain.ui_models.user
 
 data class UserAuthUIModel(
     val uid: String,

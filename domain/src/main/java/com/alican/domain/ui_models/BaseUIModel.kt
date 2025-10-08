@@ -1,4 +1,4 @@
-package com.alican.domain.models
+package com.alican.domain.ui_models
 
 sealed class BaseUIModel<out T> {
     data class Success<T>(val data: T) : BaseUIModel<T>()

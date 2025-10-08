@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.alican.domain.models.MovieDetailUIModel
+import com.alican.domain.ui_models.movie.MovieDetailUIModel
 import com.alican.multimodulemovies.theme.AppTheme
 
 @Composable

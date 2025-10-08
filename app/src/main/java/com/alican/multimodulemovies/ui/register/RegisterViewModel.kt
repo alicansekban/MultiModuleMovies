@@ -4,7 +4,7 @@ package com.alican.multimodulemovies.ui.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
-import com.alican.domain.models.BaseUIModel
+import com.alican.domain.ui_models.BaseUIModel
 import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel

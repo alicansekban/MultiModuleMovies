@@ -3,8 +3,8 @@ package com.alican.multimodulemovies.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.SearchInteractor
-import com.alican.domain.models.MovieUIModel
-import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.ui_models.pagination.PaginationUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
 import com.alican.multimodulemovies.navigation.AppRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
