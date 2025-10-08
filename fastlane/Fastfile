@@ -1,0 +1,26 @@
+default_platform(:android)
+
+platform :android do
+  desc "Run lint checks"
+  lane :checks do
+    gradle(task: "lintDebug")
+  end
+
+  desc "Run unit tests"
+  lane :tests do
+    gradle(task: "testDebugUnitTest")
+  end
+
+  desc "Build release APK"
+  lane :apk_release do
+    gradle(
+      task: "assembleRelease",
+      properties: {
+        "android.injected.signing.store.file" => ENV["RELEASE_STORE_FILE"],
+        "android.injected.signing.store.password" => ENV["RELEASE_STORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["RELEASE_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["RELEASE_KEY_PASSWORD"],
+      }
+    )
+  end
+end
