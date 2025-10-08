@@ -1,0 +1,175 @@
+name: Movies CI/CD Pipeline
+
+run-name: ${{ github.actor }} is building ${{ inputs.environment || 'auto' }} environment
+
+env:
+  main_project_module: app
+  playstore_name: MoviesApp
+
+on:
+  push:
+    branches: [ main, develop, pipeline-testing ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+      build_type:
+        description: 'Choose build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_STORE_FILE: keystore.jks
+      RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      ANDROID_KEYSTORE_PATH: ./keystore.jks
+
+    steps:
+      - name: Determine build configuration
+        id: config
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            ENV="${{ inputs.environment }}"
+            BUILD_TYPE="${{ inputs.build_type }}"
+          else
+            # Auto-determine based on branch
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              ENV="prod"
+              BUILD_TYPE="release"
+            else
+              ENV="dev"
+              BUILD_TYPE="debug"
+            fi
+          fi
+          
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
+          echo "gradle_task=assemble${ENV^}${BUILD_TYPE^}" >> $GITHUB_OUTPUT
+          echo "test_task=test${ENV^}${BUILD_TYPE^}UnitTest" >> $GITHUB_OUTPUT
+          echo "artifact_name=${ENV^}${BUILD_TYPE^}" >> $GITHUB_OUTPUT
+          
+          echo "Building: $ENV $BUILD_TYPE"
+          echo "Gradle task: assemble${ENV^}${BUILD_TYPE^}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Decode keystore (for release builds)
+        if: steps.config.outputs.build_type == 'release'
+        run: |
+          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Missing KEYSTORE_BASE64 secret for release build"; exit 1;
+          fi
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$ANDROID_KEYSTORE_PATH"
+          ls -l "$ANDROID_KEYSTORE_PATH"
+
+      - name: Run Lint
+        run: ./gradlew lint${{ steps.config.outputs.environment }}${{ steps.config.outputs.build_type }}
+
+      - name: Upload Lint Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Lint Results (${{ steps.config.outputs.artifact_name }})
+          path: |
+            ${{ env.main_project_module }}/build/reports/lint-results-*.html
+            ${{ env.main_project_module }}/build/reports/lint-results-*.xml
+
+      - name: Run Unit Tests
+        run: ./gradlew ${{ steps.config.outputs.test_task }}
+
+      - name: Upload Unit Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Unit Test Results (${{ steps.config.outputs.artifact_name }})
+          path: ${{ env.main_project_module }}/build/test-results/test*UnitTest/
+
+      - name: Upload Unit Test Report (HTML)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Unit Test HTML Report (${{ steps.config.outputs.artifact_name }})
+          path: ${{ env.main_project_module }}/build/reports/tests/test*UnitTest/
+
+      - name: Publish Test Results to GitHub
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unit Tests (${{ steps.config.outputs.artifact_name }})
+          path: ${{ env.main_project_module }}/build/test-results/test*UnitTest/TEST-*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+      - name: Build APK
+        run: ./gradlew ${{ steps.config.outputs.gradle_task }}
+
+      - name: Find APK file
+        id: find_apk
+        run: |
+          ENV_LOWER=$(echo "${{ steps.config.outputs.environment }}" | tr '[:upper:]' '[:lower:]')
+          BUILD_TYPE_LOWER=$(echo "${{ steps.config.outputs.build_type }}" | tr '[:upper:]' '[:lower:]')
+          
+          APK_PATH=$(find ${{ env.main_project_module }}/build/outputs/apk/${ENV_LOWER}/${BUILD_TYPE_LOWER}/ -name "*.apk" -type f | head -1)
+          
+          if [ -z "$APK_PATH" ]; then
+            echo "No APK found! Checking all output directories:"
+            find ${{ env.main_project_module }}/build/outputs/apk/ -name "*.apk" -type f
+            exit 1
+          fi
+          
+          echo "Found APK: $APK_PATH"
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.playstore_name }} - ${{ steps.config.outputs.artifact_name }} APK
+          path: ${{ steps.find_apk.outputs.apk_path }}
+
+      - name: Create Release Summary
+        run: |
+          echo "## 🚀 Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ steps.config.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Type**: ${{ steps.config.outputs.build_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Gradle Task**: ${{ steps.config.outputs.gradle_task }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **APK**: ${{ steps.find_apk.outputs.apk_path }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          fi
