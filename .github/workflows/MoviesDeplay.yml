@@ -1,4 +1,4 @@
-name: JustWatch CI/CD
+name: Movies CI/CD
 
 run-name: ${{ github.actor }} is testing out Github Actions!
 
@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main, develop ]
   workflow_dispatch:
 
 jobs:
