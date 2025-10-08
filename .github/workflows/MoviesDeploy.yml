@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Just-Watch-Actions:
+  Movies-Actions:
     runs-on: ubuntu-latest
     env:
       # Keystore, Fastlane'ın injected signing properties için gerekli ENV'ler
