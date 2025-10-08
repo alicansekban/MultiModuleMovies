@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.alican.domain.interactors.FavoritesInteractor
 import com.alican.domain.interactors.MovieDetailInteractor
-import com.alican.domain.models.MovieUIModel
-import com.alican.domain.models.movie_detail.MovieDetailUIState
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

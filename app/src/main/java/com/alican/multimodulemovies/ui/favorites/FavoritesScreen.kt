@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.multimodulemovies.components.card.EmptyStateCard
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.ui.list.components.MovieGridItem

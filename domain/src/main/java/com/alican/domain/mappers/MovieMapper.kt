@@ -3,8 +3,8 @@ package com.alican.domain.mappers
 import com.alican.data.BuildConfig
 import com.alican.data.data.response.BaseMoviesResponse
 import com.alican.data.data.response.MovieResponse
-import com.alican.domain.models.MovieListUIModel
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieListUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
 
 fun MovieResponse.toUIModel() : MovieUIModel {
     return MovieUIModel(

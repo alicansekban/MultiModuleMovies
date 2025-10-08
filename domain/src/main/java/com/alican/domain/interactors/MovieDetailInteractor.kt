@@ -4,10 +4,10 @@ import com.alican.data.BuildConfig
 import com.alican.data.data.repository.MoviesRepository
 import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
-import com.alican.domain.models.MovieCreditsUIModel
-import com.alican.domain.models.MovieDetailUIModel
-import com.alican.domain.models.MovieReviewsUIModel
-import com.alican.domain.models.movie_detail.MovieDetailUIState
+import com.alican.domain.ui_models.movie.MovieCreditsUIModel
+import com.alican.domain.ui_models.movie.MovieDetailUIModel
+import com.alican.domain.ui_models.movie.MovieReviewsUIModel
+import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject

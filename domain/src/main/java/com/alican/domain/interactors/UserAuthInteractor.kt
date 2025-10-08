@@ -2,12 +2,12 @@ package com.alican.domain.interactors
 
 import com.alican.data.auth.UserAuthManager
 import com.alican.data.utils.ResultWrapper
-import com.alican.domain.models.BaseUIModel
-import com.alican.domain.models.BaseUIModel.Empty
-import com.alican.domain.models.BaseUIModel.Error
-import com.alican.domain.models.BaseUIModel.Loading
-import com.alican.domain.models.BaseUIModel.Success
-import com.alican.domain.models.UserAuthUIModel
+import com.alican.domain.ui_models.BaseUIModel
+import com.alican.domain.ui_models.BaseUIModel.Empty
+import com.alican.domain.ui_models.BaseUIModel.Error
+import com.alican.domain.ui_models.BaseUIModel.Loading
+import com.alican.domain.ui_models.BaseUIModel.Success
+import com.alican.domain.ui_models.user.UserAuthUIModel
 import javax.inject.Inject
 
 class UserAuthInteractor @Inject constructor(

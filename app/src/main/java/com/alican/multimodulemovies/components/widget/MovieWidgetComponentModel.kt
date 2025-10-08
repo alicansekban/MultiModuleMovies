@@ -1,7 +1,7 @@
 package com.alican.multimodulemovies.components.widget
 
-import com.alican.domain.models.MovieType
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieType
+import com.alican.domain.ui_models.movie.MovieUIModel
 
 data class MovieWidgetComponentModel(
     val title: String? = null,

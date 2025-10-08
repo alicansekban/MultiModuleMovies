@@ -1,7 +1,7 @@
 package com.alican.multimodulemovies.ui.home
 
-import com.alican.domain.models.MovieType
-import com.alican.domain.models.home.HomeUIState as DomainHomeUIState
+import com.alican.domain.ui_models.movie.MovieType
+import com.alican.domain.ui_models.home.HomeUIState as DomainHomeUIState
 
 // Using the domain HomeUIState as base but we can extend it if needed for UI-specific state
 typealias HomeUIState = DomainHomeUIState

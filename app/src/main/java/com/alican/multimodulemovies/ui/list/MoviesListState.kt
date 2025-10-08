@@ -1,6 +1,6 @@
 package com.alican.multimodulemovies.ui.list
 
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
 
 sealed interface MovieListUIEvents {
     data object LoadNextPage : MovieListUIEvents
