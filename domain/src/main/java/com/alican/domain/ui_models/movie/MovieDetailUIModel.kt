@@ -1,5 +1,4 @@
-
-package com.alican.domain.models
+package com.alican.domain.ui_models.movie
 
 data class MovieDetailUIModel(
     val id: Int? = 0,

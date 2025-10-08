@@ -3,7 +3,7 @@ package com.alican.multimodulemovies.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
-import com.alican.domain.models.BaseUIModel
+import com.alican.domain.ui_models.BaseUIModel
 import com.alican.multimodulemovies.helpers.navigation.navigateToAboutUs
 import com.alican.multimodulemovies.helpers.navigation.navigateToHelp
 import com.alican.multimodulemovies.helpers.navigation.navigateToLogin

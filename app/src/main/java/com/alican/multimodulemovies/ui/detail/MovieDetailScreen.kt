@@ -34,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.domain.models.MovieCreditsUIModel
-import com.alican.domain.models.MovieDetailUIModel
-import com.alican.domain.models.MovieReviewsUIModel
-import com.alican.domain.models.movie_detail.MovieDetailUIState
+import com.alican.domain.ui_models.movie.MovieCreditsUIModel
+import com.alican.domain.ui_models.movie.MovieDetailUIModel
+import com.alican.domain.ui_models.movie.MovieReviewsUIModel
+import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.components.pager.CustomPager
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.ui.detail.components.MovieDetailInformation

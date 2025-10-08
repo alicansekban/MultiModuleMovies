@@ -1,7 +1,7 @@
 package com.alican.multimodulemovies.helpers.navigation
 
 
-import com.alican.domain.models.MovieType
+import com.alican.domain.ui_models.movie.MovieType
 import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.utils.ScreenRoute
 

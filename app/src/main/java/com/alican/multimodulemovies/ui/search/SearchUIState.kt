@@ -1,7 +1,7 @@
 package com.alican.multimodulemovies.ui.search
 
-import com.alican.domain.models.MovieUIModel
-import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.ui_models.pagination.PaginationUIModel
 
 data class SearchUIState(
     val searchQuery: String = "",

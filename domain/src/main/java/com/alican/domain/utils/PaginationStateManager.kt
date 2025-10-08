@@ -1,7 +1,7 @@
 // Create this file: domain/src/main/java/com/alican/domain/utils/PaginationStateManager.kt
 package com.alican.domain.utils
 
-import com.alican.domain.models.pagination.PaginationUIModel
+import com.alican.domain.ui_models.pagination.PaginationUIModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

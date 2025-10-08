@@ -2,7 +2,7 @@ package com.alican.domain.interactors
 
 import com.alican.data.data.local.entity.MoviesEntity
 import com.alican.data.data.repository.FavoritesRepository
-import com.alican.domain.models.MovieUIModel
+import com.alican.domain.ui_models.movie.MovieUIModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

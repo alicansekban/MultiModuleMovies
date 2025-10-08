@@ -53,7 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.alican.domain.models.UserAuthUIModel
+import com.alican.domain.ui_models.user.UserAuthUIModel
 import com.alican.multimodulemovies.theme.AppTheme
 
 @Composable

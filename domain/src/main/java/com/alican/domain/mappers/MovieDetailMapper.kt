@@ -4,9 +4,9 @@ import com.alican.data.BuildConfig
 import com.alican.data.data.response.CastItem
 import com.alican.data.data.response.MovieDetailResponse
 import com.alican.data.data.response.MovieReviewResponseItem
-import com.alican.domain.models.MovieCreditsUIModel
-import com.alican.domain.models.MovieDetailUIModel
-import com.alican.domain.models.MovieReviewsUIModel
+import com.alican.domain.ui_models.movie.MovieCreditsUIModel
+import com.alican.domain.ui_models.movie.MovieDetailUIModel
+import com.alican.domain.ui_models.movie.MovieReviewsUIModel
 
 fun MovieDetailResponse.toUIModel(): MovieDetailUIModel {
     return MovieDetailUIModel(

@@ -1,6 +1,6 @@
 package com.alican.multimodulemovies.utils
 
-import com.alican.domain.models.MovieType
+import com.alican.domain.ui_models.movie.MovieType
 import kotlinx.serialization.Serializable
 
 @Serializable
