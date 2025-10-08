@@ -7,7 +7,7 @@ env:
   main_project_module: app
 
   # The name used in artifact names
-  playstore_name: JustWatch
+  playstore_name: MoviesApp
 
 on:
   push:
