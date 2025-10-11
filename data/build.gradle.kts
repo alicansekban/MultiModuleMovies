@@ -24,11 +24,6 @@ android {
         )
         buildConfigField(
             type = "String",
-            name = "BASE_POSTER_URL",
-            value = "\"https://image.tmdb.org/t/p/w500\""
-        )
-        buildConfigField(
-            type = "String",
             name = "API_TOKEN",
             value = "\"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3OGUzZDUxYjYwYzZiN2E3NzU3N2JkNzNmODI3MTEzOCIsInN1YiI6IjVkZmRmOGEwZDFhODkzMDAxNDg2ZjIzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8pncezOjkKsif20QbFwy4GO_1dxOt9Rfdt-EFBQ5EDE\""
         )
@@ -66,7 +61,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)

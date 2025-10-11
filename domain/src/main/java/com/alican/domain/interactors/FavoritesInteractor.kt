@@ -1,7 +1,7 @@
 package com.alican.domain.interactors
 
-import com.alican.data.data.local.entity.MoviesEntity
-import com.alican.data.data.repository.FavoritesRepository
+import com.alican.domain.models.Movie
+import com.alican.domain.repository.FavoritesRepository
 import com.alican.domain.ui_models.movie.MovieUIModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,12 +14,12 @@ class FavoritesInteractor @Inject constructor(
 ) {
 
     fun getFavoriteMovies(): Flow<List<MovieUIModel>> {
-        return repository.getFavoriteMoviesEntities().map { entities ->
+        return repository.getFavoriteMovies().map { entities ->
             entities.map { entity ->
                 MovieUIModel(
-                    id = entity.movieId,
+                    id = entity.id,
                     title = entity.title,
-                    imageUrl = entity.imageUrl,
+                    imageUrl = entity.posterPath,
                     overview = entity.overview,
                     isFavorite = true
                 )
@@ -28,29 +28,29 @@ class FavoritesInteractor @Inject constructor(
     }
 
     fun getFavoriteMovieIds(): Flow<List<Int>> {
-        return repository.getFavoriteMovieIdsEntities()
+        return repository.getFavoriteMovieIds()
     }
 
     fun isMovieFavorite(movieId: Int): Flow<Boolean> {
-        return repository.isMovieFavoriteEntity(movieId)
+        return repository.isMovieFavorite(movieId)
     }
 
     suspend fun addToFavorites(movie: MovieUIModel) {
-        val entity = MoviesEntity(
-            movieId = movie.id ?: return,
-            title = movie.title ?: "",
-            imageUrl = movie.imageUrl,
+        val entity = Movie(
+            title = movie.title,
+            id = movie.id,
+            posterPath = movie.imageUrl,
             overview = movie.overview
         )
-        repository.addToFavoritesEntity(entity)
+        repository.addToFavorites(entity)
     }
 
     suspend fun removeFromFavorites(movieId: Int) {
-        repository.removeFromFavoritesEntity(movieId)
+        repository.removeFromFavorites(movieId)
     }
 
     suspend fun toggleFavorite(movie: MovieUIModel) {
-        val movieId = movie.id ?: return
+        val movieId = movie.id
         if (movie.isFavorite) {
             removeFromFavorites(movieId)
         } else {
@@ -59,6 +59,6 @@ class FavoritesInteractor @Inject constructor(
     }
 
     fun getFavoritesCount(): Flow<Int> {
-        return repository.getFavoritesCountEntity()
+        return repository.getFavoritesCount()
     }
 }

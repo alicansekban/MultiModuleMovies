@@ -44,7 +44,6 @@ import com.alican.multimodulemovies.ui.list.components.ErrorStateCard
 import com.alican.multimodulemovies.ui.list.components.MovieGridItem
 import com.alican.multimodulemovies.ui.list.components.MovieListHeader
 import com.alican.multimodulemovies.utils.heightPercent
-import java.util.UUID
 
 @Composable
 fun MoviesListScreen(
@@ -132,7 +131,7 @@ fun MoviesListScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Movie items
-            items(uiState.items, key = { it.id ?: UUID.randomUUID().toString() }) { movie ->
+            items(uiState.items, key = { it.id }) { movie ->
                 MovieGridItem(
                     isFavorite = movie.isFavorite,
                     imageUrl = movie.imageUrl,
