@@ -1,39 +1,38 @@
 package com.alican.domain.mappers
 
-import com.alican.data.BuildConfig
-import com.alican.data.data.response.CastItem
-import com.alican.data.data.response.MovieDetailResponse
-import com.alican.data.data.response.MovieReviewResponseItem
+
+import com.alican.domain.BuildConfig
+import com.alican.domain.models.Cast
+import com.alican.domain.models.MovieDetail
+import com.alican.domain.models.MovieReview
 import com.alican.domain.ui_models.movie.MovieCreditsUIModel
 import com.alican.domain.ui_models.movie.MovieDetailUIModel
 import com.alican.domain.ui_models.movie.MovieReviewsUIModel
 
-fun MovieDetailResponse.toUIModel(): MovieDetailUIModel {
+fun MovieDetail.toUIModel(): MovieDetailUIModel {
     return MovieDetailUIModel(
         id = id,
         title = title,
-        imageUrl = BuildConfig.BASE_POSTER_URL + this.poster_path,
+        imageUrl = BuildConfig.BASE_POSTER_URL + posterPath,
         overview = overview,
         duration = "${this.runtime} min.",
-        voteAvg = vote_average.toString(),
-        releaseDate = release_date
+        voteAvg = voteAverage.toString(),
+        releaseDate = releaseDate
     )
 }
 
-fun CastItem.toUIModel(): MovieCreditsUIModel {
+fun Cast.toUIModel(): MovieCreditsUIModel {
     return MovieCreditsUIModel(
         id = id,
         characterName = character,
-        imageUrl = BuildConfig.BASE_POSTER_URL + this.profile_path,
+        imageUrl = BuildConfig.BASE_POSTER_URL + this.profilePath,
         name = name
     )
 }
 
-fun MovieReviewResponseItem.toUIModel(): MovieReviewsUIModel {
+fun MovieReview.toUIModel(): MovieReviewsUIModel {
     return MovieReviewsUIModel(
-        id = id,
         author = author,
-        content = content,
-        url = url
+        content = content
     )
 }

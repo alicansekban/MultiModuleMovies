@@ -14,6 +14,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            type = "String",
+            name = "BASE_POSTER_URL",
+            value = "\"https://image.tmdb.org/t/p/w500\""
+        )
     }
 
     buildTypes {
@@ -32,11 +38,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
 
-    implementation(project(":data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.runtime.android)

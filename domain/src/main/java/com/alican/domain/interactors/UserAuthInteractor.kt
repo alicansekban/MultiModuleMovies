@@ -1,26 +1,26 @@
 package com.alican.domain.interactors
 
-import com.alican.data.auth.UserAuthManager
-import com.alican.data.utils.ResultWrapper
+import com.alican.domain.repository.UserAuthRepository
 import com.alican.domain.ui_models.BaseUIModel
 import com.alican.domain.ui_models.BaseUIModel.Empty
 import com.alican.domain.ui_models.BaseUIModel.Error
 import com.alican.domain.ui_models.BaseUIModel.Loading
 import com.alican.domain.ui_models.BaseUIModel.Success
 import com.alican.domain.ui_models.user.UserAuthUIModel
+import com.alican.domain.utils.Resource
 import javax.inject.Inject
 
 class UserAuthInteractor @Inject constructor(
-    private val userAuthManager: UserAuthManager
+    private val userAuthRepository: UserAuthRepository
 ) {
 
     fun isUserLoggedIn(): Boolean {
-        return userAuthManager.isUserLoggedIn()
+        return userAuthRepository.isUserLoggedIn()
     }
 
     fun getCurrentUser(): BaseUIModel<UserAuthUIModel> {
         return try {
-            val authUser = userAuthManager.getCurrentUser()
+            val authUser = userAuthRepository.getCurrentUser()
             if (authUser != null) {
                 Success(
                     UserAuthUIModel(
@@ -41,7 +41,7 @@ class UserAuthInteractor @Inject constructor(
 
     fun logout(): BaseUIModel<Unit> {
         return try {
-            userAuthManager.logout()
+            userAuthRepository.logout()
             Success(Unit)
         } catch (e: Exception) {
             Error("Logout failed: ${e.message}")
@@ -49,8 +49,8 @@ class UserAuthInteractor @Inject constructor(
     }
 
     suspend fun register(email: String, password: String): BaseUIModel<UserAuthUIModel> {
-        return when (val result = userAuthManager.register(email, password)) {
-            is ResultWrapper.Success -> {
+        return when (val result = userAuthRepository.register(email, password)) {
+            is Resource.Success -> {
                 Success(
                     UserAuthUIModel(
                         uid = result.value.uid,
@@ -62,17 +62,15 @@ class UserAuthInteractor @Inject constructor(
                 )
             }
 
-            is ResultWrapper.Error -> {
+            is Resource.Error -> {
                 Error(result.message.orEmpty())
             }
-
-            ResultWrapper.Loading -> Loading
         }
     }
 
     suspend fun login(email: String, password: String): BaseUIModel<UserAuthUIModel> {
-        return when (val result = userAuthManager.login(email, password)) {
-            is ResultWrapper.Success -> {
+        return when (val result = userAuthRepository.login(email, password)) {
+            is Resource.Success -> {
                 // After successful login, get the current user
                 when (val currentUserResult = getCurrentUser()) {
                     is Success -> currentUserResult
@@ -82,31 +80,27 @@ class UserAuthInteractor @Inject constructor(
                 }
             }
 
-            is ResultWrapper.Error -> {
+            is Resource.Error -> {
                 Error(result.message.orEmpty())
             }
-
-            ResultWrapper.Loading -> Loading
         }
     }
 
     suspend fun sendPasswordResetEmail(email: String): BaseUIModel<String> {
-        return when (val result = userAuthManager.sendPasswordResetEmail(email)) {
-            is ResultWrapper.Success -> {
+        return when (val result = userAuthRepository.sendPasswordResetEmail(email)) {
+            is Resource.Success -> {
                 Success("Password reset email sent successfully")
             }
 
-            is ResultWrapper.Error -> {
+            is Resource.Error -> {
                 Error(result.message.orEmpty())
             }
-
-            ResultWrapper.Loading -> Loading
         }
     }
 
     suspend fun sendEmailVerification(): BaseUIModel<UserAuthUIModel> {
-        return when (val result = userAuthManager.sendEmailVerification()) {
-            is ResultWrapper.Success -> {
+        return when (val result = userAuthRepository.sendEmailVerification()) {
+            is Resource.Success -> {
                 when (val currentUserResult = getCurrentUser()) {
                     is Success -> currentUserResult
                     is Error -> currentUserResult
@@ -115,11 +109,9 @@ class UserAuthInteractor @Inject constructor(
                 }
             }
 
-            is ResultWrapper.Error -> {
+            is Resource.Error -> {
                 Error(result.message.orEmpty())
             }
-
-            ResultWrapper.Loading -> Loading
         }
     }
 }
