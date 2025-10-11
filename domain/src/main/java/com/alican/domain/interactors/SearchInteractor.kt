@@ -1,12 +1,12 @@
 package com.alican.domain.interactors
 
-import com.alican.data.data.repository.MoviesRepository
-import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
+import com.alican.domain.repository.MoviesRepository
 import com.alican.domain.ui_models.BaseUIModel
 import com.alican.domain.ui_models.movie.MovieListUIModel
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.pagination.PaginationUIModel
+import com.alican.domain.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -52,9 +52,8 @@ class SearchInteractor @Inject constructor(
         paginationManager.setLoading(page == 1)
         return moviesRepository.searchMovies(query = currentQuery, page = page).let { result ->
             when (result) {
-                is ResultWrapper.Error -> BaseUIModel.Error(result.message.orEmpty())
-                ResultWrapper.Loading -> BaseUIModel.Loading
-                is ResultWrapper.Success -> {
+                is Resource.Error -> BaseUIModel.Error(result.message.orEmpty())
+                is Resource.Success -> {
                     val currentState = paginationManager.state.value
                     val existingMovies = if (page == 1) emptyList() else currentState.items
                     val currentModel = MovieListUIModel(

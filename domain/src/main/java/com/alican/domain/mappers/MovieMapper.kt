@@ -1,28 +1,28 @@
 package com.alican.domain.mappers
 
-import com.alican.data.BuildConfig
-import com.alican.data.data.response.BaseMoviesResponse
-import com.alican.data.data.response.MovieResponse
+import com.alican.domain.BuildConfig
+import com.alican.domain.models.Movie
+import com.alican.domain.models.MovieList
 import com.alican.domain.ui_models.movie.MovieListUIModel
 import com.alican.domain.ui_models.movie.MovieUIModel
 
-fun MovieResponse.toUIModel() : MovieUIModel {
+fun Movie.toUIModel(): MovieUIModel {
     return MovieUIModel(
         id = id,
         title = title,
-        imageUrl = BuildConfig.BASE_POSTER_URL + this.poster_path
+        imageUrl = BuildConfig.BASE_POSTER_URL + this.posterPath
     )
 }
 
-fun BaseMoviesResponse.toUIModel(currentModel : MovieListUIModel) : MovieListUIModel {
-    val newMovies = this.results?.map { it.toUIModel() } ?: emptyList()
+fun MovieList.toUIModel(currentModel: MovieListUIModel): MovieListUIModel {
+    val newMovies = this.results.map { it.toUIModel() }
     val updatedMovies = currentModel.movies.plus(newMovies).distinctBy { it.id }
     return MovieListUIModel(
-        page = page ?: 0,
+        page = page,
         movies = updatedMovies,
-        totalPages = total_pages ?: 0,
-        totalResults = total_results ?: 0,
-        canLoadMore = page != total_pages
+        totalPages = totalPages,
+        totalResults = totalResults,
+        canLoadMore = page != totalPages
 
     )
 }

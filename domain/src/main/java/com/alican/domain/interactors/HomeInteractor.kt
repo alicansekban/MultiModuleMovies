@@ -1,10 +1,10 @@
 package com.alican.domain.interactors
 
-import com.alican.data.data.repository.MoviesRepository
-import com.alican.data.utils.ResultWrapper
 import com.alican.domain.mappers.toUIModel
-import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.repository.MoviesRepository
 import com.alican.domain.ui_models.home.HomeUIState
+import com.alican.domain.ui_models.movie.MovieUIModel
+import com.alican.domain.utils.Resource
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -30,8 +30,8 @@ class HomeInteractor @Inject constructor(
 
     private suspend fun getUpcomingMoviesSync(page: Int): List<MovieUIModel> {
         return when (val response = moviesRepository.getUpComingMovies(page)) {
-            is ResultWrapper.Success -> {
-                response.value.results?.map { it.toUIModel() } ?: emptyList()
+            is Resource.Success -> {
+                response.value.results.map { it.toUIModel() }
             }
 
             else -> emptyList()
@@ -40,8 +40,8 @@ class HomeInteractor @Inject constructor(
 
     private suspend fun getNowPlayingMoviesSync(page: Int): List<MovieUIModel> {
         return when (val response = moviesRepository.getNowPlayingMovies(page)) {
-            is ResultWrapper.Success -> {
-                response.value.results?.map { it.toUIModel() } ?: emptyList()
+            is Resource.Success -> {
+                response.value.results.map { it.toUIModel() }
             }
 
             else -> emptyList()
@@ -50,8 +50,8 @@ class HomeInteractor @Inject constructor(
 
     private suspend fun getTopRatedMoviesSync(page: Int): List<MovieUIModel> {
         return when (val response = moviesRepository.getTopRatedMovies(page)) {
-            is ResultWrapper.Success -> {
-                response.value.results?.map { it.toUIModel() } ?: emptyList()
+            is Resource.Success -> {
+                response.value.results.map { it.toUIModel() }
             }
 
             else -> emptyList()
@@ -60,8 +60,8 @@ class HomeInteractor @Inject constructor(
 
     private suspend fun getPopularMoviesSync(page: Int): List<MovieUIModel> {
         return when (val response = moviesRepository.getPopularMovies(page)) {
-            is ResultWrapper.Success -> {
-                response.value.results?.map { it.toUIModel() } ?: emptyList()
+            is Resource.Success -> {
+                response.value.results.map { it.toUIModel() }
             }
 
             else -> emptyList()

@@ -31,7 +31,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object NetworkModule { // Changed from AppModule to NetworkModule
 
     @Provides
     @Singleton
@@ -71,7 +71,6 @@ object AppModule {
             socketTimeoutMillis = 30_000
         }
     }
-
 
     @Provides
     @Singleton

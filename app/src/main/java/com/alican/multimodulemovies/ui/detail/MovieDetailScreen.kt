@@ -583,11 +583,9 @@ private fun MovieDetailMinimalDataDarkPreview() {
         val sampleMovieDetail = MovieDetailUIModel(
             id = 4,
             title = "Another Sample",
-            overview = null,
             releaseDate = "2024-04-05",
             voteAvg = "6.8",
-            duration = null,
-            imageUrl = null
+            duration = null
         )
 
         MovieDetailScreenContent(
@@ -614,7 +612,6 @@ private fun MovieDetailEmptyImagesPreview() {
             releaseDate = "2024-05-15",
             voteAvg = "7.8",
             duration = "120 min",
-            imageUrl = null
         )
 
         val sampleCredits = listOf(
@@ -648,7 +645,6 @@ private fun MovieDetailEmptyImagesDarkPreview() {
             releaseDate = "2024-06-20",
             voteAvg = "8.2",
             duration = "95 min",
-            imageUrl = null
         )
 
         MovieDetailScreenContent(
