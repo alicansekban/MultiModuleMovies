@@ -1,18 +1,6 @@
+
 # This file contains the fastlane.tools configuration
 # You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 
 default_platform(:android)
 
@@ -27,14 +15,31 @@ platform :android do
     gradle(task: "test")
   end
 
-   desc "Alias for test lane"
-    lane :tests do
-      test
-    end
+  desc "Alias for test lane"
+  lane :tests do
+    test
+  end
 
   desc "Build signed APK release"
   lane :apk_release do
-    gradle(task: "clean assembleRelease")
+    environment = ENV["BUILD_ENVIRONMENT"] || "prod"
+    build_type = ENV["BUILD_TYPE"] || "release"
+    
+    task = "clean assemble#{environment.capitalize}#{build_type.capitalize}"
+    
+    if build_type == "release"
+      gradle(
+        task: task,
+        properties: {
+          "android.injected.signing.store.file" => ENV["ANDROID_KEYSTORE_PATH"],
+          "android.injected.signing.store.password" => ENV["RELEASE_STORE_PASSWORD"],
+          "android.injected.signing.key.alias" => ENV["RELEASE_KEY_ALIAS"],
+          "android.injected.signing.key.password" => ENV["RELEASE_KEY_PASSWORD"]
+        }
+      )
+    else
+      gradle(task: task)
+    end
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
@@ -49,4 +54,3 @@ platform :android do
     upload_to_play_store
   end
 end
-
