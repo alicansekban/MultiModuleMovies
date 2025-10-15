@@ -46,7 +46,6 @@ jobs:
       RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
       RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      ANDROID_KEYSTORE_PATH: ./keystore.jks
 
     steps:
       - name: Determine build configuration
@@ -55,7 +54,6 @@ jobs:
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             ENV="${{ inputs.environment }}"
             BUILD_TYPE="${{ inputs.build_type }}"
-            BRANCH_REF="${{ inputs.ref }}"
           else
             # Auto-determine based on branch
             if [ "${{ github.ref_name }}" == "main" ]; then
@@ -65,25 +63,21 @@ jobs:
               ENV="dev"
               BUILD_TYPE="debug"
             fi
-            BRANCH_REF="${{ github.ref }}"
           fi
           
           echo "environment=$ENV" >> $GITHUB_OUTPUT
           echo "build_type=$BUILD_TYPE" >> $GITHUB_OUTPUT
-          echo "branch_ref=$BRANCH_REF" >> $GITHUB_OUTPUT
           echo "gradle_task=assemble${ENV^}${BUILD_TYPE^}" >> $GITHUB_OUTPUT
           echo "test_task=test${ENV^}${BUILD_TYPE^}UnitTest" >> $GITHUB_OUTPUT
           echo "artifact_name=${ENV^}${BUILD_TYPE^}" >> $GITHUB_OUTPUT
           
-          echo "Building: $ENV $BUILD_TYPE from $BRANCH_REF"
+          echo "Building: $ENV $BUILD_TYPE"
           echo "Gradle task: assemble${ENV^}${BUILD_TYPE^}"
 
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
 
       - name: Check out repository code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.config.outputs.branch_ref }}
 
       - name: Set Up JDK
         uses: actions/setup-java@v4
@@ -105,15 +99,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # Decode keystore from secrets (conditional for release builds)
-      - name: Decode keystore from secrets
-        if: steps.config.outputs.build_type == 'release'
+      - name: Verify keystore exists
         run: |
-          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "Missing KEYSTORE_BASE64 secret for release build"; exit 1;
+          if [ -f "./keystore.jks" ]; then
+            echo "✅ Keystore found in repository"
+            ls -l ./keystore.jks
+          else
+            echo "❌ Keystore not found in repository"
+            echo "Files in root directory:"
+            ls -la
           fi
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$ANDROID_KEYSTORE_PATH"
-          ls -l "$ANDROID_KEYSTORE_PATH"
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -161,7 +156,6 @@ jobs:
           RELEASE_STORE_PASSWORD: ${{ env.RELEASE_STORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ env.RELEASE_KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ env.RELEASE_KEY_PASSWORD }}
-          ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
         run: bundle exec fastlane apk_release
 
       - name: Find APK file
@@ -176,6 +170,11 @@ jobs:
           # If not found, try the release directory as fallback
           if [ -z "$APK_PATH" ]; then
             APK_PATH=$(find ${{ env.main_project_module }}/build/outputs/apk/release/ -name "*.apk" -type f | head -1)
+          fi
+          
+          # If still not found, try debug directory as fallback
+          if [ -z "$APK_PATH" ]; then
+            APK_PATH=$(find ${{ env.main_project_module }}/build/outputs/apk/ -name "*.apk" -type f | head -1)
           fi
           
           if [ -z "$APK_PATH" ]; then
@@ -198,7 +197,6 @@ jobs:
           echo "## 🚀 Movies CI/CD Build Summary" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment**: ${{ steps.config.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Type**: ${{ steps.config.outputs.build_type }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch/Ref**: ${{ steps.config.outputs.branch_ref }}" >> $GITHUB_STEP_SUMMARY
           echo "- **APK Path**: ${{ steps.find_apk.outputs.apk_path }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           if [ "${{ github.event_name }}" == "push" ]; then
