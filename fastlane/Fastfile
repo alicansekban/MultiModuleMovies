@@ -27,6 +27,11 @@ platform :android do
     gradle(task: "test")
   end
 
+   desc "Alias for test lane"
+    lane :tests do
+      test
+    end
+
   desc "Build signed APK release"
   lane :apk_release do
     gradle(task: "clean assembleRelease")
