@@ -66,15 +66,17 @@ jobs:
 
       - name: Upload Unit Test Results
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: Unit Test Results
-          path: ${{ env.main_project_module }}/build/test-results/testDebugUnitTest/
+          name: Unit Test Results (${{ steps.config.outputs.artifact_name }})
+          path: ${{ env.main_project_module }}/build/test-results/test*UnitTest/
 
       - name: Upload Unit Test Report (HTML)
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: Unit Test HTML Report
-          path: ${{ env.main_project_module }}/build/reports/tests/testDebugUnitTest/
+          name: Unit Test HTML Report (${{ steps.config.outputs.artifact_name }})
+          path: ${{ env.main_project_module }}/build/reports/tests/test*UnitTest/
 
       - name: Build signed APK (Fastlane)
         run: bundle exec fastlane apk_release
@@ -82,5 +84,5 @@ jobs:
       - name: Upload APK Release
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.playstore_name }} - APK(s) release generated
-          path: ${{ env.main_project_module }}/build/outputs/apk/release/
+          name: ${{ env.playstore_name }} - ${{ steps.config.outputs.artifact_name }} APK
+          path: ${{ steps.find_apk.outputs.apk_path }}
