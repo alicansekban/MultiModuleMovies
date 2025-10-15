@@ -13,21 +13,29 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+
 default_platform(:android)
 
 platform :android do
+  desc "Run lint checks"
+  lane :checks do
+    gradle(task: "lint")
+  end
+
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  desc "Build signed APK release"
+  lane :apk_release do
+    gradle(task: "clean assembleRelease")
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease")
     crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
   end
 
   desc "Deploy a new version to the Google Play"
@@ -36,3 +44,4 @@ platform :android do
     upload_to_play_store
   end
 end
+
