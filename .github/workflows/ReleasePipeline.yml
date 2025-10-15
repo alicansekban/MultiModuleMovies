@@ -1,4 +1,4 @@
-name: Movies CI/CD Pipeline
+name: Movies CI/CD Pipeline Without Fastlane
 
 run-name: ${{ github.actor }} is building ${{ inputs.environment || 'auto' }} environment
 

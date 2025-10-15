@@ -1,4 +1,4 @@
-name: Movies CI/CD
+name: Movies CI/CD With Fastlane
 
 run-name: ${{ github.actor }} is building ${{ inputs.environment || 'auto' }} environment with ${{ inputs.build_type || 'auto' }} build
 
@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [ main, develop, feature/fastlane-fix, feature/fastlane-fixv2 ]
+    branches: [ main, develop ]
   workflow_dispatch:
     inputs:
       environment:
