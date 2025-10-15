@@ -56,9 +56,7 @@ jobs:
           bundler-cache: true
 
       - name: Install gems
-        run: |
-          bundle config set --local path 'vendor/bundle'
-          bundle install
+        run: bundle install --path vendor/bundle
 
       - name: Lint (Fastlane)
         run: bundle exec fastlane checks
