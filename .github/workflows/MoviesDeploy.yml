@@ -154,6 +154,14 @@ jobs:
           fail-on-error: false
 
       - name: Build signed APK (Fastlane)
+        env:
+          BUILD_ENVIRONMENT: ${{ steps.config.outputs.environment }}
+          BUILD_TYPE: ${{ steps.config.outputs.build_type }}
+          RELEASE_STORE_FILE: ${{ env.RELEASE_STORE_FILE }}
+          RELEASE_STORE_PASSWORD: ${{ env.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ env.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ env.RELEASE_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
         run: bundle exec fastlane apk_release
 
       - name: Find APK file
