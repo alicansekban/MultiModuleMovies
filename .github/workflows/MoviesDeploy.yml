@@ -81,6 +81,23 @@ jobs:
       - name: Build signed APK (Fastlane)
         run: bundle exec fastlane apk_release
 
+      - name: Find APK file
+        id: find_apk
+        run: |
+          ENV_LOWER=$(echo "${{ steps.config.outputs.environment }}" | tr '[:upper:]' '[:lower:]')
+          BUILD_TYPE_LOWER=$(echo "${{ steps.config.outputs.build_type }}" | tr '[:upper:]' '[:lower:]')
+          
+          APK_PATH=$(find ${{ env.main_project_module }}/build/outputs/apk/${ENV_LOWER}/${BUILD_TYPE_LOWER}/ -name "*.apk" -type f | head -1)
+          
+          if [ -z "$APK_PATH" ]; then
+            echo "No APK found! Checking all output directories:"
+            find ${{ env.main_project_module }}/build/outputs/apk/ -name "*.apk" -type f
+            exit 1
+          fi
+          
+          echo "Found APK: $APK_PATH"
+          echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+
       - name: Upload APK Release
         uses: actions/upload-artifact@v4
         with:
