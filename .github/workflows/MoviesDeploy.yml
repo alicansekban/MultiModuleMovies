@@ -114,6 +114,15 @@ jobs:
           fi
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$ANDROID_KEYSTORE_PATH"
           ls -l "$ANDROID_KEYSTORE_PATH"
+          echo "✅ Keystore successfully decoded"
+
+      # Debug: List files in root directory
+      - name: List root directory (Debug)
+        run: |
+          echo "Files in root directory:"
+          ls -la
+          echo "Current working directory: $(pwd)"
+
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
