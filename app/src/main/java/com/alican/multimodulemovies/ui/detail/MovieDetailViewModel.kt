@@ -3,28 +3,34 @@ package com.alican.multimodulemovies.ui.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.alican.domain.interactors.FavoritesInteractor
 import com.alican.domain.interactors.MovieDetailInteractor
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
-import com.alican.multimodulemovies.utils.ScreenRoute
+import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MovieDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+
+@HiltViewModel(assistedFactory = MovieDetailViewModel.Factory::class)
+class MovieDetailViewModel @AssistedInject constructor(
+    @Assisted val navKey: EntryRoutes.MovieDetailRoute,
     private val interactor: MovieDetailInteractor,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val id = savedStateHandle.toRoute<ScreenRoute.MovieDetailRoute>().movieId
+    @AssistedFactory
+    interface Factory {
+        fun create(navKey: EntryRoutes.MovieDetailRoute): MovieDetailViewModel
+    }
 
     private val _uiState = MutableStateFlow(MovieDetailUIState())
     val uiState: StateFlow<MovieDetailUIState> = _uiState.asStateFlow()
@@ -59,10 +65,10 @@ class MovieDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
-            val detailData = interactor.getAllMovieDetailData(id)
+            val detailData = interactor.getAllMovieDetailData(navKey.movieId)
 
             _uiState.value = detailData
-            collectFavoriteState(id)
+            collectFavoriteState(navKey.movieId)
         }
     }
 

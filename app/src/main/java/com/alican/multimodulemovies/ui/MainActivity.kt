@@ -22,7 +22,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,27 +29,24 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.alican.multimodulemovies.components.bottom_bar.BottomBar
 import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
-import com.alican.multimodulemovies.components.navigation.MainNavigation
-import com.alican.multimodulemovies.navigation.AppRouter
+import com.alican.multimodulemovies.helpers.navigation.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.AppBottomBar
+import com.alican.multimodulemovies.helpers.navigation3.AppNavDisplay
+import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.Navigator
+import com.alican.multimodulemovies.helpers.navigation3.appEntryProvider
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.multimodulemovies.utils.ScreenRoute
+import com.alican.navigation3.navigation.rememberNavigationState
+import com.alican.navigation3.navigation.toEntries
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var navController: NavHostController
-
     @Inject
     lateinit var appRouter: AppRouter
-
     // Notification permission launcher
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -74,20 +70,24 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            navController = rememberNavController()
 
-            LaunchedEffect(navController) {
-                appRouter.setNavController(navController)
-            }
 
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val showBottomBar by remember {
-                derivedStateOf {
-                    navBackStackEntry?.destination?.hasRoute<ScreenRoute.HomeScreenRoute>() == true ||
-                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.SearchScreenRoute>() == true ||
-                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.FavoritesScreenRoute>() == true ||
-                            navBackStackEntry?.destination?.hasRoute<ScreenRoute.ProfileScreenRoute>() == true
-                }
+            val bottomBarItems = listOf(
+                BottomNavRoutes.Home,
+                BottomNavRoutes.Search,
+                BottomNavRoutes.Favorites,
+                BottomNavRoutes.Profile
+            )
+            val navigationState = rememberNavigationState(
+                startRoute = BottomNavRoutes.Home,
+                topLevelRoutes = bottomBarItems.toSet()
+            )
+            val navigator = remember { Navigator(navigationState) }
+
+            val entryProvider = appEntryProvider(navigator)
+
+            LaunchedEffect(navigator) {
+                appRouter.setNavigator(navigator)
             }
 
             AppTheme(
@@ -145,17 +145,17 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.weight(1f),
                             containerColor = AppTheme.colorScheme.primaryBackground,
                             bottomBar = {
-                                BottomBar(
-                                    navController = navController,
-                                    isBottomBarVisible = showBottomBar
+                                AppBottomBar(
+                                    navigationState = navigationState,
+                                    bottomBarItems = bottomBarItems,
+                                    navigator = navigator
                                 )
                             }
                         ) { innerPadding ->
-                            MainNavigation(
-                                navController = navController,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(innerPadding)
+                            AppNavDisplay(
+                                entries = navigationState.toEntries(entryProvider = entryProvider),
+                                modifier = Modifier.padding(innerPadding),
+                                navigator = navigator,
                             )
                         }
                     }

@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.ui_models.movie.MovieCreditsUIModel
 import com.alican.domain.ui_models.movie.MovieDetailUIModel
@@ -44,7 +43,9 @@ import com.alican.multimodulemovies.ui.detail.components.MovieDetailInformation
 import com.alican.multimodulemovies.utils.heightPercent
 
 @Composable
-fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel()) {
+fun MovieDetailScreen(
+    viewModel: MovieDetailViewModel
+) {
     val configuration = LocalConfiguration.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

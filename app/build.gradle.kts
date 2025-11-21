@@ -151,4 +151,13 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
 
+    // navigation
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+
+    // material 3
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    //implementation(libs.androidx.material3.navigation3)
+
+
 }
