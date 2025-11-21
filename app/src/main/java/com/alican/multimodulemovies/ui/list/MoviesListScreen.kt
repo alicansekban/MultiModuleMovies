@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.pagination.PaginationUIModel
@@ -48,7 +47,7 @@ import com.alican.multimodulemovies.utils.heightPercent
 @Composable
 fun MoviesListScreen(
     modifier: Modifier = Modifier,
-    viewModel: MoviesListViewModel = hiltViewModel()
+    viewModel: MoviesListViewModel
 ) {
     val paginationState by viewModel.movies.collectAsStateWithLifecycle()
 

@@ -1,69 +1,57 @@
-package com.alican.multimodulemovies.navigation
+package com.alican.multimodulemovies.helpers.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptionsBuilder
-import com.alican.multimodulemovies.utils.ScreenRoute
+import androidx.navigation3.runtime.NavKey
+import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.Navigator
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface AppRouter {
-    fun setNavController(navController: NavController)
+    fun setNavigator(navigator: Navigator)
 
     // Generic navigation method
-    fun navigateTo(
-        route: ScreenRoute,
-        builder: (NavOptionsBuilder.() -> Unit)? = null
-    )
+    fun navigateTo(route: NavKey)
 
     // Common navigation patterns
-    fun navigateBack(): Boolean
-    fun navigateAndClearBackStack(route: ScreenRoute)
-    fun navigateAndPopUpTo(
-        route: ScreenRoute,
-        popUpToRoute: ScreenRoute,
-        inclusive: Boolean = false
-    )
+    fun navigateBack()
+    fun navigateAndClearBackStack(route: NavKey)
+    fun navigateToBottomBarTab(route: BottomNavRoutes)
 }
 
 @Singleton
 class AppRouterImpl @Inject constructor() : AppRouter {
-    private var navController: NavController? = null
+    private var navigator: Navigator? = null
 
-    override fun setNavController(navController: NavController) {
-        this.navController = navController
+    override fun setNavigator(navigator: Navigator) {
+        this.navigator = navigator
     }
 
-    override fun navigateTo(
-        route: ScreenRoute,
-        builder: (NavOptionsBuilder.() -> Unit)?
-    ) {
-        navController?.navigate(route) {
-            builder?.invoke(this)
+    override fun navigateTo(route: NavKey) {
+        navigator?.navigate(route)
+    }
+
+    override fun navigateBack() {
+        navigator?.goBack()
+    }
+
+    override fun navigateAndClearBackStack(route: NavKey) {
+        navigator?.let { nav ->
+            // For clearing back stack, we navigate to a top-level route
+            if (route is BottomNavRoutes) {
+                nav.state.topLevelRoute = route
+                // Clear the current back stack
+                nav.state.backStacks[route]?.clear()
+                nav.state.backStacks[route]?.add(route)
+            } else {
+                // For non-bottom bar routes, navigate normally
+                nav.navigate(route)
+            }
         }
     }
 
-    override fun navigateBack(): Boolean {
-        return navController?.popBackStack() ?: false
-    }
-
-    override fun navigateAndClearBackStack(route: ScreenRoute) {
-        navigateTo(route) {
-            popUpTo(navController?.graph?.startDestinationId ?: 0) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
-    }
-
-    override fun navigateAndPopUpTo(
-        route: ScreenRoute,
-        popUpToRoute: ScreenRoute,
-        inclusive: Boolean
-    ) {
-        navigateTo(route) {
-            popUpTo(popUpToRoute) {
-                this.inclusive = inclusive
-            }
+    override fun navigateToBottomBarTab(route: BottomNavRoutes) {
+        navigator?.let { nav ->
+            nav.state.topLevelRoute = route
         }
     }
 }

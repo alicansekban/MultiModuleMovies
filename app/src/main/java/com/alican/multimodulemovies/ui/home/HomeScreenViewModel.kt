@@ -4,9 +4,9 @@ package com.alican.multimodulemovies.ui.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.HomeInteractor
+import com.alican.multimodulemovies.helpers.navigation.AppRouter
 import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
 import com.alican.multimodulemovies.helpers.navigation.navigateToMoviesList
-import com.alican.multimodulemovies.navigation.AppRouter
 import com.alican.multimodulemovies.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

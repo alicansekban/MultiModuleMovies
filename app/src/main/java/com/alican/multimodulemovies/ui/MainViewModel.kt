@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.multimodulemovies.helpers.data_store.AppDataStore
+import com.alican.multimodulemovies.helpers.navigation.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
 import com.alican.multimodulemovies.helpers.notification.AppNotificationManager
 import com.alican.multimodulemovies.helpers.security.SecurityManager
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
-import com.alican.multimodulemovies.navigation.AppRouter
-import com.alican.multimodulemovies.utils.ScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -48,7 +48,7 @@ class MainViewModel @Inject constructor(
                 val isDeviceNotSecure = securityManager.isDeviceNotSecure()
                 if (isDeviceNotSecure) {
                     appRouter.navigateAndClearBackStack(
-                        ScreenRoute.SecurityScreenRoute
+                        EntryRoutes.SecurityEntryRoutes
                     )
                 }
 
