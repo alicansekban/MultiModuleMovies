@@ -1,30 +1,33 @@
-
 package com.alican.multimodulemovies.ui.list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.alican.domain.interactors.MovieListInteractor
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.pagination.PaginationUIModel
+import com.alican.multimodulemovies.helpers.navigation.AppRouter
 import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
-import com.alican.multimodulemovies.navigation.AppRouter
-import com.alican.multimodulemovies.utils.ScreenRoute
+import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MoviesListViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = MoviesListViewModel.Factory::class)
+class MoviesListViewModel @AssistedInject constructor(
+    @Assisted val navKey: EntryRoutes.MoviesListRoute,
     private val interactor: MovieListInteractor,
     private val appRouter: AppRouter
 ) : ViewModel() {
 
-    private val movieType = savedStateHandle.toRoute<ScreenRoute.MoviesListRoute>()
+    @AssistedFactory
+    interface Factory {
+        fun create(navKey: EntryRoutes.MoviesListRoute): MoviesListViewModel
+    }
+
 
     val movies = interactor.moviesWithFavoriteState
         .stateIn(
@@ -53,7 +56,7 @@ class MoviesListViewModel @Inject constructor(
 
     private fun loadMovies() {
         viewModelScope.launch {
-            interactor.loadMoviesByType(movieType.movieType)
+            interactor.loadMoviesByType(navKey.movieType)
         }
     }
 
