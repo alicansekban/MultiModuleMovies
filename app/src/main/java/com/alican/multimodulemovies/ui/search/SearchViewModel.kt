@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.SearchInteractor
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.pagination.PaginationUIModel
-import com.alican.multimodulemovies.helpers.navigation.AppRouter
-import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
+import com.alican.multimodulemovies.helpers.navigation3.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.navigateToMovieDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
