@@ -1,4 +1,4 @@
-package com.alican.navigation3.navigation
+package com.alican.multimodulemovies.helpers.navigation3
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState

@@ -30,15 +30,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
-import com.alican.multimodulemovies.helpers.navigation.AppRouter
 import com.alican.multimodulemovies.helpers.navigation3.AppBottomBar
 import com.alican.multimodulemovies.helpers.navigation3.AppNavDisplay
+import com.alican.multimodulemovies.helpers.navigation3.AppRouter
 import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
 import com.alican.multimodulemovies.helpers.navigation3.Navigator
 import com.alican.multimodulemovies.helpers.navigation3.appEntryProvider
+import com.alican.multimodulemovies.helpers.navigation3.rememberNavigationState
+import com.alican.multimodulemovies.helpers.navigation3.toEntries
 import com.alican.multimodulemovies.theme.AppTheme
-import com.alican.navigation3.navigation.rememberNavigationState
-import com.alican.navigation3.navigation.toEntries
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
