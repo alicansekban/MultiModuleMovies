@@ -1,7 +1,6 @@
 package com.alican.multimodulemovies.helpers.navigation3
 
 import androidx.navigation3.runtime.NavKey
-import com.alican.navigation3.navigation.NavigationState
 
 class Navigator(val state: NavigationState) {
 

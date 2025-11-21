@@ -3,8 +3,8 @@ package com.alican.multimodulemovies.ui.favorites
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.FavoritesInteractor
-import com.alican.multimodulemovies.helpers.navigation.AppRouter
-import com.alican.multimodulemovies.helpers.navigation.navigateToMovieDetail
+import com.alican.multimodulemovies.helpers.navigation3.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.navigateToMovieDetail
 import com.alican.multimodulemovies.utils.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
