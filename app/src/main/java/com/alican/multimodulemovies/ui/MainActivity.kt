@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -34,6 +33,7 @@ import com.alican.multimodulemovies.helpers.navigation3.AppBottomBar
 import com.alican.multimodulemovies.helpers.navigation3.AppNavDisplay
 import com.alican.multimodulemovies.helpers.navigation3.AppRouter
 import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.NavigationStateProvider
 import com.alican.multimodulemovies.helpers.navigation3.Navigator
 import com.alican.multimodulemovies.helpers.navigation3.appEntryProvider
 import com.alican.multimodulemovies.helpers.navigation3.rememberNavigationState
@@ -47,7 +47,14 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     @Inject
     lateinit var appRouter: AppRouter
-    // Notification permission launcher
+
+    @Inject
+    lateinit var navigator: Navigator
+
+    @Inject
+    lateinit var navigationStateProvider: NavigationStateProvider
+
+
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -82,13 +89,13 @@ class MainActivity : ComponentActivity() {
                 startRoute = BottomNavRoutes.Home,
                 topLevelRoutes = bottomBarItems.toSet()
             )
-            val navigator = remember { Navigator(navigationState) }
+            // Initialize the navigation state provider once
+            LaunchedEffect(Unit) {
+                navigationStateProvider.initialize(navigationState)
+            }
+
 
             val entryProvider = appEntryProvider(navigator)
-
-            LaunchedEffect(navigator) {
-                appRouter.setNavigator(navigator)
-            }
 
             AppTheme(
                 isDarkMode = uiState.isDarkMode,
