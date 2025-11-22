@@ -37,17 +37,7 @@ class AppRouterImpl @Inject constructor(
 
     override fun navigateAndClearBackStack(route: NavKey) {
         if (navigationStateProvider.isInitialized()) {
-            val nav = navigator
-            // For clearing back stack, we navigate to a top-level route
-            if (route is BottomNavRoutes) {
-                nav.state.topLevelRoute = route
-                // Clear the current back stack
-                nav.state.backStacks[route]?.clear()
-                nav.state.backStacks[route]?.add(route)
-            } else {
-                // For non-bottom bar routes, navigate normally
-                nav.navigate(route)
-            }
+            navigator.navigateAndClearBackStack(route)
         }
     }
 
