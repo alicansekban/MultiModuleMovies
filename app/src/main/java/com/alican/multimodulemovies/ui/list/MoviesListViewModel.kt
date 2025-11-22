@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.MovieListInteractor
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.pagination.PaginationUIModel
-import com.alican.multimodulemovies.helpers.navigation3.AppRouter
-import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
-import com.alican.multimodulemovies.helpers.navigation3.navigateToMovieDetail
+import com.alican.multimodulemovies.helpers.navigation3.entry.EntryRoutes
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.router.navigateToMovieDetail
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

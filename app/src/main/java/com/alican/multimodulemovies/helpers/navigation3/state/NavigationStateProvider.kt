@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.helpers.navigation3
+package com.alican.multimodulemovies.helpers.navigation3.state
 
 import javax.inject.Inject
 import javax.inject.Singleton

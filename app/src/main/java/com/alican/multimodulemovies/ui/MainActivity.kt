@@ -29,15 +29,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.multimodulemovies.components.dialog.FirstTimeThemeDialog
-import com.alican.multimodulemovies.helpers.navigation3.AppBottomBar
-import com.alican.multimodulemovies.helpers.navigation3.AppNavDisplay
-import com.alican.multimodulemovies.helpers.navigation3.AppRouter
-import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
-import com.alican.multimodulemovies.helpers.navigation3.NavigationStateProvider
-import com.alican.multimodulemovies.helpers.navigation3.Navigator
-import com.alican.multimodulemovies.helpers.navigation3.appEntryProvider
-import com.alican.multimodulemovies.helpers.navigation3.rememberNavigationState
-import com.alican.multimodulemovies.helpers.navigation3.toEntries
+import com.alican.multimodulemovies.helpers.navigation3.bottom_bar.AppBottomBar
+import com.alican.multimodulemovies.helpers.navigation3.display.AppNavDisplay
+import com.alican.multimodulemovies.helpers.navigation3.entry.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.entry.appEntryProvider
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.state.NavigationStateProvider
+import com.alican.multimodulemovies.helpers.navigation3.state.rememberNavigationState
+import com.alican.multimodulemovies.helpers.navigation3.state.toEntries
 import com.alican.multimodulemovies.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -47,10 +46,6 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     @Inject
     lateinit var appRouter: AppRouter
-
-    @Inject
-    lateinit var navigator: Navigator
-
     @Inject
     lateinit var navigationStateProvider: NavigationStateProvider
 
@@ -95,7 +90,7 @@ class MainActivity : ComponentActivity() {
             }
 
 
-            val entryProvider = appEntryProvider(navigator)
+            val entryProvider = appEntryProvider(appRouter = appRouter)
 
             AppTheme(
                 isDarkMode = uiState.isDarkMode,
@@ -158,7 +153,7 @@ class MainActivity : ComponentActivity() {
                                     AppBottomBar(
                                         navigationState = navigationState,
                                         bottomBarItems = bottomBarItems,
-                                        navigator = navigator
+                                        appRouter = appRouter
                                     )
                                 }
                             }
@@ -166,7 +161,7 @@ class MainActivity : ComponentActivity() {
                             AppNavDisplay(
                                 entries = navigationState.toEntries(entryProvider = entryProvider),
                                 modifier = Modifier.padding(innerPadding),
-                                navigator = navigator,
+                                appRouter = appRouter
                             )
                         }
                     }

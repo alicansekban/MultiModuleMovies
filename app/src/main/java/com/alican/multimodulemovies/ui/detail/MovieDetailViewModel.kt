@@ -7,7 +7,7 @@ import com.alican.domain.interactors.FavoritesInteractor
 import com.alican.domain.interactors.MovieDetailInteractor
 import com.alican.domain.ui_models.movie.MovieUIModel
 import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
-import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
+import com.alican.multimodulemovies.helpers.navigation3.entry.EntryRoutes
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
