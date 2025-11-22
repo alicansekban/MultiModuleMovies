@@ -2,9 +2,16 @@
 
 package com.alican.multimodulemovies.helpers.navigation3.entry
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.ui.NavDisplay
 import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
 import com.alican.multimodulemovies.ui.about_us.AboutScreen
 import com.alican.multimodulemovies.ui.favorites.FavoritesScreen
@@ -31,7 +38,20 @@ fun EntryProviderScope<NavKey>.ProfileEntry(
         )
     }
 
-    entry<EntryRoutes.HelpEntryRoutes> {
+    entry<EntryRoutes.HelpEntryRoutes>(
+        metadata =
+            NavDisplay.transitionSpec {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(1000)
+                ) togetherWith ExitTransition.KeepUntilTransitionsFinished
+            } + NavDisplay.popTransitionSpec {
+                EnterTransition.None togetherWith slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(1000)
+                )
+            }
+    ) {
         HelpSupportScreen(
             onBackClicked = {
                 appRouter.navigateBack()
