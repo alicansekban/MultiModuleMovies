@@ -13,7 +13,9 @@ import com.alican.multimodulemovies.ui.login.LoginScreen
 import com.alican.multimodulemovies.ui.register.RegisterScreen
 
 @Composable
-fun appEntryProvider(navigator: Navigator): (NavKey) -> NavEntry<NavKey> {
+fun appEntryProvider(
+    navigator: Navigator
+): (NavKey) -> NavEntry<NavKey> {
     val entryProvider = entryProvider {
         HomeEntry(navigator)
         SearchEntry(navigator)

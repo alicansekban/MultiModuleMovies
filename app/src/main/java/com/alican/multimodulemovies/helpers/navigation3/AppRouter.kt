@@ -5,8 +5,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface AppRouter {
-    fun setNavigator(navigator: Navigator)
-
     // Generic navigation method
     fun navigateTo(route: NavKey)
 
@@ -17,23 +15,26 @@ interface AppRouter {
 }
 
 @Singleton
-class AppRouterImpl @Inject constructor() : AppRouter {
-    private var navigator: Navigator? = null
-
-    override fun setNavigator(navigator: Navigator) {
-        this.navigator = navigator
-    }
+class AppRouterImpl @Inject constructor(
+    private val navigator: Navigator,
+    private val navigationStateProvider: NavigationStateProvider
+) : AppRouter {
 
     override fun navigateTo(route: NavKey) {
-        navigator?.navigate(route)
+        if (navigationStateProvider.isInitialized()) {
+            navigator.navigate(route)
+        }
     }
 
     override fun navigateBack() {
-        navigator?.goBack()
+        if (navigationStateProvider.isInitialized()) {
+            navigator.goBack()
+        }
     }
 
     override fun navigateAndClearBackStack(route: NavKey) {
-        navigator?.let { nav ->
+        if (navigationStateProvider.isInitialized()) {
+            val nav = navigator
             // For clearing back stack, we navigate to a top-level route
             if (route is BottomNavRoutes) {
                 nav.state.topLevelRoute = route
@@ -48,8 +49,8 @@ class AppRouterImpl @Inject constructor() : AppRouter {
     }
 
     override fun navigateToBottomBarTab(route: BottomNavRoutes) {
-        navigator?.let { nav ->
-            nav.state.topLevelRoute = route
+        if (navigationStateProvider.isInitialized()) {
+            navigator.state.topLevelRoute = route
         }
     }
 }
