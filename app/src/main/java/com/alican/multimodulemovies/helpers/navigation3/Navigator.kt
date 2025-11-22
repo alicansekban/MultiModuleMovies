@@ -2,6 +2,7 @@
 package com.alican.multimodulemovies.helpers.navigation3
 
 import androidx.navigation3.runtime.NavKey
+import com.alican.multimodulemovies.helpers.navigation3.entry.BottomNavRoutes
 import com.alican.multimodulemovies.helpers.navigation3.state.NavigationState
 import com.alican.multimodulemovies.helpers.navigation3.state.NavigationStateProvider
 import javax.inject.Inject
@@ -31,5 +32,18 @@ class Navigator @Inject constructor(
         } else {
             currentStack.removeLastOrNull()
         }
+    }
+    fun navigateAndClearBackStack(route: NavKey) {
+        // For clearing back stack, we navigate to a top-level route
+        if (route is BottomNavRoutes) {
+            state.topLevelRoute = route
+            // Clear the current back stack
+            state.backStacks[route]?.clear()
+            state.backStacks[route]?.add(route)
+        } else {
+            // For non-bottom bar routes, navigate normally
+            navigate(route)
+        }
+
     }
 }
