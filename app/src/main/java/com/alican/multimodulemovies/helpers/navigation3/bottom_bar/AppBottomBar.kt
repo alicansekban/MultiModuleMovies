@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.helpers.navigation3
+package com.alican.multimodulemovies.helpers.navigation3.bottom_bar
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
@@ -7,12 +7,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.alican.multimodulemovies.helpers.navigation3.entry.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.state.NavigationState
 
 @Composable
 fun AppBottomBar(
     navigationState: NavigationState,
-    navigator: Navigator,
-    bottomBarItems: List<BottomNavRoutes>
+    bottomBarItems: List<BottomNavRoutes>,
+    appRouter: AppRouter
 ) {
 
     NavigationBar(
@@ -22,7 +25,7 @@ fun AppBottomBar(
             val isSelected = item == navigationState.topLevelRoute
             NavigationBarItem(
                 selected = isSelected,
-                onClick = { navigator.navigate(item) },
+                onClick = { appRouter.navigateTo(item) },
                 icon = {
                     Icon(
                         imageVector = item.icon,

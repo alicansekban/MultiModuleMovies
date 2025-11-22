@@ -1,7 +1,7 @@
 package com.alican.multimodulemovies.di
 
-import com.alican.multimodulemovies.helpers.navigation3.AppRouter
-import com.alican.multimodulemovies.helpers.navigation3.AppRouterImpl
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouterImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
