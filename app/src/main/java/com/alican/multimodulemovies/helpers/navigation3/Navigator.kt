@@ -1,8 +1,16 @@
+
 package com.alican.multimodulemovies.helpers.navigation3
 
 import androidx.navigation3.runtime.NavKey
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class Navigator(val state: NavigationState) {
+@Singleton
+class Navigator @Inject constructor(
+    private val navigationStateProvider: NavigationStateProvider
+) {
+    val state: NavigationState
+        get() = navigationStateProvider.navigationState
 
     fun navigate(route: NavKey) {
         if (route in state.backStacks.keys) {
