@@ -1,10 +1,11 @@
-package com.alican.multimodulemovies.helpers.navigation3
+package com.alican.multimodulemovies.helpers.navigation3.entry
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
 import com.alican.multimodulemovies.ui.detail.MovieDetailScreen
 import com.alican.multimodulemovies.ui.detail.MovieDetailViewModel
 import com.alican.multimodulemovies.ui.list.MoviesListScreen
@@ -14,13 +15,13 @@ import com.alican.multimodulemovies.ui.register.RegisterScreen
 
 @Composable
 fun appEntryProvider(
-    navigator: Navigator
+    appRouter: AppRouter
 ): (NavKey) -> NavEntry<NavKey> {
     val entryProvider = entryProvider {
-        HomeEntry(navigator)
-        SearchEntry(navigator)
-        FavoritesEntry(navigator)
-        ProfileEntry(navigator)
+        HomeEntry(appRouter)
+        SearchEntry(appRouter)
+        FavoritesEntry(appRouter)
+        ProfileEntry(appRouter)
 
         entry<EntryRoutes.LoginEntryRoutes> {
             LoginScreen()

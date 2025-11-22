@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.domain.interactors.UserAuthInteractor
 import com.alican.domain.ui_models.BaseUIModel
-import com.alican.multimodulemovies.helpers.navigation3.AppRouter
-import com.alican.multimodulemovies.helpers.navigation3.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.entry.BottomNavRoutes
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,7 +1,8 @@
-package com.alican.multimodulemovies.helpers.navigation3
+package com.alican.multimodulemovies.helpers.navigation3.router
 
 
 import com.alican.domain.ui_models.movie.MovieType
+import com.alican.multimodulemovies.helpers.navigation3.entry.EntryRoutes
 
 // Extension functions for common navigation patterns
 fun AppRouter.navigateToMovieDetail(movieId: Int) {

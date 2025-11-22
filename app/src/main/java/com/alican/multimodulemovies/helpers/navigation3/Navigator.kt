@@ -2,6 +2,8 @@
 package com.alican.multimodulemovies.helpers.navigation3
 
 import androidx.navigation3.runtime.NavKey
+import com.alican.multimodulemovies.helpers.navigation3.state.NavigationState
+import com.alican.multimodulemovies.helpers.navigation3.state.NavigationStateProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
