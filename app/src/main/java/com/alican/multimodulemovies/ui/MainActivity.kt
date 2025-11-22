@@ -152,11 +152,15 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.weight(1f),
                             containerColor = AppTheme.colorScheme.primaryBackground,
                             bottomBar = {
-                                AppBottomBar(
-                                    navigationState = navigationState,
-                                    bottomBarItems = bottomBarItems,
-                                    navigator = navigator
-                                )
+                                val isBottomBarVisible =
+                                    navigationState.backStacks[navigationState.topLevelRoute]?.size == 1
+                                if (isBottomBarVisible) {
+                                    AppBottomBar(
+                                        navigationState = navigationState,
+                                        bottomBarItems = bottomBarItems,
+                                        navigator = navigator
+                                    )
+                                }
                             }
                         ) { innerPadding ->
                             AppNavDisplay(
