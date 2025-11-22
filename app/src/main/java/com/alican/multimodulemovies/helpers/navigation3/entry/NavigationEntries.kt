@@ -1,4 +1,4 @@
-package com.alican.multimodulemovies.helpers.navigation3
+package com.alican.multimodulemovies.helpers.navigation3.entry
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite

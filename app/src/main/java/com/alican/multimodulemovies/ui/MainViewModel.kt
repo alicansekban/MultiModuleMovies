@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alican.multimodulemovies.helpers.data_store.AppDataStore
-import com.alican.multimodulemovies.helpers.navigation3.AppRouter
-import com.alican.multimodulemovies.helpers.navigation3.EntryRoutes
+import com.alican.multimodulemovies.helpers.navigation3.entry.EntryRoutes
+import com.alican.multimodulemovies.helpers.navigation3.router.AppRouter
 import com.alican.multimodulemovies.helpers.notification.AppNotificationManager
 import com.alican.multimodulemovies.helpers.security.SecurityManager
 import com.alican.multimodulemovies.helpers.theme.ThemeManager
