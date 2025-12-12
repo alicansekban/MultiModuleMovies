@@ -1,6 +1,6 @@
 package com.alican.data.auth
 
-import com.alican.domain.utils.Resource
+import com.alican.data.utils.ResultWrapper
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -88,8 +88,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.register(email, password)
 
         // Then
-        assertTrue(result is Resource.Success)
-        val authUser = (result as Resource.Success).value
+        assertTrue(result is ResultWrapper.Success)
+        val authUser = (result as ResultWrapper.Success).value
         assertEquals(email, authUser.email)
         assertNotNull(authUser.uid)
         assertFalse(authUser.isEmailVerified)
@@ -106,8 +106,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.register(invalidEmail, password)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Invalid email format", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Invalid email format", (result as ResultWrapper.Error).message)
         assertFalse(fakeRepository.isUserLoggedIn())
     }
 
@@ -121,10 +121,10 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.register(email, shortPassword)
 
         // Then
-        assertTrue(result is Resource.Error)
+        assertTrue(result is ResultWrapper.Error)
         assertEquals(
             "Password must be at least 6 characters",
-            (result as Resource.Error).message
+            (result as ResultWrapper.Error).message
         )
         assertFalse(fakeRepository.isUserLoggedIn())
     }
@@ -140,8 +140,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.register(email, "newpassword123")
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("User already exists", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("User already exists", (result as ResultWrapper.Error).message)
         assertFalse(fakeRepository.isUserLoggedIn())
     }
 
@@ -156,8 +156,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.register(email, password)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Registration error", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Registration error", (result as ResultWrapper.Error).message)
     }
 
     @Test
@@ -171,7 +171,7 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.login(email, password)
 
         // Then
-        assertTrue(result is Resource.Success)
+        assertTrue(result is ResultWrapper.Success)
         assertTrue(fakeRepository.isUserLoggedIn())
         assertEquals(email, fakeRepository.getCurrentUser()?.email)
     }
@@ -187,8 +187,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.login(email, "wrongpassword")
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Invalid credentials", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Invalid credentials", (result as ResultWrapper.Error).message)
         assertFalse(fakeRepository.isUserLoggedIn())
     }
 
@@ -202,8 +202,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.login(email, password)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Invalid credentials", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Invalid credentials", (result as ResultWrapper.Error).message)
         assertFalse(fakeRepository.isUserLoggedIn())
     }
 
@@ -219,8 +219,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.login(email, password)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Network error", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Network error", (result as ResultWrapper.Error).message)
         assertFalse(fakeRepository.isUserLoggedIn())
     }
 
@@ -234,7 +234,7 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendPasswordResetEmail(email)
 
         // Then
-        assertTrue(result is Resource.Success)
+        assertTrue(result is ResultWrapper.Success)
     }
 
     @Test
@@ -246,8 +246,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendPasswordResetEmail(email)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("User not found", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("User not found", (result as ResultWrapper.Error).message)
     }
 
     @Test
@@ -261,8 +261,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendPasswordResetEmail(email)
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Password reset failed", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Password reset failed", (result as ResultWrapper.Error).message)
     }
 
     @Test
@@ -275,7 +275,7 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendEmailVerification()
 
         // Then
-        assertTrue(result is Resource.Success)
+        assertTrue(result is ResultWrapper.Success)
         assertTrue(fakeRepository.getCurrentUser()?.isEmailVerified == true)
     }
 
@@ -285,8 +285,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendEmailVerification()
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("No user logged in", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("No user logged in", (result as ResultWrapper.Error).message)
     }
 
     @Test
@@ -300,8 +300,8 @@ class UserAuthRepositoryTest {
         val result = fakeRepository.sendEmailVerification()
 
         // Then
-        assertTrue(result is Resource.Error)
-        assertEquals("Email verification failed", (result as Resource.Error).message)
+        assertTrue(result is ResultWrapper.Error)
+        assertEquals("Email verification failed", (result as ResultWrapper.Error).message)
     }
 
     @Test
@@ -331,15 +331,15 @@ class UserAuthRepositoryTest {
             passwordResetResult,
             emailVerificationResult
         ).forEach { result ->
-            assertTrue(result is Resource.Error)
+            assertTrue(result is ResultWrapper.Error)
         }
 
-        assertEquals("Login failed", (loginResult as Resource.Error).message)
-        assertEquals("Registration failed", (registerResult as Resource.Error).message)
-        assertEquals("Password reset failed", (passwordResetResult as Resource.Error).message)
+        assertEquals("Login failed", (loginResult as ResultWrapper.Error).message)
+        assertEquals("Registration failed", (registerResult as ResultWrapper.Error).message)
+        assertEquals("Password reset failed", (passwordResetResult as ResultWrapper.Error).message)
         assertEquals(
             "Email verification failed",
-            (emailVerificationResult as Resource.Error).message
+            (emailVerificationResult as ResultWrapper.Error).message
         )
     }
 
@@ -350,14 +350,14 @@ class UserAuthRepositoryTest {
         val password = "testpassword123"
         val registerResult = fakeRepository.register(email, password)
 
-        assertTrue(registerResult is Resource.Success)
+        assertTrue(registerResult is ResultWrapper.Success)
         assertTrue(fakeRepository.isUserLoggedIn())
         assertEquals(email, fakeRepository.getCurrentUser()?.email)
         assertFalse(fakeRepository.getCurrentUser()?.isEmailVerified == true)
 
         // Send email verification
         val verificationResult = fakeRepository.sendEmailVerification()
-        assertTrue(verificationResult is Resource.Success)
+        assertTrue(verificationResult is ResultWrapper.Success)
         assertTrue(fakeRepository.getCurrentUser()?.isEmailVerified == true)
 
         // Logout
@@ -366,13 +366,13 @@ class UserAuthRepositoryTest {
 
         // Login again
         val loginResult = fakeRepository.login(email, password)
-        assertTrue(loginResult is Resource.Success)
+        assertTrue(loginResult is ResultWrapper.Success)
         assertTrue(fakeRepository.isUserLoggedIn())
 
         // Test password reset
         fakeRepository.logout()
         val passwordResetResult = fakeRepository.sendPasswordResetEmail(email)
-        assertTrue(passwordResetResult is Resource.Success)
+        assertTrue(passwordResetResult is ResultWrapper.Success)
     }
 
     @Test
