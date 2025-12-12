@@ -130,20 +130,14 @@ jobs:
         if: always()
         with:
           name: Unit Test Results (${{ steps.config.outputs.artifact_name }})
-          path: |
-            ${{ env.main_project_module }}/build/test-results/test*UnitTest/
-            data/build/test-results/test*UnitTest/
-            domain/build/test-results/test*UnitTest/
+          path: ${{ env.main_project_module }}/build/test-results/test*UnitTest/
 
       - name: Upload Unit Test Report (HTML)
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Unit Test HTML Report (${{ steps.config.outputs.artifact_name }})
-          path: |
-            ${{ env.main_project_module }}/build/reports/tests/test*UnitTest/
-            data/build/reports/tests/test*UnitTest/
-            domain/build/reports/tests/test*UnitTest/
+          path: ${{ env.main_project_module }}/build/reports/tests/test*UnitTest/
 
       - name: Publish Test Results to GitHub
         uses: dorny/test-reporter@v1
