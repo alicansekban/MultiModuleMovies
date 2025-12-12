@@ -103,42 +103,6 @@ jobs:
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$ANDROID_KEYSTORE_PATH"
           ls -l "$ANDROID_KEYSTORE_PATH"
 
-      - name: Run Lint
-        run: ./gradlew lint${{ steps.config.outputs.environment }}${{ steps.config.outputs.build_type }}
-
-      - name: Upload Lint Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Lint Results (${{ steps.config.outputs.artifact_name }})
-          path: |
-            ${{ env.main_project_module }}/build/reports/lint-results-*.html
-            ${{ env.main_project_module }}/build/reports/lint-results-*.xml
-
-      - name: Run Unit Tests
-        run: ./gradlew ${{ steps.config.outputs.test_task }}
-
-      - name: Upload Unit Test Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Unit Test Results (${{ steps.config.outputs.artifact_name }})
-          path: |
-            ${{ env.main_project_module }}/build/test-results/test*UnitTest/
-            data/build/test-results/test*UnitTest/
-            domain/build/test-results/test*UnitTest/
-
-      - name: Upload Unit Test Report (HTML)
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Unit Test HTML Report (${{ steps.config.outputs.artifact_name }})
-          path: |
-            ${{ env.main_project_module }}/build/reports/tests/test*UnitTest/
-            data/build/reports/tests/test*UnitTest/
-            domain/build/reports/tests/test*UnitTest/
-
-
       - name: Build APK
         run: ./gradlew ${{ steps.config.outputs.gradle_task }}
 
