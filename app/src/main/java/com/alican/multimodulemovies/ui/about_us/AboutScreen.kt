@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +82,7 @@ fun AboutScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            appName = context.getString(context.applicationInfo.labelRes),
+            appName = stringResource(context.applicationInfo.labelRes),
             versionName = BuildConfig.VERSION_NAME,
             versionCode = BuildConfig.VERSION_CODE.toString(),
             buildType = BuildConfig.BUILD_TYPE
