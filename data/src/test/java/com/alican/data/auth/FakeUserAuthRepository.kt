@@ -1,10 +1,11 @@
 package com.alican.data.auth
 
-import com.alican.data.data.repository.UserAuthRepository
-import com.alican.data.utils.ResultWrapper
+import com.alican.domain.models.User
+import com.alican.domain.repository.UserAuthRepository
+import com.alican.domain.utils.Resource
 
 class FakeUserAuthRepository : UserAuthRepository {
-    private var currentUser: AuthUser? = null
+    private var currentUser: User? = null
     private var shouldFailLogin = false
     private var shouldFailRegistration = false
     private var shouldFailPasswordReset = false
@@ -21,90 +22,90 @@ class FakeUserAuthRepository : UserAuthRepository {
         currentUser = null
     }
 
-    override suspend fun register(email: String, password: String): ResultWrapper<AuthUser> {
+    override suspend fun register(email: String, password: String): Resource<User> {
         if (shouldFailRegistration) {
-            return ResultWrapper.Error(registrationException?.message ?: "Registration failed")
+            return Resource.Error(registrationException?.message ?: "Registration failed")
         }
 
         // Email validation (simplified)
         if (!email.contains("@")) {
-            return ResultWrapper.Error("Invalid email format")
+            return Resource.Error("Invalid email format")
         }
 
         // Password validation
         if (password.length < 6) {
-            return ResultWrapper.Error("Password must be at least 6 characters")
+            return Resource.Error("Password must be at least 6 characters")
         }
 
         // Check if user already exists
         if (registeredUsers.containsKey(email)) {
-            return ResultWrapper.Error("User already exists")
+            return Resource.Error("User already exists")
         }
 
         // Register user
         registeredUsers[email] = password
-        val user = AuthUser(
+        val user = User(
             uid = "fake_uid_${email.hashCode()}",
             email = email,
             isEmailVerified = false
         )
         currentUser = user
 
-        return ResultWrapper.Success(user)
+        return Resource.Success(user)
     }
 
-    override suspend fun login(email: String, password: String): ResultWrapper<Unit> {
+    override suspend fun login(email: String, password: String): Resource<Unit> {
         if (shouldFailLogin) {
-            return ResultWrapper.Error(loginException?.message ?: "Login failed")
+            return Resource.Error(loginException?.message ?: "Login failed")
         }
 
         // Check if user exists and password matches
         val storedPassword = registeredUsers[email]
         if (storedPassword == null || storedPassword != password) {
-            return ResultWrapper.Error("Invalid credentials")
+            return Resource.Error("Invalid credentials")
         }
 
         // Login successful
-        currentUser = AuthUser(
+        currentUser = User(
             uid = "fake_uid_${email.hashCode()}",
             email = email,
             isEmailVerified = false
         )
 
-        return ResultWrapper.Success(Unit)
+        return Resource.Success(Unit)
     }
 
-    override suspend fun sendPasswordResetEmail(email: String): ResultWrapper<Unit> {
+    override suspend fun sendPasswordResetEmail(email: String): Resource<Unit> {
         if (shouldFailPasswordReset) {
-            return ResultWrapper.Error("Password reset failed")
+            return Resource.Error("Password reset failed")
         }
 
         if (!registeredUsers.containsKey(email)) {
-            return ResultWrapper.Error("User not found")
+            return Resource.Error("User not found")
         }
 
-        return ResultWrapper.Success(Unit)
+        return Resource.Success(Unit)
     }
 
-    override suspend fun sendEmailVerification(): ResultWrapper<Unit> {
+    override suspend fun sendEmailVerification(): Resource<Unit> {
         if (shouldFailEmailVerification) {
-            return ResultWrapper.Error("Email verification failed")
+            return Resource.Error("Email verification failed")
         }
 
         if (currentUser == null) {
-            return ResultWrapper.Error("No user logged in")
+            return Resource.Error("No user logged in")
         }
 
         // Simulate email verification sent
         currentUser = currentUser?.copy(isEmailVerified = true)
 
-        return ResultWrapper.Success(Unit)
+        return Resource.Success(Unit)
     }
 
-    override fun getCurrentUser(): AuthUser? = currentUser
+    override fun getCurrentUser(): User? = currentUser
 
     // Test helper methods
-    fun setCurrentUser(user: AuthUser?) {
+    fun setCurrentUser(user: User?) {
         currentUser = user
     }
 
