@@ -36,7 +36,6 @@ firebaseCrashlyticsPlugin = "3.0.6"
 googleAuth = "21.4.0"
 datastore = "1.2.0"
 runtime = "1.8.3"
-stabilityAnalyzer = "0.6.5"
 
 
 navigation3 = "1.0.0"
@@ -139,5 +138,4 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
-stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version.ref = "stabilityAnalyzer" }
 
