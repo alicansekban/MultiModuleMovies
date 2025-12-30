@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.stability.analyzer)
 }
 
 android {
