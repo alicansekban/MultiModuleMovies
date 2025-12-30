@@ -1,6 +1,7 @@
 package com.alican.multimodulemovies.ui.detail
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +44,7 @@ import com.alican.domain.ui_models.movie_detail.MovieDetailUIState
 import com.alican.multimodulemovies.components.pager.CustomPager
 import com.alican.multimodulemovies.theme.AppTheme
 import com.alican.multimodulemovies.ui.detail.components.MovieDetailInformation
+import com.alican.multimodulemovies.utils.clickableSingle
 import com.alican.multimodulemovies.utils.heightPercent
 
 @Composable
@@ -155,9 +160,11 @@ private fun MovieDetailSection(movieDetail: MovieDetailUIModel?) {
 
     MovieDetailInformation(movie = movieDetail)
 }
-
 @Composable
-private fun MovieCreditsSection(credits: List<MovieCreditsUIModel>) {
+private fun MovieCreditsSection(
+    credits: List<MovieCreditsUIModel>
+) {
+    var isExpanded by remember { mutableStateOf(false) }
     if (credits.isEmpty()) {
         EmptySection("No cast information available")
         return
@@ -165,6 +172,7 @@ private fun MovieCreditsSection(credits: List<MovieCreditsUIModel>) {
 
     Card(
         modifier = Modifier
+            .animateContentSize()
             .fillMaxWidth()
             .padding(16.dp),
         colors = CardDefaults.cardColors(
@@ -186,7 +194,9 @@ private fun MovieCreditsSection(credits: List<MovieCreditsUIModel>) {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            credits.take(5).forEach { credit ->
+            val displayedCredits = if (isExpanded) credits else credits.take(5)
+
+            displayedCredits.forEach { credit ->
                 Text(
                     text = "${credit.name} as ${credit.characterName}",
                     style = AppTheme.typography.bodyMedium,
@@ -197,19 +207,23 @@ private fun MovieCreditsSection(credits: List<MovieCreditsUIModel>) {
 
             if (credits.size > 5) {
                 Text(
-                    text = "and ${credits.size - 5} more...",
+                    text = if (isExpanded) "Show less" else "and ${credits.size - 5} more...",
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colorScheme.accent,
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .clickableSingle { isExpanded = !isExpanded }
                 )
             }
         }
     }
 }
-
 @Composable
-private fun MovieReviewsSection(reviews: List<MovieReviewsUIModel>) {
+private fun MovieReviewsSection(
+    reviews: List<MovieReviewsUIModel>
+) {
+    var isExpanded by remember { mutableStateOf(false) }
     if (reviews.isEmpty()) {
         EmptySection("No reviews available")
         return
@@ -217,6 +231,7 @@ private fun MovieReviewsSection(reviews: List<MovieReviewsUIModel>) {
 
     Card(
         modifier = Modifier
+            .animateContentSize()
             .fillMaxWidth()
             .padding(16.dp),
         colors = CardDefaults.cardColors(
@@ -238,7 +253,9 @@ private fun MovieReviewsSection(reviews: List<MovieReviewsUIModel>) {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            reviews.take(3).forEach { review ->
+            val displayedReviews = if (isExpanded) reviews else reviews.take(3)
+
+            displayedReviews.forEach { review ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -272,18 +289,21 @@ private fun MovieReviewsSection(reviews: List<MovieReviewsUIModel>) {
 
             if (reviews.size > 3) {
                 Text(
-                    text = "View ${reviews.size - 3} more reviews",
+                    text = if (isExpanded) "Show less" else "View ${reviews.size - 3} more reviews",
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colorScheme.accent,
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickableSingle {
+                            isExpanded = !isExpanded
+                        },
                     textAlign = TextAlign.Center
                 )
             }
         }
     }
 }
-
 @Composable
 private fun LoadingSection() {
     Card(
