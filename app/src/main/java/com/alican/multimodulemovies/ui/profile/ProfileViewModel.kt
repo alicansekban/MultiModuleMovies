@@ -28,7 +28,6 @@ class ProfileViewModel @Inject constructor(
     val uiState: StateFlow<ProfileUIState> = _uiState.asStateFlow()
 
     init {
-        loadUserData()
         observeTheme()
     }
 
@@ -42,6 +41,7 @@ class ProfileViewModel @Inject constructor(
             ProfileUIEvents.HandleHelp -> handleHelp()
             ProfileUIEvents.HandleAbout -> handleAbout()
             ProfileUIEvents.HandlePrivacyPolicy -> handlePrivacyPolicy()
+            ProfileUIEvents.GetData -> loadUserData()
         }
     }
 
