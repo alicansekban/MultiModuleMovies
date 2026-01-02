@@ -52,6 +52,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alican.domain.ui_models.user.UserAuthUIModel
 import com.alican.multimodulemovies.theme.AppTheme
@@ -62,9 +64,8 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Handle navigation to login
-    LaunchedEffect(Unit) {
-        // This can be used for one-time events if needed
+    LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
+        viewModel.onScreenEvent(event = ProfileUIEvents.GetData)
     }
 
     ProfileScreenContent(

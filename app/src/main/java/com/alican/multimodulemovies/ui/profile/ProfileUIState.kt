@@ -23,4 +23,5 @@ sealed interface ProfileUIEvents {
     data object HandleHelp : ProfileUIEvents
     data object HandleAbout : ProfileUIEvents
     data object HandlePrivacyPolicy : ProfileUIEvents
+    data object GetData : ProfileUIEvents
 }

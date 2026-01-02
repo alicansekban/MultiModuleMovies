@@ -133,9 +133,7 @@ dependencies {
 
 
     implementation(libs.androidx.material.icons.core)
-    // Optional - Add full set of material icons
     implementation(libs.androidx.material.icons.extended)
-    // Optional - Integration with ViewModels
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
