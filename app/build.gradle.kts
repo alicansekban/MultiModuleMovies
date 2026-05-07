@@ -1,8 +1,8 @@
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = libs.versions.applicationId.get()
     compileSdk = libs.versions.compileSdk.get().toInt()
 
@@ -34,10 +34,8 @@ android {
             keyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS").get()
             keyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD").get()
 
-            setProperty(
-                "archivesBaseName",
+            base.archivesName =
                 "Movies-v${libs.versions.applicationVersionName.get()}-${libs.versions.applicationVersionCode.get()}"
-            )
         }
 
     }
@@ -70,14 +68,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
-        }
-    }
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
     packaging {
         resources {
@@ -85,7 +79,11 @@ android {
         }
     }
 }
-
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+    }
+}
 dependencies {
 
 
@@ -115,13 +113,11 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
 
-
     // Coil ImageLoader
     implementation(libs.coil.compose)
 
 
     implementation(libs.kotlinx.serialization.json)
-
 
 
     // Coroutine and Lifecycle

@@ -24,7 +24,8 @@ fun AppNavDisplay(
     val strategy = rememberListDetailSceneStrategy<NavKey>()
 
     NavDisplay(
-        sceneStrategy = strategy,
+        sceneStrategies = listOf(strategy),
+        //sceneStrategy = strategy,
         modifier = modifier,
         onBack = { appRouter.navigateBack() },
         entries = entries,
