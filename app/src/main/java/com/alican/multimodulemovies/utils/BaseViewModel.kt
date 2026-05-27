@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,10 +15,9 @@ abstract class BaseViewModel<UiState, UiEvent, UiEffect>(
 ) : ViewModel() {
 
     // State management
-    private val _uiState by lazy {
-        MutableStateFlow(initialState(savedStateHandle = savedStateHandle))
-    }
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    // using kotlin's new feature explicit backing fields
+    val uiState: StateFlow<UiState>
+        field = MutableStateFlow(initialState(savedStateHandle = savedStateHandle))
 
     // Effects management (one-time events to UI)
     private val _uiEffect = Channel<UiEffect>(Channel.BUFFERED)
@@ -40,14 +38,14 @@ abstract class BaseViewModel<UiState, UiEvent, UiEffect>(
      * Update the UI state
      */
     protected fun updateState(newState: UiState) {
-        _uiState.update { newState }
+        uiState.update { newState }
     }
 
     /**
      * Update the UI state using a reducer function
      */
     protected fun updateState(reducer: UiState.() -> UiState) {
-        _uiState.value = currentState.reducer()
+        uiState.value = currentState.reducer()
     }
 
     /**
