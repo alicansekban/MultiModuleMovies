@@ -22,13 +22,13 @@ kotlinxSerializationJson = "1.11.0"
 ktor = "3.5.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
-composeBom = "2026.05.00"
+composeBom = "2026.05.01"
 navigationCompose = "2.9.8"
 kspVersion = "2.3.6"
 appcompat = "1.7.1"
 material = "1.12.0"
 room = "2.8.4"
-runtimeAndroid = "1.11.1"
+runtimeAndroid = "1.11.2"
 googleServices = "4.4.4"
 firebaseBom = "34.13.0"
 firebaseCrashlyticsPlugin = "3.0.7"
@@ -37,9 +37,9 @@ datastore = "1.2.1"
 runtime = "1.8.3"
 
 
-navigation3 = "1.1.1"
+navigation3 = "1.1.2"
 nav3Lifecycle = "2.10.0"
-adaptiveNavigation3 = "1.3.0-beta01"
+adaptiveNavigation3 = "1.3.0-beta02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

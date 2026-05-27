@@ -82,6 +82,7 @@ configure<ApplicationExtension> {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_1_8
+        freeCompilerArgs.add("-Xexplicit-backing-fields")
     }
 }
 dependencies {
