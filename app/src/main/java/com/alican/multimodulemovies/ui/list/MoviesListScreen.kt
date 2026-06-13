@@ -68,7 +68,7 @@ fun MoviesListScreen(
 
     LaunchedEffect(shouldFetchNextPage) {
         if (shouldFetchNextPage) {
-            viewModel.onScreenEvent(MovieListUIEvents.LoadNextPage)
+            viewModel.handleEvent(MovieListUIEvents.LoadNextPage)
         }
     }
 
@@ -77,7 +77,7 @@ fun MoviesListScreen(
         modifier = modifier,
         gridState = gridState,
         uiState = paginationState,
-        onEvent = viewModel::onScreenEvent
+        onEvent = viewModel::handleEvent
     )
 }
 

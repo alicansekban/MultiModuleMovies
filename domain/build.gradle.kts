@@ -3,8 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.ksp)
 }
 
 configure<LibraryExtension> {
@@ -56,8 +54,11 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    // hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+
+    // DI annotations only (no Hilt/Dagger in the domain layer)
+    implementation(libs.javax.inject)
+
+    // coroutines (used by interactors/pagination)
+    implementation(libs.kotlinx.coroutines.android)
 
 }

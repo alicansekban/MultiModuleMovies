@@ -41,7 +41,7 @@ class MoviesListViewModel @AssistedInject constructor(
         loadMovies()
     }
 
-    fun onScreenEvent(event: MovieListUIEvents) {
+    fun handleEvent(event: MovieListUIEvents) {
         when (event) {
             MovieListUIEvents.LoadNextPage -> loadNextPage()
             MovieListUIEvents.Retry -> retry()

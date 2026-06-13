@@ -18,72 +18,63 @@ class MoviesRepositoryImpl @Inject constructor(private val apiService: ApiServic
     override suspend fun getUpComingMovies(page: Int): Resource<MovieList> {
         return when (val response = apiService.getUpComingMovies(page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getPopularMovies(page: Int): Resource<MovieList> {
         return when (val response = apiService.getPopularMovies(page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getTopRatedMovies(page: Int): Resource<MovieList> {
         return when (val response = apiService.getTopRatedMovies(page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getNowPlayingMovies(page: Int): Resource<MovieList> {
         return when (val response = apiService.getNowPlayingMovies(page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getMovieDetail(movieId: Int): Resource<MovieDetail> {
         return when (val response = apiService.getMovieDetail(movieId)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getMovieCredits(movieId: Int): Resource<MovieCredit> {
         return when (val response = apiService.getMovieCredits(movieId)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getMovieReviews(movieId: Int, page: Int): Resource<MovieReviews> {
         return when (val response = apiService.getMovieReviews(movieId, page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun searchMovies(query: String, page: Int): Resource<MovieList> {
         return when (val response = apiService.searchMovies(query, page)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 
     override suspend fun getMovieImages(id: Int): Resource<MovieImages> {
         return when (val response = apiService.getMovieImages(id)) {
             is ResultWrapper.Success -> Resource.Success(response.value.toDomainModel())
-            is ResultWrapper.Error -> Resource.Error(response.message)
-            else -> Resource.Error("Unknown error")
+            is ResultWrapper.Error -> Resource.Error(response.message, response.code)
         }
     }
 }

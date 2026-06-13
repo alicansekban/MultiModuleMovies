@@ -57,7 +57,7 @@ fun MovieDetailScreen(
     MovieDetailScreenContent(
         uiState = uiState,
         configuration = configuration,
-        onEvent = viewModel::onScreenEvent
+        onEvent = viewModel::handleEvent
     )
 }
 

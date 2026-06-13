@@ -61,7 +61,7 @@ object NetworkModule { // Changed from AppModule to NetworkModule
         engine {
             config {
                 if (!BuildConfig.DEBUG) {
-                    getCertificatePinner()
+                    certificatePinner(getCertificatePinner())
                 }
             }
         }

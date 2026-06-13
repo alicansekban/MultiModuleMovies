@@ -9,3 +9,7 @@ sealed interface MovieDetailUIEvents {
     data class OpenTrailer(val trailerUrl: String) : MovieDetailUIEvents
     data class OpenActorProfile(val actorId: Int) : MovieDetailUIEvents
 }
+
+sealed interface MovieDetailUIEffects {
+
+}
