@@ -8,6 +8,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 @Deprecated(
     message = "Use safeCall(HttpClient, HttpRequestBuilder) instead.",
@@ -38,8 +39,10 @@ suspend inline fun <reified T> safeCall(
             val responseData: T = response.body()
             ResultWrapper.Success(responseData)
         } else {
-            ResultWrapper.Error(response.status.description)
+            ResultWrapper.Error(message = response.status.description, code = response.status.value)
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (throwable: Throwable) {
         ResultWrapper.Error(message = throwable.message)
     }

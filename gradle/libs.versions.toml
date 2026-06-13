@@ -93,6 +93,9 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 
+#di annotations (keeps :domain free of Hilt/Dagger)
+javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+
 #coroutines
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesAndroid" }
